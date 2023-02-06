@@ -27,19 +27,23 @@
 
 // $Id$
 
-#if LINQBRIDGE_LIB
-
 namespace System.Linq
 {
-    public partial class Enumerable { }
-    public partial interface IGrouping<out TKey, TElement> { }
-    public partial interface ILookup<TKey, TElement> { }
-    public partial interface IOrderedEnumerable<TElement> { }
-}
+    using System.Collections.Generic;
 
-namespace System.Runtime.CompilerServices
-{
-    public partial class ExtensionAttribute { }
-}
+    /// <summary>
+    /// Represents a sorted sequence.
+    /// </summary>
 
-#endif
+    public partial interface IOrderedEnumerable<TElement> : IEnumerable<TElement>
+    {
+        /// <summary>
+        /// Performs a subsequent ordering on the elements of an 
+        /// <see cref="IOrderedEnumerable{T}"/> according to a key.
+        /// </summary>
+
+        IOrderedEnumerable<TElement> CreateOrderedEnumerable<TKey>(
+            Func<TElement, TKey> keySelector, IComparer<TKey> comparer, bool descending);
+    }
+
+}

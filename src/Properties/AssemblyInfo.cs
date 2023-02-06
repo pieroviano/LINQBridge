@@ -1,4 +1,4 @@
-#region License, Terms and Author(s)
+﻿#region License, Terms and Author(s)
 //
 // LINQBridge
 // Copyright (c) 2007 Atif Aziz, Joseph Albahari. All rights reserved.
@@ -30,14 +30,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security;
 
-[assembly: AssemblyTitle("LINQBridge")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("LINQBridge")]
-[assembly: AssemblyCopyright("Copyright (c) 2007, Atif Aziz, Joseph Albahari. All rights reserved.")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
-
 #if DEBUG
 [assembly: AssemblyConfiguration("DEBUG")]
 #else
@@ -49,6 +41,3 @@ using System.Security;
 [assembly: AllowPartiallyTrustedCallers]
 
 [assembly: Guid("1d8ca19d-f7ef-47f2-8144-4099aab2b2b7")]
-
-[assembly: AssemblyVersion("1.3.0.0")]
-[assembly: AssemblyFileVersion("1.3.14717.2012")]

@@ -1,4 +1,5 @@
 #region License, Terms and Author(s)
+
 //
 // LINQBridge
 // Copyright (c) 2007 Atif Aziz, Joseph Albahari. All rights reserved.
@@ -23,33 +24,28 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 #endregion
 
 // $Id$
 
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+
 namespace System.Linq
 {
-    #region Imports
-
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using LinqBridge;
-
-    #endregion
+    public partial class Enumerable { }
 
     /// <summary>
     /// Provides a set of static (Shared in Visual Basic) methods for 
     /// querying objects that implement <see cref="IEnumerable{T}" />.
     /// </summary>
-
-    static partial class Enumerable
+    public static partial class Enumerable
     {
         /// <summary>
         /// Returns the input typed as <see cref="IEnumerable{T}"/>.
         /// </summary>
-
         public static IEnumerable<TSource> AsEnumerable<TSource>(this IEnumerable<TSource> source)
         {
             return source;
@@ -59,7 +55,6 @@ namespace System.Linq
         /// Returns an empty <see cref="IEnumerable{T}"/> that has the 
         /// specified type argument.
         /// </summary>
-
         public static IEnumerable<TResult> Empty<TResult>()
         {
             return Sequence<TResult>.Empty;
@@ -69,7 +64,6 @@ namespace System.Linq
         /// Converts the elements of an <see cref="IEnumerable"/> to the 
         /// specified type.
         /// </summary>
-
         public static IEnumerable<TResult> Cast<TResult>(
             this IEnumerable source)
         {
@@ -82,13 +76,12 @@ namespace System.Linq
             IEnumerable source)
         {
             foreach (var item in source)
-                yield return (TResult) item;
+                yield return (TResult)item;
         }
 
         /// <summary>
         /// Filters the elements of an <see cref="IEnumerable"/> based on a specified type.
         /// </summary>
-
         public static IEnumerable<TResult> OfType<TResult>(
             this IEnumerable source)
         {
@@ -102,7 +95,7 @@ namespace System.Linq
         {
             foreach (var item in source)
                 if (item is TResult)
-                    yield return (TResult) item;
+                    yield return (TResult)item;
         }
 
         /// <summary>
@@ -110,13 +103,12 @@ namespace System.Linq
         /// </summary>
         /// <param name="start">The value of the first integer in the sequence.</param>
         /// <param name="count">The number of sequential integers to generate.</param>
-
         public static IEnumerable<int> Range(int start, int count)
         {
             if (count < 0)
                 throw new ArgumentOutOfRangeException("count", count, null);
 
-            var end = (long) start + count;
+            var end = (long)start + count;
             if (end - 1 >= int.MaxValue)
                 throw new ArgumentOutOfRangeException("count", count, null);
 
@@ -132,7 +124,6 @@ namespace System.Linq
         /// <summary>
         /// Generates a sequence that contains one repeated value.
         /// </summary>
-
         public static IEnumerable<TResult> Repeat<TResult>(TResult element, int count)
         {
             if (count < 0) throw new ArgumentOutOfRangeException("count", count, null);
@@ -149,7 +140,6 @@ namespace System.Linq
         /// <summary>
         /// Filters a sequence of values based on a predicate.
         /// </summary>
-
         public static IEnumerable<TSource> Where<TSource>(
             this IEnumerable<TSource> source,
             Func<TSource, bool> predicate)
@@ -163,7 +153,6 @@ namespace System.Linq
         /// Filters a sequence of values based on a predicate. 
         /// Each element's index is used in the logic of the predicate function.
         /// </summary>
-
         public static IEnumerable<TSource> Where<TSource>(
             this IEnumerable<TSource> source,
             Func<TSource, int, bool> predicate)
@@ -175,7 +164,7 @@ namespace System.Linq
         }
 
         private static IEnumerable<TSource> WhereYield<TSource>(
-            IEnumerable<TSource> source, 
+            IEnumerable<TSource> source,
             Func<TSource, int, bool> predicate)
         {
             var i = 0;
@@ -187,7 +176,6 @@ namespace System.Linq
         /// <summary>
         /// Projects each element of a sequence into a new form.
         /// </summary>
-
         public static IEnumerable<TResult> Select<TSource, TResult>(
             this IEnumerable<TSource> source,
             Func<TSource, TResult> selector)
@@ -201,7 +189,6 @@ namespace System.Linq
         /// Projects each element of a sequence into a new form by 
         /// incorporating the element's index.
         /// </summary>
-
         public static IEnumerable<TResult> Select<TSource, TResult>(
             this IEnumerable<TSource> source,
             Func<TSource, int, TResult> selector)
@@ -225,7 +212,6 @@ namespace System.Linq
         /// Projects each element of a sequence to an <see cref="IEnumerable{T}" /> 
         /// and flattens the resulting sequences into one sequence.
         /// </summary>
-
         public static IEnumerable<TResult> SelectMany<TSource, TResult>(
             this IEnumerable<TSource> source,
             Func<TSource, IEnumerable<TResult>> selector)
@@ -241,9 +227,8 @@ namespace System.Linq
         /// index of each source element is used in the projected form of 
         /// that element.
         /// </summary>
-
         public static IEnumerable<TResult> SelectMany<TSource, TResult>(
-            this IEnumerable<TSource> source, 
+            this IEnumerable<TSource> source,
             Func<TSource, int, IEnumerable<TResult>> selector)
         {
             if (selector == null) throw new ArgumentNullException("selector");
@@ -256,7 +241,6 @@ namespace System.Linq
         /// flattens the resulting sequences into one sequence, and invokes 
         /// a result selector function on each element therein.
         /// </summary>
-
         public static IEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(
             this IEnumerable<TSource> source,
             Func<TSource, IEnumerable<TCollection>> collectionSelector,
@@ -274,7 +258,6 @@ namespace System.Linq
         /// each source element is used in the intermediate projected form 
         /// of that element.
         /// </summary>
-
         public static IEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(
             this IEnumerable<TSource> source,
             Func<TSource, int, IEnumerable<TCollection>> collectionSelector,
@@ -294,14 +277,13 @@ namespace System.Linq
         {
             var i = 0;
             foreach (var item in source)
-                foreach (var subitem in collectionSelector(item, i++))
-                    yield return resultSelector(item, subitem);
+            foreach (var subitem in collectionSelector(item, i++))
+                yield return resultSelector(item, subitem);
         }
 
         /// <summary>
         /// Returns elements from a sequence as long as a specified condition is true.
         /// </summary>
-
         public static IEnumerable<TSource> TakeWhile<TSource>(
             this IEnumerable<TSource> source,
             Func<TSource, bool> predicate)
@@ -315,7 +297,6 @@ namespace System.Linq
         /// Returns elements from a sequence as long as a specified condition is true.
         /// The element's index is used in the logic of the predicate function.
         /// </summary>
-
         public static IEnumerable<TSource> TakeWhile<TSource>(
             this IEnumerable<TSource> source,
             Func<TSource, int, bool> predicate)
@@ -342,7 +323,6 @@ namespace System.Linq
         /// Returns a specified number of contiguous elements from the start 
         /// of a sequence.
         /// </summary>
-
         public static IEnumerable<TSource> Take<TSource>(
             this IEnumerable<TSource> source,
             int count)
@@ -359,26 +339,24 @@ namespace System.Linq
         /// <summary>
         /// Base implementation of First operator.
         /// </summary>
-        
         private static TSource FirstImpl<TSource>(
-            this IEnumerable<TSource> source, 
+            this IEnumerable<TSource> source,
             Func<TSource> empty)
         {
             if (source == null) throw new ArgumentNullException("source");
             Debug.Assert(empty != null);
 
-            var list = source as IList<TSource>;    // optimized case for lists
+            var list = source as IList<TSource>; // optimized case for lists
             if (list != null)
                 return list.Count > 0 ? list[0] : empty();
 
-            using (var e = source.GetEnumerator())  // fallback for enumeration
+            using (var e = source.GetEnumerator()) // fallback for enumeration
                 return e.MoveNext() ? e.Current : empty();
         }
 
         /// <summary>
         /// Returns the first element of a sequence.
         /// </summary>
-
         public static TSource First<TSource>(
             this IEnumerable<TSource> source)
         {
@@ -388,7 +366,6 @@ namespace System.Linq
         /// <summary>
         /// Returns the first element in a sequence that satisfies a specified condition.
         /// </summary>
-
         public static TSource First<TSource>(
             this IEnumerable<TSource> source,
             Func<TSource, bool> predicate)
@@ -400,7 +377,6 @@ namespace System.Linq
         /// Returns the first element of a sequence, or a default value if 
         /// the sequence contains no elements.
         /// </summary>
-
         public static TSource FirstOrDefault<TSource>(
             this IEnumerable<TSource> source)
         {
@@ -411,7 +387,6 @@ namespace System.Linq
         /// Returns the first element of the sequence that satisfies a 
         /// condition or a default value if no such element is found.
         /// </summary>
-
         public static TSource FirstOrDefault<TSource>(
             this IEnumerable<TSource> source,
             Func<TSource, bool> predicate)
@@ -422,14 +397,13 @@ namespace System.Linq
         /// <summary>
         /// Base implementation of Last operator.
         /// </summary>
-
         private static TSource LastImpl<TSource>(
-            this IEnumerable<TSource> source, 
+            this IEnumerable<TSource> source,
             Func<TSource> empty)
         {
             if (source == null) throw new ArgumentNullException("source");
 
-            var list = source as IList<TSource>;    // optimized case for lists
+            var list = source as IList<TSource>; // optimized case for lists
             if (list != null)
                 return list.Count > 0 ? list[list.Count - 1] : empty();
 
@@ -459,7 +433,6 @@ namespace System.Linq
         /// Returns the last element of a sequence that satisfies a 
         /// specified condition.
         /// </summary>
-
         public static TSource Last<TSource>(
             this IEnumerable<TSource> source,
             Func<TSource, bool> predicate)
@@ -471,7 +444,6 @@ namespace System.Linq
         /// Returns the last element of a sequence, or a default value if 
         /// the sequence contains no elements.
         /// </summary>
-
         public static TSource LastOrDefault<TSource>(
             this IEnumerable<TSource> source)
         {
@@ -482,7 +454,6 @@ namespace System.Linq
         /// Returns the last element of a sequence that satisfies a 
         /// condition or a default value if no such element is found.
         /// </summary>
-
         public static TSource LastOrDefault<TSource>(
             this IEnumerable<TSource> source,
             Func<TSource, bool> predicate)
@@ -493,7 +464,6 @@ namespace System.Linq
         /// <summary>
         /// Base implementation of Single operator.
         /// </summary>
-        
         private static TSource SingleImpl<TSource>(
             this IEnumerable<TSource> source,
             Func<TSource> empty)
@@ -519,7 +489,6 @@ namespace System.Linq
         /// Returns the only element of a sequence, and throws an exception 
         /// if there is not exactly one element in the sequence.
         /// </summary>
-
         public static TSource Single<TSource>(
             this IEnumerable<TSource> source)
         {
@@ -531,7 +500,6 @@ namespace System.Linq
         /// specified condition, and throws an exception if more than one 
         /// such element exists.
         /// </summary>
-
         public static TSource Single<TSource>(
             this IEnumerable<TSource> source,
             Func<TSource, bool> predicate)
@@ -544,7 +512,6 @@ namespace System.Linq
         /// the sequence is empty; this method throws an exception if there 
         /// is more than one element in the sequence.
         /// </summary>
-
         public static TSource SingleOrDefault<TSource>(
             this IEnumerable<TSource> source)
         {
@@ -557,7 +524,6 @@ namespace System.Linq
         /// exists; this method throws an exception if more than one element 
         /// satisfies the condition.
         /// </summary>
-
         public static TSource SingleOrDefault<TSource>(
             this IEnumerable<TSource> source,
             Func<TSource, bool> predicate)
@@ -568,7 +534,6 @@ namespace System.Linq
         /// <summary>
         /// Returns the element at a specified index in a sequence.
         /// </summary>
-
         public static TSource ElementAt<TSource>(
             this IEnumerable<TSource> source,
             int index)
@@ -596,7 +561,6 @@ namespace System.Linq
         /// Returns the element at a specified index in a sequence or a 
         /// default value if the index is out of range.
         /// </summary>
-
         public static TSource ElementAtOrDefault<TSource>(
             this IEnumerable<TSource> source,
             int index)
@@ -616,7 +580,6 @@ namespace System.Linq
         /// <summary>
         /// Inverts the order of the elements in a sequence.
         /// </summary>
- 
         public static IEnumerable<TSource> Reverse<TSource>(
             this IEnumerable<TSource> source)
         {
@@ -639,7 +602,6 @@ namespace System.Linq
         /// Bypasses elements in a sequence as long as a specified condition 
         /// is true and then returns the remaining elements.
         /// </summary>
-
         public static IEnumerable<TSource> SkipWhile<TSource>(
             this IEnumerable<TSource> source,
             Func<TSource, bool> predicate)
@@ -654,7 +616,6 @@ namespace System.Linq
         /// is true and then returns the remaining elements. The element's 
         /// index is used in the logic of the predicate function.
         /// </summary>
-
         public static IEnumerable<TSource> SkipWhile<TSource>(
             this IEnumerable<TSource> source,
             Func<TSource, int, bool> predicate)
@@ -666,21 +627,24 @@ namespace System.Linq
         }
 
         private static IEnumerable<TSource> SkipWhileYield<TSource>(
-            IEnumerable<TSource> source, 
+            IEnumerable<TSource> source,
             Func<TSource, int, bool> predicate)
         {
             using (var e = source.GetEnumerator())
             {
-                for (var i = 0; ; i++) 
-                { 
+                for (var i = 0;; i++)
+                {
                     if (!e.MoveNext())
                         yield break;
-                    
+
                     if (!predicate(e.Current, i))
                         break;
                 }
 
-                do { yield return e.Current; } while (e.MoveNext());
+                do
+                {
+                    yield return e.Current;
+                } while (e.MoveNext());
             }
         }
 
@@ -688,7 +652,6 @@ namespace System.Linq
         /// Bypasses a specified number of elements in a sequence and then 
         /// returns the remaining elements.
         /// </summary>
-
         public static IEnumerable<TSource> Skip<TSource>(
             this IEnumerable<TSource> source,
             int count)
@@ -699,23 +662,21 @@ namespace System.Linq
         /// <summary>
         /// Returns the number of elements in a sequence.
         /// </summary>
-
         public static int Count<TSource>(
             this IEnumerable<TSource> source)
         {
             if (source == null) throw new ArgumentNullException("source");
 
             var collection = source as ICollection;
-            return collection != null 
-                 ? collection.Count 
-                 : source.Aggregate(0, (count, item) => checked(count + 1));
+            return collection != null
+                ? collection.Count
+                : source.Aggregate(0, (count, item) => checked(count + 1));
         }
 
         /// <summary>
         /// Returns a number that represents how many elements in the 
         /// specified sequence satisfy a condition.
         /// </summary>
-
         public static int Count<TSource>(
             this IEnumerable<TSource> source,
             Func<TSource, bool> predicate)
@@ -727,23 +688,21 @@ namespace System.Linq
         /// Returns an <see cref="Int64"/> that represents the total number 
         /// of elements in a sequence.
         /// </summary>
-
         public static long LongCount<TSource>(
             this IEnumerable<TSource> source)
         {
             if (source == null) throw new ArgumentNullException("source");
 
             var array = source as Array;
-            return array != null 
-                 ? array.LongLength 
-                 : source.Aggregate(0L, (count, item) => count + 1);
+            return array != null
+                ? array.LongLength
+                : source.Aggregate(0L, (count, item) => count + 1);
         }
 
         /// <summary>
         /// Returns an <see cref="Int64"/> that represents how many elements 
         /// in a sequence satisfy a condition.
         /// </summary>
-
         public static long LongCount<TSource>(
             this IEnumerable<TSource> source,
             Func<TSource, bool> predicate)
@@ -754,7 +713,6 @@ namespace System.Linq
         /// <summary>
         /// Concatenates two sequences.
         /// </summary>
-
         public static IEnumerable<TSource> Concat<TSource>(
             this IEnumerable<TSource> first,
             IEnumerable<TSource> second)
@@ -766,7 +724,7 @@ namespace System.Linq
         }
 
         private static IEnumerable<TSource> ConcatYield<TSource>(
-            IEnumerable<TSource> first, 
+            IEnumerable<TSource> first,
             IEnumerable<TSource> second)
         {
             foreach (var item in first)
@@ -779,7 +737,6 @@ namespace System.Linq
         /// <summary>
         /// Creates a <see cref="List{T}"/> from an <see cref="IEnumerable{T}"/>.
         /// </summary>
-
         public static List<TSource> ToList<TSource>(
             this IEnumerable<TSource> source)
         {
@@ -791,7 +748,6 @@ namespace System.Linq
         /// <summary>
         /// Creates an array from an <see cref="IEnumerable{T}"/>.
         /// </summary>
-
         public static TSource[] ToArray<TSource>(
             this IEnumerable<TSource> source)
         {
@@ -802,7 +758,6 @@ namespace System.Linq
         /// Returns distinct elements from a sequence by using the default 
         /// equality comparer to compare values.
         /// </summary>
-
         public static IEnumerable<TSource> Distinct<TSource>(
             this IEnumerable<TSource> source)
         {
@@ -813,7 +768,6 @@ namespace System.Linq
         /// Returns distinct elements from a sequence by using a specified 
         /// <see cref="IEqualityComparer{T}"/> to compare values.
         /// </summary>
-
         public static IEnumerable<TSource> Distinct<TSource>(
             this IEnumerable<TSource> source,
             IEqualityComparer<TSource> comparer)
@@ -841,7 +795,7 @@ namespace System.Linq
                 else
                 {
                     if (set.ContainsKey(item))
-                        continue;                    
+                        continue;
                     set.Add(item, null);
                 }
 
@@ -854,8 +808,7 @@ namespace System.Linq
         /// <see cref="IEnumerable{T}" /> according to a specified key 
         /// selector function.
         /// </summary>
-
-        public static ILookup<TKey, TSource> ToLookup<TSource, TKey>(
+        public static System.ILookup<TKey, TSource> ToLookup<TSource, TKey>(
             this IEnumerable<TSource> source,
             Func<TSource, TKey> keySelector)
         {
@@ -867,8 +820,7 @@ namespace System.Linq
         /// <see cref="IEnumerable{T}" /> according to a specified key 
         /// selector function and a key comparer.
         /// </summary>
-
-        public static ILookup<TKey, TSource> ToLookup<TSource, TKey>(
+        public static System.ILookup<TKey, TSource> ToLookup<TSource, TKey>(
             this IEnumerable<TSource> source,
             Func<TSource, TKey> keySelector,
             IEqualityComparer<TKey> comparer)
@@ -881,8 +833,7 @@ namespace System.Linq
         /// <see cref="IEnumerable{T}" /> according to specified key 
         /// and element selector functions.
         /// </summary>
-
-        public static ILookup<TKey, TElement> ToLookup<TSource, TKey, TElement>(
+        public static System.ILookup<TKey, TElement> ToLookup<TSource, TKey, TElement>(
             this IEnumerable<TSource> source,
             Func<TSource, TKey> keySelector,
             Func<TSource, TElement> elementSelector)
@@ -895,8 +846,7 @@ namespace System.Linq
         /// <see cref="IEnumerable{T}" /> according to a specified key 
         /// selector function, a comparer and an element selector function.
         /// </summary>
-
-        public static ILookup<TKey, TElement> ToLookup<TSource, TKey, TElement>(
+        public static System.ILookup<TKey, TElement> ToLookup<TSource, TKey, TElement>(
             this IEnumerable<TSource> source,
             Func<TSource, TKey> keySelector,
             Func<TSource, TElement> elementSelector,
@@ -907,12 +857,12 @@ namespace System.Linq
             if (elementSelector == null) throw new ArgumentNullException("elementSelector");
 
             var lookup = new Lookup<TKey, TElement>(comparer);
-            
+
             foreach (var item in source)
             {
                 var key = keySelector(item);
 
-                var grouping = (Grouping<TKey, TElement>) lookup.Find(key);
+                var grouping = (Grouping<TKey, TElement>)lookup.Find(key);
                 if (grouping == null)
                 {
                     grouping = new Grouping<TKey, TElement>(key);
@@ -929,7 +879,6 @@ namespace System.Linq
         /// Groups the elements of a sequence according to a specified key 
         /// selector function.
         /// </summary>
-
         public static IEnumerable<IGrouping<TKey, TSource>> GroupBy<TSource, TKey>(
             this IEnumerable<TSource> source,
             Func<TSource, TKey> keySelector)
@@ -942,7 +891,6 @@ namespace System.Linq
         /// selector function and compares the keys by using a specified 
         /// comparer.
         /// </summary>
-
         public static IEnumerable<IGrouping<TKey, TSource>> GroupBy<TSource, TKey>(
             this IEnumerable<TSource> source,
             Func<TSource, TKey> keySelector,
@@ -956,7 +904,6 @@ namespace System.Linq
         /// selector function and projects the elements for each group by 
         /// using a specified function.
         /// </summary>
-
         public static IEnumerable<IGrouping<TKey, TElement>> GroupBy<TSource, TKey, TElement>(
             this IEnumerable<TSource> source,
             Func<TSource, TKey> keySelector,
@@ -970,7 +917,6 @@ namespace System.Linq
         /// selector function and creates a result value from each group and 
         /// its key.
         /// </summary>
-
         public static IEnumerable<IGrouping<TKey, TElement>> GroupBy<TSource, TKey, TElement>(
             this IEnumerable<TSource> source,
             Func<TSource, TKey> keySelector,
@@ -989,7 +935,6 @@ namespace System.Linq
         /// function. The keys are compared by using a comparer and each 
         /// group's elements are projected by using a specified function.
         /// </summary>
-
         public static IEnumerable<TResult> GroupBy<TSource, TKey, TResult>(
             this IEnumerable<TSource> source,
             Func<TSource, TKey> keySelector,
@@ -1004,7 +949,6 @@ namespace System.Linq
         /// its key. The elements of each group are projected by using a 
         /// specified function.
         /// </summary>
-
         public static IEnumerable<TResult> GroupBy<TSource, TKey, TResult>(
             this IEnumerable<TSource> source,
             Func<TSource, TKey> keySelector,
@@ -1023,7 +967,6 @@ namespace System.Linq
         /// selector function and creates a result value from each group and 
         /// its key. The keys are compared by using a specified comparer.
         /// </summary>
-
         public static IEnumerable<TResult> GroupBy<TSource, TKey, TElement, TResult>(
             this IEnumerable<TSource> source,
             Func<TSource, TKey> keySelector,
@@ -1040,7 +983,6 @@ namespace System.Linq
         /// and the elements of each group are projected by using a 
         /// specified function.
         /// </summary>
-
         public static IEnumerable<TResult> GroupBy<TSource, TKey, TElement, TResult>(
             this IEnumerable<TSource> source,
             Func<TSource, TKey> keySelector,
@@ -1054,13 +996,12 @@ namespace System.Linq
             if (resultSelector == null) throw new ArgumentNullException("resultSelector");
 
             return ToLookup(source, keySelector, elementSelector, comparer)
-                   .Select(g => resultSelector(g.Key, g));
+                .Select(g => resultSelector(g.Key, g));
         }
 
         /// <summary>
         /// Applies an accumulator function over a sequence.
         /// </summary>
-
         public static TSource Aggregate<TSource>(
             this IEnumerable<TSource> source,
             Func<TSource, TSource, TSource> func)
@@ -1081,7 +1022,6 @@ namespace System.Linq
         /// Applies an accumulator function over a sequence. The specified 
         /// seed value is used as the initial accumulator value.
         /// </summary>
-
         public static TAccumulate Aggregate<TSource, TAccumulate>(
             this IEnumerable<TSource> source,
             TAccumulate seed,
@@ -1095,7 +1035,6 @@ namespace System.Linq
         /// seed value is used as the initial accumulator value, and the 
         /// specified function is used to select the result value.
         /// </summary>
-
         public static TResult Aggregate<TSource, TAccumulate, TResult>(
             this IEnumerable<TSource> source,
             TAccumulate seed,
@@ -1118,7 +1057,6 @@ namespace System.Linq
         /// Produces the set union of two sequences by using the default 
         /// equality comparer.
         /// </summary>
-
         public static IEnumerable<TSource> Union<TSource>(
             this IEnumerable<TSource> first,
             IEnumerable<TSource> second)
@@ -1130,7 +1068,6 @@ namespace System.Linq
         /// Produces the set union of two sequences by using a specified 
         /// <see cref="IEqualityComparer{T}" />.
         /// </summary>
-
         public static IEnumerable<TSource> Union<TSource>(
             this IEnumerable<TSource> first,
             IEnumerable<TSource> second,
@@ -1144,7 +1081,6 @@ namespace System.Linq
         /// parameter's default value in a singleton collection if the 
         /// sequence is empty.
         /// </summary>
-
         public static IEnumerable<TSource> DefaultIfEmpty<TSource>(
             this IEnumerable<TSource> source)
         {
@@ -1155,7 +1091,6 @@ namespace System.Linq
         /// Returns the elements of the specified sequence or the specified 
         /// value in a singleton collection if the sequence is empty.
         /// </summary>
-        
         public static IEnumerable<TSource> DefaultIfEmpty<TSource>(
             this IEnumerable<TSource> source,
             TSource defaultValue)
@@ -1174,14 +1109,16 @@ namespace System.Linq
                 if (!e.MoveNext())
                     yield return defaultValue;
                 else
-                    do { yield return e.Current; } while (e.MoveNext());
+                    do
+                    {
+                        yield return e.Current;
+                    } while (e.MoveNext());
             }
         }
 
         /// <summary>
         /// Determines whether all elements of a sequence satisfy a condition.
         /// </summary>
-
         public static bool All<TSource>(
             this IEnumerable<TSource> source,
             Func<TSource, bool> predicate)
@@ -1199,7 +1136,6 @@ namespace System.Linq
         /// <summary>
         /// Determines whether a sequence contains any elements.
         /// </summary>
-
         public static bool Any<TSource>(
             this IEnumerable<TSource> source)
         {
@@ -1213,9 +1149,8 @@ namespace System.Linq
         /// Determines whether any element of a sequence satisfies a 
         /// condition.
         /// </summary>
-
         public static bool Any<TSource>(
-            this IEnumerable<TSource> source, 
+            this IEnumerable<TSource> source,
             Func<TSource, bool> predicate)
         {
             return source.Where(predicate).Any();
@@ -1225,7 +1160,6 @@ namespace System.Linq
         /// Determines whether a sequence contains a specified element by 
         /// using the default equality comparer.
         /// </summary>
-
         public static bool Contains<TSource>(
             this IEnumerable<TSource> source,
             TSource value)
@@ -1237,7 +1171,6 @@ namespace System.Linq
         /// Determines whether a sequence contains a specified element by 
         /// using a specified <see cref="IEqualityComparer{T}" />.
         /// </summary>
-
         public static bool Contains<TSource>(
             this IEnumerable<TSource> source,
             TSource value,
@@ -1260,7 +1193,6 @@ namespace System.Linq
         /// Determines whether two sequences are equal by comparing the 
         /// elements by using the default equality comparer for their type.
         /// </summary>
-
         public static bool SequenceEqual<TSource>(
             this IEnumerable<TSource> first,
             IEnumerable<TSource> second)
@@ -1272,7 +1204,6 @@ namespace System.Linq
         /// Determines whether two sequences are equal by comparing their 
         /// elements by using a specified <see cref="IEqualityComparer{T}" />.
         /// </summary>
-
         public static bool SequenceEqual<TSource>(
             this IEnumerable<TSource> first,
             IEnumerable<TSource> second,
@@ -1283,8 +1214,8 @@ namespace System.Linq
 
             comparer = comparer ?? EqualityComparer<TSource>.Default;
 
-            using (IEnumerator<TSource> lhs = first.GetEnumerator(), 
-                                        rhs = second.GetEnumerator())
+            using (IEnumerator<TSource> lhs = first.GetEnumerator(),
+                   rhs = second.GetEnumerator())
             {
                 do
                 {
@@ -1293,8 +1224,7 @@ namespace System.Linq
 
                     if (!rhs.MoveNext())
                         return false;
-                } 
-                while (comparer.Equals(lhs.Current, rhs.Current));
+                } while (comparer.Equals(lhs.Current, rhs.Current));
             }
 
             return false;
@@ -1303,7 +1233,6 @@ namespace System.Linq
         /// <summary>
         /// Base implementation for Min/Max operator.
         /// </summary>
-
         private static TSource MinMaxImpl<TSource>(
             this IEnumerable<TSource> source,
             Func<TSource, TSource, bool> lesser)
@@ -1312,7 +1241,8 @@ namespace System.Linq
             Debug.Assert(lesser != null);
 
             if (typeof(TSource).IsClass) // ReSharper disable CompareNonConstrainedGenericWithNull                
-                source = source.Where(e => e != null).DefaultIfEmpty(); // ReSharper restore CompareNonConstrainedGenericWithNull
+                source = source.Where(e => e != null)
+                    .DefaultIfEmpty(); // ReSharper restore CompareNonConstrainedGenericWithNull
 
             return source.Aggregate((a, item) => lesser(a, item) ? a : item);
         }
@@ -1320,7 +1250,6 @@ namespace System.Linq
         /// <summary>
         /// Base implementation for Min/Max operator for nullable types.
         /// </summary>
-
         private static TSource? MinMaxImpl<TSource>(
             this IEnumerable<TSource?> source,
             TSource? seed, Func<TSource?, TSource?, bool> lesser) where TSource : struct
@@ -1328,14 +1257,13 @@ namespace System.Linq
             if (source == null) throw new ArgumentNullException("source");
             Debug.Assert(lesser != null);
 
-            return source.Aggregate(seed, (a, item) => lesser(a, item) ? a : item); 
+            return source.Aggregate(seed, (a, item) => lesser(a, item) ? a : item);
             //  == MinMaxImpl(Repeat<TSource?>(null, 1).Concat(source), lesser);
         }
 
         /// <summary>
         /// Returns the minimum value in a generic sequence.
         /// </summary>
-
         public static TSource Min<TSource>(
             this IEnumerable<TSource> source)
         {
@@ -1347,7 +1275,6 @@ namespace System.Linq
         /// Invokes a transform function on each element of a generic 
         /// sequence and returns the minimum resulting value.
         /// </summary>
-
         public static TResult Min<TSource, TResult>(
             this IEnumerable<TSource> source,
             Func<TSource, TResult> selector)
@@ -1358,7 +1285,6 @@ namespace System.Linq
         /// <summary>
         /// Returns the maximum value in a generic sequence.
         /// </summary>
-
         public static TSource Max<TSource>(
             this IEnumerable<TSource> source)
         {
@@ -1370,7 +1296,6 @@ namespace System.Linq
         /// Invokes a transform function on each element of a generic 
         /// sequence and returns the maximum resulting value.
         /// </summary>
-
         public static TResult Max<TSource, TResult>(
             this IEnumerable<TSource> source,
             Func<TSource, TResult> selector)
@@ -1387,20 +1312,21 @@ namespace System.Linq
         /// DO NOT use this method if the caller must be a generator. It is
         /// mostly safe among aggregate operations.
         /// </remarks>
-
         private static IEnumerable<T> Renumerable<T>(this IEnumerator<T> e)
         {
             Debug.Assert(e != null);
 
-            do { yield return e.Current; } while (e.MoveNext());
+            do
+            {
+                yield return e.Current;
+            } while (e.MoveNext());
         }
 
         /// <summary>
         /// Sorts the elements of a sequence in ascending order according to a key.
         /// </summary>
-
         public static IOrderedEnumerable<TSource> OrderBy<TSource, TKey>(
-            this IEnumerable<TSource> source, 
+            this IEnumerable<TSource> source,
             Func<TSource, TKey> keySelector)
         {
             return source.OrderBy(keySelector, /* comparer */ null);
@@ -1410,9 +1336,8 @@ namespace System.Linq
         /// Sorts the elements of a sequence in ascending order by using a 
         /// specified comparer.
         /// </summary>
-
         public static IOrderedEnumerable<TSource> OrderBy<TSource, TKey>(
-            this IEnumerable<TSource> source, 
+            this IEnumerable<TSource> source,
             Func<TSource, TKey> keySelector,
             IComparer<TKey> comparer)
         {
@@ -1425,9 +1350,8 @@ namespace System.Linq
         /// <summary>
         /// Sorts the elements of a sequence in descending order according to a key.
         /// </summary>
-
         public static IOrderedEnumerable<TSource> OrderByDescending<TSource, TKey>(
-            this IEnumerable<TSource> source, 
+            this IEnumerable<TSource> source,
             Func<TSource, TKey> keySelector)
         {
             return source.OrderByDescending(keySelector, /* comparer */ null);
@@ -1437,10 +1361,9 @@ namespace System.Linq
         ///  Sorts the elements of a sequence in descending order by using a 
         /// specified comparer. 
         /// </summary>
-
         public static IOrderedEnumerable<TSource> OrderByDescending<TSource, TKey>(
-            this IEnumerable<TSource> source, 
-            Func<TSource, TKey> keySelector, 
+            this IEnumerable<TSource> source,
+            Func<TSource, TKey> keySelector,
             IComparer<TKey> comparer)
         {
             if (source == null) throw new ArgumentNullException("source");
@@ -1453,9 +1376,8 @@ namespace System.Linq
         /// Performs a subsequent ordering of the elements in a sequence in 
         /// ascending order according to a key.
         /// </summary>
-
         public static IOrderedEnumerable<TSource> ThenBy<TSource, TKey>(
-            this IOrderedEnumerable<TSource> source, 
+            this IOrderedEnumerable<TSource> source,
             Func<TSource, TKey> keySelector)
         {
             return source.ThenBy(keySelector, /* comparer */ null);
@@ -1465,10 +1387,9 @@ namespace System.Linq
         /// Performs a subsequent ordering of the elements in a sequence in 
         /// ascending order by using a specified comparer.
         /// </summary>
-
         public static IOrderedEnumerable<TSource> ThenBy<TSource, TKey>(
-            this IOrderedEnumerable<TSource> source, 
-            Func<TSource, TKey> keySelector, 
+            this IOrderedEnumerable<TSource> source,
+            Func<TSource, TKey> keySelector,
             IComparer<TKey> comparer)
         {
             if (source == null) throw new ArgumentNullException("source");
@@ -1480,9 +1401,8 @@ namespace System.Linq
         /// Performs a subsequent ordering of the elements in a sequence in 
         /// descending order, according to a key.
         /// </summary>
-
         public static IOrderedEnumerable<TSource> ThenByDescending<TSource, TKey>(
-            this IOrderedEnumerable<TSource> source, 
+            this IOrderedEnumerable<TSource> source,
             Func<TSource, TKey> keySelector)
         {
             return source.ThenByDescending(keySelector, /* comparer */ null);
@@ -1492,10 +1412,9 @@ namespace System.Linq
         /// Performs a subsequent ordering of the elements in a sequence in 
         /// descending order by using a specified comparer.
         /// </summary>
-
         public static IOrderedEnumerable<TSource> ThenByDescending<TSource, TKey>(
-            this IOrderedEnumerable<TSource> source, 
-            Func<TSource, TKey> keySelector, 
+            this IOrderedEnumerable<TSource> source,
+            Func<TSource, TKey> keySelector,
             IComparer<TKey> comparer)
         {
             if (source == null) throw new ArgumentNullException("source");
@@ -1506,10 +1425,9 @@ namespace System.Linq
         /// <summary>
         /// Base implementation for Intersect and Except operators.
         /// </summary>
-
         private static IEnumerable<TSource> IntersectExceptImpl<TSource>(
-            this IEnumerable<TSource> first, 
-            IEnumerable<TSource> second, 
+            this IEnumerable<TSource> first,
+            IEnumerable<TSource> second,
             IEqualityComparer<TSource> comparer,
             bool flag)
         {
@@ -1520,18 +1438,20 @@ namespace System.Linq
             var flags = new Dictionary<Key<TSource>, bool>(new KeyComparer<TSource>(comparer));
 
             foreach (var item in from item in first
-                                 select new Key<TSource>(item) into item
-                                 where !flags.ContainsKey(item)
-                                 select item)
+                     select new Key<TSource>(item)
+                     into item
+                     where !flags.ContainsKey(item)
+                     select item)
             {
                 flags.Add(item, !flag);
                 keys.Add(item);
             }
 
             foreach (var item in from item in second
-                                 select new Key<TSource>(item) into item
-                                 where flags.ContainsKey(item)
-                                 select item)
+                     select new Key<TSource>(item)
+                     into item
+                     where flags.ContainsKey(item)
+                     select item)
             {
                 flags[item] = flag;
             }
@@ -1548,9 +1468,8 @@ namespace System.Linq
         /// Produces the set intersection of two sequences by using the 
         /// default equality comparer to compare values.
         /// </summary>
-
         public static IEnumerable<TSource> Intersect<TSource>(
-            this IEnumerable<TSource> first, 
+            this IEnumerable<TSource> first,
             IEnumerable<TSource> second)
         {
             return first.Intersect(second, /* comparer */ null);
@@ -1560,10 +1479,9 @@ namespace System.Linq
         /// Produces the set intersection of two sequences by using the 
         /// specified <see cref="IEqualityComparer{T}" /> to compare values.
         /// </summary>
-
         public static IEnumerable<TSource> Intersect<TSource>(
-            this IEnumerable<TSource> first, 
-            IEnumerable<TSource> second, 
+            this IEnumerable<TSource> first,
+            IEnumerable<TSource> second,
             IEqualityComparer<TSource> comparer)
         {
             return IntersectExceptImpl(first, second, comparer, /* flag */ true);
@@ -1573,7 +1491,6 @@ namespace System.Linq
         /// Produces the set difference of two sequences by using the 
         /// default equality comparer to compare values.
         /// </summary>
-
         public static IEnumerable<TSource> Except<TSource>(
             this IEnumerable<TSource> first,
             IEnumerable<TSource> second)
@@ -1585,7 +1502,6 @@ namespace System.Linq
         /// Produces the set difference of two sequences by using the 
         /// specified <see cref="IEqualityComparer{T}" /> to compare values.
         /// </summary>
-
         public static IEnumerable<TSource> Except<TSource>(
             this IEnumerable<TSource> first,
             IEnumerable<TSource> second,
@@ -1599,9 +1515,8 @@ namespace System.Linq
         /// <see cref="IEnumerable{T}" /> according to a specified key 
         /// selector function.
         /// </summary>
-
         public static Dictionary<TKey, TSource> ToDictionary<TSource, TKey>(
-            this IEnumerable<TSource> source, 
+            this IEnumerable<TSource> source,
             Func<TSource, TKey> keySelector)
         {
             return source.ToDictionary(keySelector, /* comparer */ null);
@@ -1612,10 +1527,9 @@ namespace System.Linq
         /// <see cref="IEnumerable{T}" /> according to a specified key 
         /// selector function and key comparer.
         /// </summary>
-
         public static Dictionary<TKey, TSource> ToDictionary<TSource, TKey>(
-            this IEnumerable<TSource> source, 
-            Func<TSource, TKey> keySelector, 
+            this IEnumerable<TSource> source,
+            Func<TSource, TKey> keySelector,
             IEqualityComparer<TKey> comparer)
         {
             return source.ToDictionary(keySelector, e => e, comparer);
@@ -1626,10 +1540,9 @@ namespace System.Linq
         /// <see cref="IEnumerable{T}" /> according to specified key 
         /// selector and element selector functions.
         /// </summary>
-        
         public static Dictionary<TKey, TElement> ToDictionary<TSource, TKey, TElement>(
-            this IEnumerable<TSource> source, 
-            Func<TSource, TKey> keySelector, 
+            this IEnumerable<TSource> source,
+            Func<TSource, TKey> keySelector,
             Func<TSource, TElement> elementSelector)
         {
             return source.ToDictionary(keySelector, elementSelector, /* comparer */ null);
@@ -1640,11 +1553,10 @@ namespace System.Linq
         /// <see cref="IEnumerable{T}" /> according to a specified key 
         /// selector function, a comparer, and an element selector function.
         /// </summary>
-
         public static Dictionary<TKey, TElement> ToDictionary<TSource, TKey, TElement>(
-            this IEnumerable<TSource> source, 
-            Func<TSource, TKey> keySelector, 
-            Func<TSource, TElement> elementSelector, 
+            this IEnumerable<TSource> source,
+            Func<TSource, TKey> keySelector,
+            Func<TSource, TElement> elementSelector,
             IEqualityComparer<TKey> comparer)
         {
             if (source == null) throw new ArgumentNullException("source");
@@ -1677,7 +1589,6 @@ namespace System.Linq
         /// Correlates the elements of two sequences based on matching keys. 
         /// The default equality comparer is used to compare keys.
         /// </summary>
-
         public static IEnumerable<TResult> Join<TOuter, TInner, TKey, TResult>(
             this IEnumerable<TOuter> outer,
             IEnumerable<TInner> inner,
@@ -1693,12 +1604,11 @@ namespace System.Linq
         /// The default equality comparer is used to compare keys. A 
         /// specified <see cref="IEqualityComparer{T}" /> is used to compare keys.
         /// </summary>
-
         public static IEnumerable<TResult> Join<TOuter, TInner, TKey, TResult>(
             this IEnumerable<TOuter> outer,
-            IEnumerable<TInner> inner, 
-            Func<TOuter, TKey> outerKeySelector, 
-            Func<TInner, TKey> innerKeySelector, 
+            IEnumerable<TInner> inner,
+            Func<TOuter, TKey> outerKeySelector,
+            Func<TInner, TKey> innerKeySelector,
             Func<TOuter, TInner, TResult> resultSelector,
             IEqualityComparer<TKey> comparer)
         {
@@ -1721,7 +1631,6 @@ namespace System.Linq
         /// keys and groups the results. The default equality comparer is 
         /// used to compare keys.
         /// </summary>
-
         public static IEnumerable<TResult> GroupJoin<TOuter, TInner, TKey, TResult>(
             this IEnumerable<TOuter> outer,
             IEnumerable<TInner> inner,
@@ -1738,13 +1647,12 @@ namespace System.Linq
         /// used to compare keys. A specified <see cref="IEqualityComparer{T}" /> 
         /// is used to compare keys.
         /// </summary>
-
         public static IEnumerable<TResult> GroupJoin<TOuter, TInner, TKey, TResult>(
-            this IEnumerable<TOuter> outer, 
-            IEnumerable<TInner> inner, 
-            Func<TOuter, TKey> outerKeySelector, 
-            Func<TInner, TKey> innerKeySelector, 
-            Func<TOuter, IEnumerable<TInner>, TResult> resultSelector, 
+            this IEnumerable<TOuter> outer,
+            IEnumerable<TInner> inner,
+            Func<TOuter, TKey> outerKeySelector,
+            Func<TInner, TKey> innerKeySelector,
+            Func<TOuter, IEnumerable<TInner>, TResult> resultSelector,
             IEqualityComparer<TKey> comparer)
         {
             if (outer == null) throw new ArgumentNullException("outer");

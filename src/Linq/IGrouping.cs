@@ -1,4 +1,5 @@
 #region License, Terms and Author(s)
+
 //
 // LINQBridge
 // Copyright (c) 2007 Atif Aziz, Joseph Albahari. All rights reserved.
@@ -23,21 +24,30 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 #endregion
 
 // $Id$
 
-namespace System.Runtime.CompilerServices
-{
-    /// <remarks>
-    /// This attribute allows us to define extension methods without 
-    /// requiring .NET Framework 3.5. For more information, see the section,
-    /// <a href="http://msdn.microsoft.com/en-us/magazine/cc163317.aspx#S7">Extension Methods in .NET Framework 2.0 Apps</a>,
-    /// of <a href="http://msdn.microsoft.com/en-us/magazine/cc163317.aspx">Basic Instincts: Extension Methods</a>
-    /// column in <a href="http://msdn.microsoft.com/msdnmag/">MSDN Magazine</a>, 
-    /// issue <a href="http://msdn.microsoft.com/en-us/magazine/cc135410.aspx">Nov 2007</a>.
-    /// </remarks>
+using System.Collections.Generic;
 
-    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Assembly)]
-    sealed partial class ExtensionAttribute : Attribute { }
+namespace System.Linq
+{
+    public partial interface IGrouping<out TKey, TElement> { }
+
+    #region Imports
+
+    #endregion
+
+    /// <summary>
+    /// Represents a collection of objects that have a common key.
+    /// </summary>
+    public partial interface IGrouping<out TKey, TElement> : IEnumerable<TElement>
+    {
+        /// <summary>
+        /// Gets the key of the <see cref="IGrouping{TKey,TElement}" />.
+        /// </summary>
+
+        TKey Key { get; }
+    }
 }

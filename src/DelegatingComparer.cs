@@ -25,26 +25,25 @@
 //
 #endregion
 
-// $Id$
+using System.Collections.Generic;
 
-namespace System.Linq
+namespace System
 {
-    #region Imports
+    /// <remarks>
+    /// This type is not intended to be used directly from user code.
+    /// It may be removed or changed in a future version without notice.
+    /// </remarks>
 
-    using System.Collections.Generic;
-
-    #endregion
-
-    /// <summary>
-    /// Represents a collection of objects that have a common key.
-    /// </summary>
-
-    partial interface IGrouping<out TKey, TElement> : IEnumerable<TElement>
+    public sealed class DelegatingComparer<T> : IComparer<T>
     {
-        /// <summary>
-        /// Gets the key of the <see cref="IGrouping{TKey,TElement}" />.
-        /// </summary>
+        private readonly Func<T, T, int> _comparer;
 
-        TKey Key { get; }
+        public DelegatingComparer(Func<T, T, int> comparer)
+        {
+            if (comparer == null) throw new ArgumentNullException("comparer");
+            _comparer = comparer;
+        }
+
+        public int Compare(T x, T y) { return _comparer(x, y); }
     }
 }

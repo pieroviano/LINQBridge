@@ -27,19 +27,15 @@
 
 // $Id$
 
-namespace LinqBridge
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+
+namespace System
 {
-    #region Imports
 
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-
-    #endregion
-
-    internal sealed class OrderedEnumerable<T, K> : IOrderedEnumerable<T>
+    public sealed class OrderedEnumerable<T, K> : IOrderedEnumerable<T>
     {
         private readonly IEnumerable<T> _source;
         private readonly Func<T[], IComparer<int>, IComparer<int>> _comparerComposer;

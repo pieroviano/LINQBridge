@@ -35,7 +35,6 @@ namespace System.Linq
     using System.Collections;
     using System.Collections.Generic;
     using IEnumerable=System.Collections.IEnumerable;
-    using LinqBridge;
 
     #endregion
 
@@ -43,7 +42,7 @@ namespace System.Linq
     /// Represents a collection of keys each mapped to one or more values.
     /// </summary>
 
-    internal sealed class Lookup<TKey, TElement> : ILookup<TKey, TElement>
+    public sealed class Lookup<TKey, TElement> : System.ILookup<TKey, TElement>
     {
         private readonly Dictionary<Key<TKey>, IGrouping<TKey, TElement>> _map;
         private readonly List<Key<TKey>> _orderedKeys; // remember order of insertion
