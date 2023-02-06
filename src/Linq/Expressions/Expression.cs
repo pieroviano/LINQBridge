@@ -8,7 +8,7 @@ namespace System.Linq.Expressions
 {
     /// <summary>Represents a strongly typed lambda expression as a data structure in the form of an expression tree. This class cannot be inherited.</summary>
     /// <typeparam name="TDelegate">The type of the delegate that the <see cref="T:System.Linq.Expressions.Expression`1" /> represents.</typeparam>
-    public sealed class Expression<TDelegate> : LambdaExpression where TDelegate : Delegate
+    public sealed class Expression<TDelegate> : LambdaExpression
     {
         internal Expression(Expression body, ReadOnlyCollection<ParameterExpression> parameters)
           : base(body, typeof(TDelegate), parameters)
@@ -19,7 +19,7 @@ namespace System.Linq.Expressions
         /// <returns>A delegate of type <paramref name="TDelegate" /> that represents the lambda expression described by the <see cref="T:System.Linq.Expressions.Expression`1" />.</returns>
         public TDelegate Compile()
         {
-            return (TDelegate)base.Compile();
+            return (TDelegate)((object)base.Compile());
         }
     }
 
@@ -1157,7 +1157,7 @@ namespace System.Linq.Expressions
         /// <paramref name="TDelegate" /> is not a delegate type.-or-<paramref name="body" />.Type represents a type that is not assignable to the return type of <paramref name="TDelegate" />.-or-<paramref name="parameters" /> does not contain the same number of elements as the list of parameters for <paramref name="TDelegate" />.-or-The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an element of <paramref name="parameters" /> is not assignable from the type of the corresponding parameter type of <paramref name="TDelegate" />.</exception>
         public static Expression<TDelegate> Lambda<TDelegate>(
           Expression body,
-          params ParameterExpression[] parameters) where TDelegate : Delegate
+          params ParameterExpression[] parameters)
         {
             return Expression.Lambda<TDelegate>(body, (IEnumerable<ParameterExpression>)((IEnumerable<ParameterExpression>)parameters).ToReadOnlyCollection<ParameterExpression>());
         }
@@ -1173,7 +1173,7 @@ namespace System.Linq.Expressions
         /// <paramref name="TDelegate" /> is not a delegate type.-or-<paramref name="body" />.Type represents a type that is not assignable to the return type of <paramref name="TDelegate" />.-or-<paramref name="parameters" /> does not contain the same number of elements as the list of parameters for <paramref name="TDelegate" />.-or-The <see cref="P:System.Linq.Expressions.Expression.Type" /> property of an element of <paramref name="parameters" /> is not assignable from the type of the corresponding parameter type of <paramref name="TDelegate" />.</exception>
         public static Expression<TDelegate> Lambda<TDelegate>(
           Expression body,
-          IEnumerable<ParameterExpression> parameters) where TDelegate : Delegate
+          IEnumerable<ParameterExpression> parameters)
         {
             if (body == null)
                 throw Error.ArgumentNull(nameof(body));
