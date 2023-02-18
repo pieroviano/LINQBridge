@@ -1,7 +1,7 @@
 ﻿using System;
 
 [AttributeUsage(AttributeTargets.All, Inherited = false)]
-public class DynamicallyInvokableAttribute : __DynamicallyInvokableAttribute
+internal class DynamicallyInvokableAttribute : __DynamicallyInvokableAttribute
 {
     public DynamicallyInvokableAttribute()
     {
