@@ -27,6 +27,8 @@
 
 // $Id$
 
+using System.Linq.Expressions;
+
 namespace System.Linq
 {
     #region Imports
@@ -46,6 +48,65 @@ namespace System.Linq
     {
         private readonly Dictionary<Key<TKey>, IGrouping<TKey, TElement>> _map;
         private readonly List<Key<TKey>> _orderedKeys; // remember order of insertion
+
+        internal class Grouping :
+          IGrouping<TKey, TElement>,
+          IList<TElement>,
+          ICollection<TElement>,
+          IEnumerable<TElement>,
+          IEnumerable
+        {
+            internal TKey key;
+            internal int hashCode;
+            internal TElement[] elements;
+            internal int count;
+            internal Lookup<TKey, TElement>.Grouping hashNext;
+            internal Lookup<TKey, TElement>.Grouping next;
+
+            internal void Add(TElement element)
+            {
+                if (this.elements.Length == this.count)
+                    Array.Resize<TElement>(ref this.elements, checked(this.count * 2));
+                this.elements[this.count] = element;
+                ++this.count;
+            }
+
+            public IEnumerator<TElement> GetEnumerator()
+            {
+                for (int i = 0; i < this.count; ++i)
+                    yield return this.elements[i];
+            }
+
+            IEnumerator IEnumerable.GetEnumerator() => (IEnumerator)this.GetEnumerator();
+
+            public TKey Key => this.key;
+
+            int ICollection<TElement>.Count => this.count;
+
+            bool ICollection<TElement>.IsReadOnly => true;
+
+            void ICollection<TElement>.Add(TElement item) => throw Error.NotSupported();
+
+            void ICollection<TElement>.Clear() => throw Error.NotSupported();
+
+            bool ICollection<TElement>.Contains(TElement item) => Array.IndexOf<TElement>(this.elements, item, 0, this.count) >= 0;
+
+            void ICollection<TElement>.CopyTo(TElement[] array, int arrayIndex) => Array.Copy((Array)this.elements, 0, (Array)array, arrayIndex, this.count);
+
+            bool ICollection<TElement>.Remove(TElement item) => throw Error.NotSupported();
+
+            int IList<TElement>.IndexOf(TElement item) => Array.IndexOf<TElement>(this.elements, item, 0, this.count);
+
+            void IList<TElement>.Insert(int index, TElement item) => throw Error.NotSupported();
+
+            void IList<TElement>.RemoveAt(int index) => throw Error.NotSupported();
+
+            TElement IList<TElement>.this[int index]
+            {
+                get => index >= 0 && index < this.count ? this.elements[index] : throw Error.ArgumentOutOfRange(nameof(index));
+                set => throw Error.NotSupported();
+            }
+        }
 
         internal Lookup(IEqualityComparer<TKey> comparer)
         {

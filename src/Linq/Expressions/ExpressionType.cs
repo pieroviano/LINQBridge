@@ -15,6 +15,8 @@
         ArrayLength,
         /// <summary>A node that represents indexing into a one-dimensional array.</summary>
         ArrayIndex,
+        Assign,
+        Block,
         /// <summary>A node that represents a method call.</summary>
         Call,
         /// <summary>A node that represents a null coalescing operation.</summary>
@@ -39,6 +41,7 @@
         GreaterThanOrEqual,
         /// <summary>A node that represents applying a delegate or lambda expression to a list of argument expressions.</summary>
         Invoke,
+        Index,
         /// <summary>A node that represents a lambda expression.</summary>
         Lambda,
         /// <summary>A node that represents a bitwise left-shift operation.</summary>

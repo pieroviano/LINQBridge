@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace System.Linq.Expressions
 {
-    internal abstract class ExpressionVisitor
+    public abstract class ExpressionVisitor
     {
         internal ExpressionVisitor()
         {

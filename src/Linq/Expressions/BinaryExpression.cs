@@ -4,7 +4,7 @@ using System.Text;
 namespace System.Linq.Expressions
 {
     /// <summary>Represents an expression that has a binary operator.</summary>
-    public sealed class BinaryExpression : Expression
+    public class BinaryExpression : Expression
     {
         private Expression left;
         private Expression right;

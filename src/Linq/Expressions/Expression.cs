@@ -1,7 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace System.Linq.Expressions
@@ -59,14 +61,113 @@ namespace System.Linq.Expressions
             this.type = type;
         }
 
+        [__DynamicallyInvokable]
+        protected Expression()
+        {
+        }
+
         /// <summary>Gets the node type of this <see cref="T:System.Linq.Expressions.Expression" />.</summary>
         /// <returns>One of the <see cref="T:System.Linq.Expressions.ExpressionType" /> values.</returns>
-        public ExpressionType NodeType => this.nodeType;
+        public virtual ExpressionType NodeType => this.nodeType;
 
         /// <summary>Gets the static type of the expression that this <see cref="T:System.Linq.Expressions.Expression" /> represents.</summary>
         /// <returns>The <see cref="T:System.Type" /> that represents the static type of the expression.</returns>
-        public Type Type => this.type;
+        public virtual Type Type => this.type;
 
+        public static BinaryExpression Assign(Expression left, Expression right)
+        {
+            Expression.RequiresCanWrite(left, "left");
+            Expression.RequiresCanRead(right, "right");
+            TypeUtils.ValidateType(left.Type);
+            TypeUtils.ValidateType(right.Type);
+            if (!TypeUtils.AreReferenceAssignable(left.Type, right.Type))
+            {
+                throw new ArgumentException($"{right.Type}!={left.Type}");
+            }
+            return new AssignBinaryExpression(left, right);
+        }
+
+        private static void RequiresCanRead(Expression expression, string paramName)
+        {
+            if (expression == null)
+            {
+                throw new ArgumentNullException(paramName);
+            }
+            ExpressionType nodeType = expression.NodeType;
+            if (nodeType == ExpressionType.MemberAccess)
+            {
+                MemberInfo member = ((MemberExpression)expression).Member;
+                if (member.MemberType == MemberTypes.Property && !((PropertyInfo)member).CanRead)
+                {
+                    throw new ArgumentException(paramName);
+                }
+            }
+            else if (nodeType == ExpressionType.Index)
+            {
+                IndexExpression indexExpression = (IndexExpression)expression;
+                if (indexExpression.Indexer != null && !indexExpression.Indexer.CanRead)
+                {
+                    throw new ArgumentException(paramName);
+                }
+            }
+        }
+
+        private static void RequiresCanRead(IEnumerable<Expression> items, string paramName)
+        {
+            if (items != null)
+            {
+                IList<Expression> expressions = items as IList<Expression>;
+                if (expressions != null)
+                {
+                    for (int i = 0; i < expressions.Count; i++)
+                    {
+                        Expression.RequiresCanRead(expressions[i], paramName);
+                    }
+                    return;
+                }
+                foreach (Expression item in items)
+                {
+                    Expression.RequiresCanRead(item, paramName);
+                }
+            }
+        }
+
+        private static void RequiresCanWrite(Expression expression, string paramName)
+        {
+            if (expression == null)
+            {
+                throw new ArgumentNullException(paramName);
+            }
+            bool canWrite = false;
+            ExpressionType nodeType = expression.NodeType;
+            if (nodeType == ExpressionType.MemberAccess)
+            {
+                MemberExpression memberExpression = (MemberExpression)expression;
+                MemberTypes memberType = memberExpression.Member.MemberType;
+                if (memberType == MemberTypes.Field)
+                {
+                    FieldInfo member = (FieldInfo)memberExpression.Member;
+                    canWrite = (member.IsInitOnly ? false : !member.IsLiteral);
+                }
+                else if (memberType == MemberTypes.Property)
+                {
+                    canWrite = ((PropertyInfo)memberExpression.Member).CanWrite;
+                }
+            }
+            else if (nodeType == ExpressionType.Parameter)
+            {
+                canWrite = true;
+            }
+            else if (nodeType == ExpressionType.Index)
+            {
+                IndexExpression indexExpression = (IndexExpression)expression;
+                canWrite = (indexExpression.Indexer == null ? true : indexExpression.Indexer.CanWrite);
+            }
+            if (!canWrite)
+            {
+                throw new ArgumentException(paramName);
+            }
+        }
         /// <summary>Returns a textual representation of the <see cref="T:System.Linq.Expressions.Expression" />.</summary>
         /// <returns>A textual representation of the <see cref="T:System.Linq.Expressions.Expression" />.</returns>
         public override string ToString()
@@ -394,6 +495,189 @@ namespace System.Linq.Expressions
             Expression.ValidateMethodInfo(propertyAccessor);
             return Expression.Bind((MemberInfo)Expression.GetProperty(propertyAccessor), expression);
         }
+
+        [__DynamicallyInvokable]
+        public static BlockExpression Block(Expression arg0, Expression arg1)
+        {
+            Expression.RequiresCanRead(arg0, "arg0");
+            Expression.RequiresCanRead(arg1, "arg1");
+            return new Block2(arg0, arg1);
+        }
+
+        internal static T ReturnObject<T>(object collectionOrT)
+            where T : class
+        {
+            T t = (T)(collectionOrT as T);
+            if (t != null)
+            {
+                return t;
+            }
+            return ((ReadOnlyCollection<T>)collectionOrT)[0];
+        }
+
+        internal static ReadOnlyCollection<Expression> ReturnReadOnly(IArgumentProvider provider, ref object collection)
+        {
+            Expression expression = collection as Expression;
+            if (expression != null)
+            {
+                Interlocked.CompareExchange(ref collection, new ReadOnlyCollection<Expression>(new ListArgumentProvider(provider, expression)), expression);
+            }
+            return (ReadOnlyCollection<Expression>)collection;
+        }
+
+
+        [__DynamicallyInvokable]
+        public static BlockExpression Block(Expression arg0, Expression arg1, Expression arg2)
+        {
+            Expression.RequiresCanRead(arg0, "arg0");
+            Expression.RequiresCanRead(arg1, "arg1");
+            Expression.RequiresCanRead(arg2, "arg2");
+            return new Block3(arg0, arg1, arg2);
+        }
+
+        [__DynamicallyInvokable]
+        public static BlockExpression Block(Expression arg0, Expression arg1, Expression arg2, Expression arg3)
+        {
+            Expression.RequiresCanRead(arg0, "arg0");
+            Expression.RequiresCanRead(arg1, "arg1");
+            Expression.RequiresCanRead(arg2, "arg2");
+            Expression.RequiresCanRead(arg3, "arg3");
+            return new Block4(arg0, arg1, arg2, arg3);
+        }
+
+        [__DynamicallyInvokable]
+        public static BlockExpression Block(Expression arg0, Expression arg1, Expression arg2, Expression arg3, Expression arg4)
+        {
+            Expression.RequiresCanRead(arg0, "arg0");
+            Expression.RequiresCanRead(arg1, "arg1");
+            Expression.RequiresCanRead(arg2, "arg2");
+            Expression.RequiresCanRead(arg3, "arg3");
+            Expression.RequiresCanRead(arg4, "arg4");
+            return new Block5(arg0, arg1, arg2, arg3, arg4);
+        }
+
+        [__DynamicallyInvokable]
+        public static BlockExpression Block(params Expression[] expressions)
+        {
+            ContractUtils.RequiresNotNull(expressions, "expressions");
+            switch ((int)expressions.Length)
+            {
+                case 2:
+                    {
+                        return Expression.Block(expressions[0], expressions[1]);
+                    }
+                case 3:
+                    {
+                        return Expression.Block(expressions[0], expressions[1], expressions[2]);
+                    }
+                case 4:
+                    {
+                        return Expression.Block(expressions[0], expressions[1], expressions[2], expressions[3]);
+                    }
+                case 5:
+                    {
+                        return Expression.Block(expressions[0], expressions[1], expressions[2], expressions[3], expressions[4]);
+                    }
+            }
+            ContractUtils.RequiresNotEmpty<Expression>(expressions, "expressions");
+            Expression.RequiresCanRead(expressions, "expressions");
+            return new BlockN(expressions.Copy<Expression>());
+        }
+
+        [__DynamicallyInvokable]
+        public static BlockExpression Block(IEnumerable<Expression> expressions)
+        {
+            return Expression.Block(EmptyReadOnlyCollection<ParameterExpression>.Instance, expressions);
+        }
+
+        [__DynamicallyInvokable]
+        public static BlockExpression Block(Type type, params Expression[] expressions)
+        {
+            ContractUtils.RequiresNotNull(expressions, "expressions");
+            return Expression.Block(type, (IEnumerable<Expression>)expressions);
+        }
+
+        [__DynamicallyInvokable]
+        public static BlockExpression Block(Type type, IEnumerable<Expression> expressions)
+        {
+            return Expression.Block(type, EmptyReadOnlyCollection<ParameterExpression>.Instance, expressions);
+        }
+
+        [__DynamicallyInvokable]
+        public static BlockExpression Block(IEnumerable<ParameterExpression> variables, params Expression[] expressions)
+        {
+            return Expression.Block(variables, (IEnumerable<Expression>)expressions);
+        }
+
+        [__DynamicallyInvokable]
+        public static BlockExpression Block(Type type, IEnumerable<ParameterExpression> variables, params Expression[] expressions)
+        {
+            return Expression.Block(type, variables, (IEnumerable<Expression>)expressions);
+        }
+
+        [__DynamicallyInvokable]
+        public static BlockExpression Block(IEnumerable<ParameterExpression> variables, IEnumerable<Expression> expressions)
+        {
+            ContractUtils.RequiresNotNull(expressions, "expressions");
+            ReadOnlyCollection<Expression> readOnly = expressions.ToReadOnly<Expression>();
+            ContractUtils.RequiresNotEmpty<Expression>(readOnly, "expressions");
+            Expression.RequiresCanRead(readOnly, "expressions");
+            return Expression.Block(readOnly.Last<Expression>().Type, variables, readOnly);
+        }
+
+        [__DynamicallyInvokable]
+        public static BlockExpression Block(Type type, IEnumerable<ParameterExpression> variables, IEnumerable<Expression> expressions)
+        {
+            ContractUtils.RequiresNotNull(type, "type");
+            ContractUtils.RequiresNotNull(expressions, "expressions");
+            ReadOnlyCollection<Expression> readOnly = expressions.ToReadOnly<Expression>();
+            ReadOnlyCollection<ParameterExpression> parameterExpressions = variables.ToReadOnly<ParameterExpression>();
+            ContractUtils.RequiresNotEmpty<Expression>(readOnly, "expressions");
+            Expression.RequiresCanRead(readOnly, "expressions");
+            Expression.ValidateVariables(parameterExpressions, "variables");
+            Expression expression = readOnly.Last<Expression>();
+            if (type != typeof(void) && !TypeUtils.AreReferenceAssignable(type, expression.Type))
+            {
+                throw Error.ArgumentTypesMustMatch();
+            }
+            if (!TypeUtils.AreEquivalent(type, expression.Type))
+            {
+                return new ScopeWithType(parameterExpressions, readOnly, type);
+            }
+            if (readOnly.Count != 1)
+            {
+                return new ScopeN(parameterExpressions, readOnly);
+            }
+            return new Scope1(parameterExpressions, readOnly[0]);
+        }
+
+        internal static void ValidateVariables(ReadOnlyCollection<ParameterExpression> varList, string collectionName)
+        {
+            if (varList.Count == 0)
+            {
+                return;
+            }
+            int count = varList.Count;
+            List<ParameterExpression> parameterExpressions = new List<ParameterExpression>(count);
+            for (int i = 0; i < count; i++)
+            {
+                ParameterExpression item = varList[i];
+                if (item == null)
+                {
+                    throw new ArgumentNullException(string.Format(CultureInfo.CurrentCulture, "{0}[{1}]", new object[] { collectionName, parameterExpressions.Count }));
+                }
+                if (item.IsByRef)
+                {
+                    throw new ArgumentException($"{item.Name} cannot be by ref");
+                }
+                if (parameterExpressions.Contains(item))
+                {
+                    throw new ArgumentException($"DuplicateVariable {item}");
+                }
+                parameterExpressions.Add(item);
+            }
+        }
+
 
         /// <summary>Creates a <see cref="T:System.Linq.Expressions.MethodCallExpression" /> that represents a call to a static (Shared in Visual Basic) method.</summary>
         /// <returns>A <see cref="T:System.Linq.Expressions.MethodCallExpression" /> that has the <see cref="P:System.Linq.Expressions.Expression.NodeType" /> property equal to <see cref="F:System.Linq.Expressions.ExpressionType.Call" /> and the <see cref="P:System.Linq.Expressions.MethodCallExpression.Method" /> and <see cref="P:System.Linq.Expressions.MethodCallExpression.Arguments" /> properties set to the specified values.</returns>
@@ -3716,6 +4000,85 @@ namespace System.Linq.Expressions
             type = Expression.GetNonNullableType(type);
             return type == typeof(bool);
         }
+
+        internal static ReadOnlyCollection<T> ReturnReadOnly<T>(ref IList<T> collection)
+        {
+            IList<T> ts = collection;
+            ReadOnlyCollection<T> ts1 = ts as ReadOnlyCollection<T>;
+            if (ts1 != null)
+            {
+                return ts1;
+            }
+            Interlocked.CompareExchange<IList<T>>(ref collection, ts.ToReadOnly<T>(), ts);
+            return (ReadOnlyCollection<T>)collection;
+        }
+
+        internal class IndexExpressionProxy
+        {
+            private readonly IndexExpression _node;
+
+            public ReadOnlyCollection<Expression> Arguments
+            {
+                get
+                {
+                    return this._node.Arguments;
+                }
+            }
+
+            public bool CanReduce
+            {
+                get
+                {
+                    return this._node.CanReduce;
+                }
+            }
+
+            public string DebugView
+            {
+                get
+                {
+                    return this._node.DebugView;
+                }
+            }
+
+            public PropertyInfo Indexer
+            {
+                get
+                {
+                    return this._node.Indexer;
+                }
+            }
+
+            public ExpressionType NodeType
+            {
+                get
+                {
+                    return this._node.NodeType;
+                }
+            }
+
+            public Expression Object
+            {
+                get
+                {
+                    return this._node.Object;
+                }
+            }
+
+            public Type Type
+            {
+                get
+                {
+                    return this._node.Type;
+                }
+            }
+
+            public IndexExpressionProxy(IndexExpression node)
+            {
+                this._node = node;
+            }
+        }
+
     }
 
 }
