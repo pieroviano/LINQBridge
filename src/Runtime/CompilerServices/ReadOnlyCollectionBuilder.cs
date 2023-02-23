@@ -92,7 +92,7 @@ namespace System.Runtime.CompilerServices
             {
                 if (this._syncRoot == null)
                 {
-                    Interlocked.CompareExchange<object>(ref this._syncRoot, new object(), null);
+                    System.Threading.Interlocked.CompareExchange<object>(ref this._syncRoot, new object(), null);
                 }
                 return this._syncRoot;
             }
