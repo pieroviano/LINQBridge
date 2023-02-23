@@ -4,7 +4,7 @@ using System.Security;
 
 namespace System.Threading
 {
-    public static class Interlocked
+    internal static class Interlocked
     {
         static object lockObj = new object();
 
