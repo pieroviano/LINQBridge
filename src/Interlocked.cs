@@ -13,11 +13,10 @@ namespace System
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
         [SecuritySafeCritical]
         public static T CompareExchange<T>(ref T location1, T value, T comparand)
-            where T : class
         {
             lock (lockObj)
             {
-                if (location1 == comparand)
+                if (location1.Equals(comparand))
                 {
                     location1 = value;
                 }
