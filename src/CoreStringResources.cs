@@ -386,7 +386,7 @@ namespace System
             if (CoreStringResources.loader == null)
             {
                 CoreStringResources sR = new CoreStringResources();
-                Interlocked.CompareExchange<CoreStringResources>(ref CoreStringResources.loader, sR, null);
+                Net20Interlocked.CompareExchange<CoreStringResources>(ref CoreStringResources.loader, sR, null);
             }
             return CoreStringResources.loader;
         }

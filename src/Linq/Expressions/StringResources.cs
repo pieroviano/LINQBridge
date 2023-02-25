@@ -107,7 +107,7 @@ namespace System.Linq.Expressions
             if (StringResources.loader == null)
             {
                 StringResources stringResources = new StringResources();
-                Interlocked.CompareExchange<StringResources>(ref StringResources.loader, stringResources, (StringResources)null);
+                Net20Interlocked.CompareExchange<StringResources>(ref StringResources.loader, stringResources, (StringResources)null);
             }
             return StringResources.loader;
         }

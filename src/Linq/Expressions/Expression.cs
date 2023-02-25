@@ -520,7 +520,7 @@ namespace System.Linq.Expressions
             Expression expression = collection as Expression;
             if (expression != null)
             {
-                System.Threading.Interlocked.CompareExchange(ref collection, new ReadOnlyCollection<Expression>(new ListArgumentProvider(provider, expression)), expression);
+                System.Threading.Net20Interlocked.CompareExchange(ref collection, new ReadOnlyCollection<Expression>(new ListArgumentProvider(provider, expression)), expression);
             }
             return (ReadOnlyCollection<Expression>)collection;
         }
@@ -4009,7 +4009,7 @@ namespace System.Linq.Expressions
             {
                 return ts1;
             }
-            System.Threading.Interlocked.CompareExchange<IList<T>>(ref collection, ts.ToReadOnly<T>(), ts);
+            System.Threading.Net20Interlocked.CompareExchange<IList<T>>(ref collection, ts.ToReadOnly<T>(), ts);
             return (ReadOnlyCollection<T>)collection;
         }
 

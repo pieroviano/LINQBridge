@@ -33,7 +33,7 @@ namespace System.Linq.Expressions
             Expression expression = collection as Expression;
             if (expression != null)
             {
-                Interlocked.CompareExchange(ref collection, new ReadOnlyCollection<Expression>(new BlockExpressionList(provider, expression)), expression);
+                Net20Interlocked.CompareExchange(ref collection, new ReadOnlyCollection<Expression>(new BlockExpressionList(provider, expression)), expression);
             }
             return (ReadOnlyCollection<Expression>)collection;
         }
