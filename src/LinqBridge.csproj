@@ -57,7 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Net35.Actions" Version="$(Net35ActionsVersion).*-*" />
-    <PackageReference Include="ObfuscatorUtility" Version="1.0.0" />
+    <PackageReference Include="ObfuscatorUtility" Version="$(ObfuscatorUtilityVersion).*-*" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Linq\Enumerable.g.tt">
