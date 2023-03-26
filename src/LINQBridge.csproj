@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$(UserProfile)\.nuget\packages\obfuscatorutility\1.0.0\build\Obfuscator.Utility.targets" Condition="Exists('$(UserProfile)\.nuget\packages\obfuscatorutility\1.0.0\build\Obfuscator.Utility.targets')" />
-  <Import Project="$(UserProfile)\.nuget\packages\obfuscatorutility\1.0.0\build\Obfuscator.Utility.props" Condition="Exists('$(UserProfile)\.nuget\packages\obfuscatorutility\1.0.0\build\Obfuscator.Utility.props')" />
+  <Import Project="$(UserProfile)\.nuget\packages\obfuscatorutility\$(ObfuscatorUtilityVersion)\build\Obfuscator.Utility.targets" Condition="Exists('$(UserProfile)\.nuget\packages\obfuscatorutility\$(ObfuscatorUtilityVersion)\build\Obfuscator.Utility.targets')" />
+  <Import Project="$(UserProfile)\.nuget\packages\obfuscatorutility\$(ObfuscatorUtilityVersion)\build\Obfuscator.Utility.props" Condition="Exists('$(UserProfile)\.nuget\packages\obfuscatorutility\$(ObfuscatorUtilityVersion)\build\Obfuscator.Utility.props')" />
 
   <PropertyGroup>
     <PackageOutputPath>$(SolutionDir)Packages\</PackageOutputPath>
@@ -18,7 +18,7 @@
     <Product>LINQBridge</Product>
     <Copyright>Copyright (c) 2007, Atif Aziz, Joseph Albahari. All rights reserved.</Copyright>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <Version>1.3.0.0</Version>
+    <Version>$(Net30LinqBridgeVersion)$(Suffix)</Version>
     <FileVersion>1.3.14717.2012</FileVersion>
     <PackageId>Net30.LinqBridge</PackageId>
     <LangVersion>latest</LangVersion>
@@ -56,7 +56,7 @@
     <None Include="LinqBridge.snk" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Net35.Actions" Version="1.0.0" />
+    <PackageReference Include="Net35.Actions" Version="$(Net35ActionsVersion).*-*" />
     <PackageReference Include="ObfuscatorUtility" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
