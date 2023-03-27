@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$(UserProfile)\.nuget\packages\obfuscatorutility\$(ObfuscatorUtilityVersion)\build\Obfuscator.Utility.targets" Condition="Exists('$(UserProfile)\.nuget\packages\obfuscatorutility\$(ObfuscatorUtilityVersion)\build\Obfuscator.Utility.targets')" />
-  <Import Project="$(UserProfile)\.nuget\packages\obfuscatorutility\$(ObfuscatorUtilityVersion)\build\Obfuscator.Utility.props" Condition="Exists('$(UserProfile)\.nuget\packages\obfuscatorutility\$(ObfuscatorUtilityVersion)\build\Obfuscator.Utility.props')" />
+  <Import Project="$(UserProfile)\.nuget\packages\nugetutility\$(NuGetUtilityVersion)\build\NuGet.Utility.targets" Condition="Exists('$(UserProfile)\.nuget\packages\nugetutility\$(NuGetUtilityVersion)\build\NuGet.Utility.targets')" />
+  <Import Project="$(UserProfile)\.nuget\packages\nugetutility\$(NuGetUtilityVersion)\build\NuGet.Utility.props" Condition="Exists('$(UserProfile)\.nuget\packages\nugetutility\$(NuGetUtilityVersion)\build\NuGet.Utility.props')" />
 
   <PropertyGroup>
     <PackageOutputPath>$(SolutionDir)Packages\</PackageOutputPath>
@@ -57,7 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Net35.Actions" Version="$(Net35ActionsVersion).*-*" />
-    <PackageReference Include="ObfuscatorUtility" Version="$(ObfuscatorUtilityVersion).*-*" PrivateAssets="All" />
+    <PackageReference Include="NuGetUtility" Version="$(NuGetUtilityVersion).*-*" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Linq\Enumerable.g.tt">
