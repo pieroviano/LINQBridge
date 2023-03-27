@@ -4,14 +4,11 @@
 
   <PropertyGroup>
     <PackageOutputPath>$(SolutionDir)Packages\</PackageOutputPath>
-  </PropertyGroup>
-  <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-  </PropertyGroup>
-  <PropertyGroup>
+    <DefaultItemExcludes Condition="'$(TargetFramework)'=='net35' or '$(TargetFramework)'=='net40' or '$(TargetFramework)'=='net45' or '$(TargetFramework)'=='netstandard2.0'">$(DefaultItemExcludes);**\*.cs</DefaultItemExcludes>
     <RootNamespace>System</RootNamespace>
     <AssemblyName>Net30.LinqBridge</AssemblyName>
-    <TargetFrameworks>net20;net30</TargetFrameworks>
+    <TargetFrameworks>net20;net30;net35;net40;net45;netstandard2.0</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>LinqBridge.snk</AssemblyOriginatorKeyFile>
     <AssemblyTitle>LINQBridge</AssemblyTitle>
