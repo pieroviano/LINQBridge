@@ -53,8 +53,8 @@
     <None Include="LinqBridge.snk" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Net35.Actions" Version="$(Net35ActionsVersion)$(VersionSuffix)" />
-    <PackageReference Include="NuGetUtility" Version="$(NuGetUtilityVersion)$(VersionSuffix)" PrivateAssets="All" />
+    <PackageReference Include="Net35.Actions" Version="$(Net35ActionsVersion)$(VersionBuildSuffix)" />
+    <PackageReference Include="NuGetUtility" Version="$(NuGetUtilityVersion)$(VersionBuildSuffix)" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Linq\Enumerable.g.tt">
