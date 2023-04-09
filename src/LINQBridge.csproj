@@ -1,4 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <SkipAsyncBridge>true</SkipAsyncBridge>
+  </PropertyGroup>
   <Import Project="$(UserProfile)\.nuget\packages\nugetutility\$(NuGetUtilityVersion)\build\NuGet.Utility.targets" Condition="Exists('$(UserProfile)\.nuget\packages\nugetutility\$(NuGetUtilityVersion)\build\NuGet.Utility.targets')" />
   <Import Project="$(UserProfile)\.nuget\packages\nugetutility\$(NuGetUtilityVersion)\build\NuGet.Utility.props" Condition="Exists('$(UserProfile)\.nuget\packages\nugetutility\$(NuGetUtilityVersion)\build\NuGet.Utility.props')" />
 
@@ -15,6 +18,7 @@
     <Product>LINQBridge</Product>
     <Copyright>Copyright (c) 2007, Atif Aziz, Joseph Albahari. All rights reserved.</Copyright>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <Net30LinqBridgeVersion Condition="'$(Net30LinqBridgeVersion)' == ''">1.3.0</Net30LinqBridgeVersion>
     <Version>$(Net30LinqBridgeVersion)$(Suffix)</Version>
     <FileVersion>1.3.14717.2012</FileVersion>
     <PackageId>Net30.LinqBridge</PackageId>
@@ -53,8 +57,8 @@
     <None Include="LinqBridge.snk" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Net35.Actions" Version="$(Net35ActionsVersion)$(VersionBuildSuffix)" />
-    <PackageReference Include="NuGetUtility" Version="$(NuGetUtilityVersion)$(VersionBuildSuffix)" PrivateAssets="All" />
+    <PackageReference Include="Net35.Actions" Version="$(Net35ActionsVersion).$(VersionBuildSuffix)" />
+    <PackageReference Include="NuGetUtility" Version="$(NuGetUtilityVersion).$(VersionBuildSuffix)" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Linq\Enumerable.g.tt">
