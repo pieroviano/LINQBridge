@@ -3,7 +3,6 @@ del ..\WhenTheVersion\Packages\Net30.LinqBridge.*
 MSBuild.exe Net30.LinqBridge.sln -m /property:Configuration=%Configuration% 
 cd Packages
 FOR %%i IN (Net30.LinqBridge.*.nupkg) DO dotnet nuget push %%i --source NuGet --api-key %ApiKey% -t 1000
-FOR %%i IN (Net30.LinqBridge.*.snupkg) DO dotnet nuget push %%i --source NuGet --api-key %ApiKey% -t 1000
 cd ..
 git add -A
 git commit -a --allow-empty-message -m ''
