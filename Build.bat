@@ -1,5 +1,5 @@
+MSBuild.exe Net30.LinqBridge.sln -t:clean
 MSBuild.exe Net30.LinqBridge.sln -t:restore -p:RestorePackagesConfig=true
-del ..\WhenTheVersion\Packages\Net30.LinqBridge.*
 MSBuild.exe Net30.LinqBridge.sln -m /property:Configuration=%Configuration% 
 IF DEFINED Package (
 	cd Packages
