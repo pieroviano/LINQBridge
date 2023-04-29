@@ -58,7 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Net35.Actions" Version="$(Net35ActionsVersion).$(VersionBuildSuffix)" />
-    <PackageReference Include="NuGetUtility" Version="$(NuGetUtilityVersion).$(VersionBuildSuffix)" PrivateAssets="All" />
+    <PackageReference Include="NuGetUtility" Version="$(NuGetUtilityVersion)" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Linq\Enumerable.g.tt">
