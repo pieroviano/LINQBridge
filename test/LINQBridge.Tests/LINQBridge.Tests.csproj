@@ -2,7 +2,7 @@
   <PropertyGroup>
     <RootNamespace>LinqBridge.Tests</RootNamespace>
     <AssemblyName>LinqBridge.Tests</AssemblyName>
-    <TargetFramework>net20</TargetFramework>
+    <TargetFramework>net30</TargetFramework>
     <TargetFrameworkSubset />
     <NoWarn>1685</NoWarn>
     <DebugType>full</DebugType>

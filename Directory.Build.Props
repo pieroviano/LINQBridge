@@ -1,0 +1,8 @@
+<Project>
+  <Import Project="Directory.Build.Props" Condition="'$(DirectoryNuGet)'==''" />
+  <PropertyGroup>
+    <VersionPrefix>$(Net30LinqBridgeVersion)</VersionPrefix>
+    <VersionSuffix Condition="'$(Configuration)'!='Release'">0-at20230514080424</VersionSuffix>
+    <VersionSuffix Condition="'$(Configuration)'=='Release'">0</VersionSuffix>
+  </PropertyGroup>
+</Project>
