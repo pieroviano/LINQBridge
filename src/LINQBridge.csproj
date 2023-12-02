@@ -1,9 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <SkipAsyncBridge>true</SkipAsyncBridge>
   </PropertyGroup>
   <Import Project="$(UserProfile)\.nuget\packages\nugetutility\$(NuGetUtilityVersion)\build\NuGet.Utility.props" Condition="Exists('$(UserProfile)\.nuget\packages\nugetutility\$(NuGetUtilityVersion)\build\NuGet.Utility.props')" />
-
   <PropertyGroup>
     <PackageOutputPath>$(SolutionDir)Packages\</PackageOutputPath>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
