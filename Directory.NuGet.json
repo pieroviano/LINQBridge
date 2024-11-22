@@ -2700,6 +2700,11 @@
         "Name": "SpreedsheetLibrary.Tests\\SpreedsheetLibrary.Tests.csproj",
         "Project": "SpreedsheetLibrary.Tests",
         "PackageReferences": null
+      },
+      {
+        "Name": "SerilogLibrary.Test\\SerilogLibrary.Test.csproj",
+        "Project": "SerilogLibrary.Test",
+        "PackageReferences": null
       }
     ]
   },
@@ -5648,6 +5653,16 @@
             "Version": "$(NuGetUtilityVersion)"
           }
         ]
+      },
+      {
+        "Name": "HostAppInPanel",
+        "Project": "HostAppInPanel\\HostAppInPanel.csproj",
+        "PackageReferences": null
+      },
+      {
+        "Name": "HostChromeInPanel",
+        "Project": "HostChromeInPanel\\HostChromeInPanel.csproj",
+        "PackageReferences": null
       }
     ]
   },
@@ -6281,6 +6296,11 @@
       {
         "Name": "GtkWindowsFormsLibrary\\GtkWindowsFormsLibrary.csproj",
         "Project": "Net4x.GtkWindowsFormsLibrary",
+        "PackageReferences": null
+      },
+      {
+        "Name": "WindowsFormsLibrary.Test\\WindowsFormsLibrary.Test.csproj",
+        "Project": "WindowsFormsLibrary.Test",
         "PackageReferences": null
       }
     ]
@@ -25087,6 +25107,19 @@
       {
         "Name": "WebLibrary\\Starb.WebLibrary.csproj",
         "Project": "$(MSBuildProjectName)",
+        "PackageReferences": null
+      }
+    ]
+  },
+  {
+    "Solution": {
+      "Path": "D:\\CommonLibrary\\DotNetZip\\src\\DotNetZip.sln",
+      "Version": "DotNetZipVersion"
+    },
+    "NuGetPackages": [
+      {
+        "Name": "Net4x.DotNetZip",
+        "Project": "Zip\\DotNetZip.csproj",
         "PackageReferences": null
       }
     ]
