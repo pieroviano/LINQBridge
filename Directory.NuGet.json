@@ -26157,5 +26157,18 @@
         "PackageReferences": null
       }
     ]
+  },
+  {
+    "Solution": {
+      "Path": "D:\\CommonLibrary\\Net30.LinqBridge\\Net30.LinqBridge.nuget.sln",
+      "Version": "Net30LinqBridgenugetVersion"
+    },
+    "NuGetPackages": [
+      {
+        "Name": "Net30.LinqBridge",
+        "Project": "src\\LinqBridge.csproj",
+        "PackageReferences": null
+      }
+    ]
   }
 ]

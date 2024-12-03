@@ -114,6 +114,7 @@
     <MockAdoNetVersion>1.1.0</MockAdoNetVersion>
     <MSBuildCommunityTasksVersion>1.6.0</MSBuildCommunityTasksVersion>
     <MsTestsToNunitVersion>1.0.0</MsTestsToNunitVersion>
+    <Net30LinqBridgenugetVersion>1.6.0</Net30LinqBridgenugetVersion>
     <Net30LinqBridgeVersion>1.6.0</Net30LinqBridgeVersion>
     <Net35ActionsnugetVersion>1.4.0</Net35ActionsnugetVersion>
     <Net35ActionsVersion>1.4.0</Net35ActionsVersion>
