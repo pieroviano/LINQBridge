@@ -6,6 +6,7 @@
     <TargetFrameworkSubset />
     <NoWarn>1685</NoWarn>
     <DebugType>full</DebugType>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="NUnit" Version="2.6.4" />

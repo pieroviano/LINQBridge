@@ -1,17 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <RootNamespace>Linq.Tests</RootNamespace>
-    <AssemblyName>Linq.Tests</AssemblyName>
-    <NoWarn>1685</NoWarn>
-    <DebugType>full</DebugType>
-    <TargetFramework>net35</TargetFramework>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="NUnit" Version="2.6.4" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\LINQBridge.Tests\EnumerableFixture.cs" Link="EnumerableFixture.cs" />
-    <Compile Include="..\LINQBridge.Tests\Reader.cs" Link="Reader.cs" />
-    <Compile Include="..\LINQBridge.Tests\Tester.cs" Link="Tester.cs" />
-  </ItemGroup>
+	<PropertyGroup>
+		<RootNamespace>Linq.Tests</RootNamespace>
+		<AssemblyName>Linq.Tests</AssemblyName>
+		<NoWarn>1685</NoWarn>
+		<DebugType>full</DebugType>
+		<TargetFramework>net35</TargetFramework>
+		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="NUnit" Version="2.6.4" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Include="..\LINQBridge.Tests\EnumerableFixture.cs" Link="EnumerableFixture.cs" />
+		<Compile Include="..\LINQBridge.Tests\Reader.cs" Link="Reader.cs" />
+		<Compile Include="..\LINQBridge.Tests\Tester.cs" Link="Tester.cs" />
+	</ItemGroup>
 </Project>
