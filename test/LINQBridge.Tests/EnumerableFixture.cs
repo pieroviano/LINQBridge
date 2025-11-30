@@ -69,11 +69,13 @@ namespace LinqBridge.Tests
         // ReSharper disable InconsistentNaming
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Aggregate_EmptySource_ThrowsInvalidOperationException()
         {
-            var source = Read<object>();
-            source.Aggregate(delegate { throw new NotImplementedException(); });
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                var source = Read<object>();
+                source.Aggregate(delegate { throw new NotImplementedException(); });
+            });
         }
 
         [Test]
@@ -93,17 +95,21 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Aggregate_NullSource_ThrowsArgumentNullException()
         {
-            Enumerable.Aggregate<object>(null, delegate { throw new NotImplementedException(); });
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                Enumerable.Aggregate<object>(null, delegate { throw new NotImplementedException(); });
+            });
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Aggregate_NullFunc_ThrowsArgumentNullException()
         {
-            Read<object>().Aggregate(null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                Read<object>().Aggregate(null);
+            });
         }
 
         [Test]
@@ -117,19 +123,23 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Cast_NullSource_ThrowsArgumentNullException()
         {
-            Enumerable.Cast<object>(null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                Enumerable.Cast<object>(null);
+            });
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidCastException))]
         public void Cast_InvalidSource_ThrowsInvalidCastException()
         {
-            var source = Read(1000, "hello", new object());
-            var e = source.Cast<byte>().GetEnumerator();
-            e.MoveNext(); // Do something so Cast will really run (deferred execution)
+            Assert.Throws<InvalidCastException>(() =>
+            {
+                var source = Read(1000, "hello", new object());
+                var e = source.Cast<byte>().GetEnumerator();
+                e.MoveNext(); // Do something so Cast will really run (deferred execution)
+            });
         }
 
         [Test]
@@ -146,10 +156,12 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void All_NullSource_ThrowsArgumentNullException()
         {
-            Enumerable.All(null, (int i) => { throw new NotImplementedException(); });
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                Enumerable.All(null, (int i) => { throw new NotImplementedException(); });
+            });
         }
 
         [Test]
@@ -167,10 +179,12 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Any_NullSource_ThrowsArgumentNullException()
         {
-            Enumerable.Any<object>(null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                Enumerable.Any<object>(null);
+            });
         }
 
         [Test]
@@ -201,10 +215,12 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Average_EmptyLongSource_ThrowsInvalidOperationException()
         {
-            Read<long>().Average();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                Read<long>().Average();
+            });
         }
 
         [Test]
@@ -256,10 +272,12 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Average_EmptyDecimalSource_ThrowsInvalidOperationException()
         {
-            Read<decimal>().Average();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                Read<decimal>().Average();
+            });
         }
 
         [Test]
@@ -277,10 +295,12 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Average_EmptySource_ThrowsInvalidOperationException()
         {
-            Read<int>().Average();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                Read<int>().Average();
+            });
         }
 
         [Test]
@@ -296,10 +316,12 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Average_EmptyDoubleSource_ThrowsInvalidOperationException()
         {
-            Read<double>().Average();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                Read<double>().Average();
+            });
         }
 
         [Test]
@@ -317,10 +339,12 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Average_EmptyFloatSource_ThrowsInvalidOperationException()
         {
-            Read<float>().Average();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                Read<float>().Average();
+            });
         }
 
         [Test]
@@ -398,17 +422,21 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Concat_FirstSourceNull_ThrowsArgumentNullException()
         {
-            Enumerable.Concat(null, new object[0]);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                Enumerable.Concat(null, new object[0]);
+            });
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Concat_SecondSourceNull_ThrowsArgumentNullException()
         {
-            new object[0].Concat(null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                new object[0].Concat(null);
+            });
         }
 
         [Test]
@@ -487,10 +515,12 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Distinct_NullSource_ThrowsArgumentNullException()
         {
-            Enumerable.Distinct<object>(null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                Enumerable.Distinct<object>(null);
+            });
         }
 
         [Test]
@@ -526,11 +556,13 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void ElementAt_IndexOutOfRange_ThrowsArgumentOutOfRangeException()
         {
-            var source = Read(3, 5, 7);
-            source.ElementAt(3);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                var source = Read(3, 5, 7);
+                source.ElementAt(3);
+            });
         }
 
         [Test]
@@ -543,10 +575,12 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void ElementAt_NegativeIndex_ThrowsArgumentOutOfRangeException()
         {
-            Read<int>().ElementAt(-1);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                Read<int>().ElementAt(-1);
+            });
         }
 
         [Test]
@@ -600,10 +634,12 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Except_SecondArg_ArgumentNull_ThrowsArgumentNullException()
         {
-            Read<object>().Except(null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                Read<object>().Except(null);
+            });
         }
 
         [Test]
@@ -631,10 +667,12 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void First_EmptySource_ThrowsInvalidOperationException()
         {
-            Read<int>().First();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                Read<int>().First();
+            });
         }
 
         [Test]
@@ -652,11 +690,13 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void First_IntegerSequenceWithNoneMatchingPredicate_ThrowsInvalidOperationException()
         {
-            var source = Read(12, 34, 56, 78);
-            Assert.That(source.First(i => i > 100), Is.EqualTo(0));
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                var source = Read(12, 34, 56, 78);
+                Assert.That(source.First(i => i > 100), Is.EqualTo(0));
+            });
         }
 
         [Test]
