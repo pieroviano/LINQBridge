@@ -31,23 +31,22 @@
 
 using System.Collections.Generic;
 
-namespace System.Linq
+namespace System.Linq;
+
+public partial interface IGrouping<out TKey, TElement> { }
+
+#region Imports
+
+#endregion
+
+/// <summary>
+/// Represents a collection of objects that have a common key.
+/// </summary>
+public partial interface IGrouping<out TKey, TElement> : IEnumerable<TElement>
 {
-    public partial interface IGrouping<out TKey, TElement> { }
-
-    #region Imports
-
-    #endregion
-
     /// <summary>
-    /// Represents a collection of objects that have a common key.
+    /// Gets the key of the <see cref="IGrouping{TKey,TElement}" />.
     /// </summary>
-    public partial interface IGrouping<out TKey, TElement> : IEnumerable<TElement>
-    {
-        /// <summary>
-        /// Gets the key of the <see cref="IGrouping{TKey,TElement}" />.
-        /// </summary>
 
-        TKey Key { get; }
-    }
+    TKey Key { get; }
 }

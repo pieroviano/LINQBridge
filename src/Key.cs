@@ -27,19 +27,18 @@
 
 // $Id$
 
-namespace System
+namespace System;
+
+#region Imports
+
+#endregion
+
+/// <remarks>
+/// This type is not intended to be used directly from user code.
+/// It may be removed or changed in a future version without notice.
+/// </remarks>
+public struct Key<T>
 {
-    #region Imports
-
-    #endregion
-
-    /// <remarks>
-    /// This type is not intended to be used directly from user code.
-    /// It may be removed or changed in a future version without notice.
-    /// </remarks>
-    public struct Key<T>
-    {
-        public Key(T value) : this() { Value = value; }
-        public T Value { get; }
-    }
+    public Key(T value) : this() { Value = value; }
+    public T Value { get; }
 }

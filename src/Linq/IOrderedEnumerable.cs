@@ -27,23 +27,21 @@
 
 // $Id$
 
-namespace System.Linq
-{
-    using System.Collections.Generic;
+namespace System.Linq;
 
+using Collections.Generic;
+
+/// <summary>
+/// Represents a sorted sequence.
+/// </summary>
+
+public partial interface IOrderedEnumerable<TElement> : IEnumerable<TElement>
+{
     /// <summary>
-    /// Represents a sorted sequence.
+    /// Performs a subsequent ordering on the elements of an 
+    /// <see cref="IOrderedEnumerable{T}"/> according to a key.
     /// </summary>
 
-    public partial interface IOrderedEnumerable<TElement> : IEnumerable<TElement>
-    {
-        /// <summary>
-        /// Performs a subsequent ordering on the elements of an 
-        /// <see cref="IOrderedEnumerable{T}"/> according to a key.
-        /// </summary>
-
-        IOrderedEnumerable<TElement> CreateOrderedEnumerable<TKey>(
-            Func<TElement, TKey> keySelector, IComparer<TKey> comparer, bool descending);
-    }
-
+    IOrderedEnumerable<TElement> CreateOrderedEnumerable<TKey>(
+        Func<TElement, TKey> keySelector, IComparer<TKey> comparer, bool descending);
 }

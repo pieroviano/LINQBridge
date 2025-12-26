@@ -63,10 +63,7 @@ namespace LinqBridge.Tests
             }
         }
 
-        public object EOF
-        {
-            get { return Enumerator.MoveNext(); }
-        }
+        public object EOF => Enumerator.MoveNext();
 
         public IEnumerator<T> GetEnumerator()
         {
@@ -129,15 +126,9 @@ namespace LinqBridge.Tests
             GetSourceEnumerator().Reset();
         }
 
-        T IEnumerator<T>.Current
-        {
-            get { return GetSourceEnumerator().Current; }
-        }
+        T IEnumerator<T>.Current => GetSourceEnumerator().Current;
 
-        object IEnumerator.Current
-        {
-            get { return ((IEnumerator<T>) this).Current; }
-        }
+        object IEnumerator.Current => ((IEnumerator<T>) this).Current;
     }
 
     internal static class ReaderTestExtensions

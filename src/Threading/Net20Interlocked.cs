@@ -2,27 +2,26 @@
 using System.Runtime.InteropServices;
 using System.Security;
 
-namespace System.Threading
+namespace System.Threading;
+
+public static class Net20Interlocked
 {
-    public static class Net20Interlocked
+    static readonly object lockObj = new object();
+
+    [__DynamicallyInvokable]
+    [ComVisible(false)]
+    [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
+    [SecuritySafeCritical]
+    public static T CompareExchange<T>(ref T location1, T value, T comparand)
     {
-        static object lockObj = new object();
-
-        [__DynamicallyInvokable]
-        [ComVisible(false)]
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
-        [SecuritySafeCritical]
-        public static T CompareExchange<T>(ref T location1, T value, T comparand)
+        lock (lockObj)
         {
-            lock (lockObj)
+            if (location1 != null && location1.Equals(comparand))
             {
-                if (location1.Equals(comparand))
-                {
-                    location1 = value;
-                }
-                return value;
+                location1 = value;
             }
+            return value;
         }
-
     }
+
 }

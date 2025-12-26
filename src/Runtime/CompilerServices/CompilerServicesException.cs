@@ -2,20 +2,19 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Runtime.CompilerServices
+namespace System.Runtime.CompilerServices;
+
+public class CompilerServicesException: Exception
 {
-    public class CompilerServicesException: Exception
+    public CompilerServicesException()
     {
-        public CompilerServicesException()
-        {
-        }
+    }
 
-        public CompilerServicesException(string message) : base(message)
-        {
-        }
+    public CompilerServicesException(string message) : base(message)
+    {
+    }
 
-        public CompilerServicesException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
+    public CompilerServicesException(string message, Exception innerException) : base(message, innerException)
+    {
     }
 }

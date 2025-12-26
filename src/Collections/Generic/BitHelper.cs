@@ -1,93 +1,97 @@
 using System;
 using System.Security;
 
-namespace System.Collections.Generic
+namespace System.Collections.Generic;
+
+internal class BitHelper
 {
-	internal class BitHelper
-	{
-		private const byte MarkedBitFlag = 1;
+    private const byte MarkedBitFlag = 1;
 
-		private const byte IntSize = 32;
+    private const byte IntSize = 32;
 
-		private int m_length;
+    private readonly int _length;
 
-		private unsafe int* m_arrayPtr;
+    private readonly unsafe int* _arrayPtr;
 
-		private int[] m_array;
+    private readonly int[]? _array;
 
-		private bool useStackAlloc;
+    private readonly bool useStackAlloc;
 
-		[SecurityCritical]
-		internal unsafe BitHelper(int* bitArrayPtr, int length)
-		{
-			this.m_arrayPtr = bitArrayPtr;
-			this.m_length = length;
-			this.useStackAlloc = true;
-		}
+    [SecurityCritical]
+    internal unsafe BitHelper(int* bitArrayPtr, int length)
+    {
+        _arrayPtr = bitArrayPtr;
+        _length = length;
+        useStackAlloc = true;
+    }
 
-		internal BitHelper(int[] bitArray, int length)
-		{
-			this.m_array = bitArray;
-			this.m_length = length;
-		}
+    internal BitHelper(int[] bitArray, int length)
+    {
+        _array = bitArray;
+        _length = length;
+    }
 
-		[SecurityCritical]
-		internal bool IsMarked(int bitPosition)
-		{
-			unsafe
-			{
-				if (!this.useStackAlloc)
-				{
-					int num = bitPosition / 32;
-					if (num >= this.m_length || num < 0)
-					{
-						return false;
-					}
-					return (this.m_array[num] & 1 << (bitPosition % 32 & 31)) != 0;
-				}
-				int num1 = bitPosition / 32;
-				if (num1 >= this.m_length || num1 < 0)
-				{
-					return false;
-				}
-				return (*(this.m_arrayPtr + num1 * 4) & 1 << (bitPosition % 32 & 31)) != 0;
-			}
-		}
+    [SecurityCritical]
+    internal bool IsMarked(int bitPosition)
+    {
+        unsafe
+        {
+            if (!useStackAlloc)
+            {
+                var num = bitPosition / 32;
+                if (num >= _length || num < 0)
+                {
+                    return false;
+                }
 
-		[SecurityCritical]
-		internal void MarkBit(int bitPosition)
-		{
-			unsafe
-			{
-				if (!this.useStackAlloc)
-				{
-					int num = bitPosition / 32;
-					if (num < this.m_length && num >= 0)
-					{
-						ref int mArray = ref this.m_array[num];
-						mArray = mArray | 1 << (bitPosition % 32 & 31);
-					}
-				}
-				else
-				{
-					int num1 = bitPosition / 32;
-					if (num1 < this.m_length && num1 >= 0)
-					{
-						int* mArrayPtr = this.m_arrayPtr + num1 * 4;
-						*mArrayPtr = *mArrayPtr | 1 << (bitPosition % 32 & 31);
-						return;
-					}
-				}
-			}
-		}
+                var array = _array;
+                return array != null && (array[num] & 1 << (bitPosition % 32 & 31)) != 0;
+            }
+            var num1 = bitPosition / 32;
+            if (num1 >= _length || num1 < 0)
+            {
+                return false;
+            }
+            return (*(_arrayPtr + num1 * 4) & 1 << (bitPosition % 32 & 31)) != 0;
+        }
+    }
 
-		internal static int ToIntArrayLength(int n)
-		{
-			if (n <= 0)
-			{
-				return 0;
-			}
-			return (n - 1) / 32 + 1;
-		}
-	}
+    [SecurityCritical]
+    internal void MarkBit(int bitPosition)
+    {
+        unsafe
+        {
+            if (!useStackAlloc)
+            {
+                var num = bitPosition / 32;
+                if (num < _length && num >= 0)
+                {
+                    var array = _array;
+                    if (array != null)
+                    {
+                        ref var mArray = ref array[num];
+                        mArray = mArray | 1 << (bitPosition % 32 & 31);
+                    }
+                }
+            }
+            else
+            {
+                var num1 = bitPosition / 32;
+                if (num1 < _length && num1 >= 0)
+                {
+                    var mArrayPtr = _arrayPtr + num1 * 4;
+                    *mArrayPtr = *mArrayPtr | 1 << (bitPosition % 32 & 31);
+                }
+            }
+        }
+    }
+
+    internal static int ToIntArrayLength(int n)
+    {
+        if (n <= 0)
+        {
+            return 0;
+        }
+        return (n - 1) / 32 + 1;
+    }
 }

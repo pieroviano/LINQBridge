@@ -27,23 +27,21 @@
 
 using System.Collections.Generic;
 
-namespace System
+namespace System;
+
+/// <remarks>
+/// This type is not intended to be used directly from user code.
+/// It may be removed or changed in a future version without notice.
+/// </remarks>
+public sealed class DelegatingComparer<T> : IComparer<T>
 {
-    /// <remarks>
-    /// This type is not intended to be used directly from user code.
-    /// It may be removed or changed in a future version without notice.
-    /// </remarks>
+    private readonly Func<T, T, int> _comparer;
 
-    public sealed class DelegatingComparer<T> : IComparer<T>
+    public DelegatingComparer(Func<T, T, int> comparer)
     {
-        private readonly Func<T, T, int> _comparer;
-
-        public DelegatingComparer(Func<T, T, int> comparer)
-        {
-            if (comparer == null) throw new ArgumentNullException("comparer");
-            _comparer = comparer;
-        }
-
-        public int Compare(T x, T y) { return _comparer(x, y); }
+        if (comparer == null) throw new ArgumentNullException("comparer");
+        _comparer = comparer;
     }
+
+    public int Compare(T x, T y) { return _comparer(x, y); }
 }

@@ -2,51 +2,38 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace System.Linq.Expressions
+namespace System.Linq.Expressions;
+
+internal class ScopeExpression : BlockExpression
 {
-    internal class ScopeExpression : BlockExpression
+    private IList<ParameterExpression> _variables;
+
+    internal override int VariableCount => _variables.Count;
+
+    protected IList<ParameterExpression> VariablesList => _variables;
+
+    internal ScopeExpression(IList<ParameterExpression> variables): base(ExpressionType.Block,typeof(object))
     {
-        private IList<ParameterExpression> _variables;
+        _variables = variables;
+    }
 
-        internal override int VariableCount
-        {
-            get
-            {
-                return this._variables.Count;
-            }
-        }
+    internal override ReadOnlyCollection<ParameterExpression> GetOrMakeVariables()
+    {
+        return ReturnReadOnly<ParameterExpression>(ref _variables);
+    }
 
-        protected IList<ParameterExpression> VariablesList
-        {
-            get
-            {
-                return this._variables;
-            }
-        }
+    internal override ParameterExpression GetVariable(int index)
+    {
+        return _variables[index];
+    }
 
-        internal ScopeExpression(IList<ParameterExpression> variables): base(ExpressionType.Block,typeof(object))
+    internal IList<ParameterExpression> ReuseOrValidateVariables(ReadOnlyCollection<ParameterExpression> variables)
+    {
+        if (variables == null || variables == VariablesList)
         {
-            this._variables = variables;
+            return VariablesList;
         }
-
-        internal override ReadOnlyCollection<ParameterExpression> GetOrMakeVariables()
-        {
-            return Expression.ReturnReadOnly<ParameterExpression>(ref this._variables);
-        }
-
-        internal override ParameterExpression GetVariable(int index)
-        {
-            return this._variables[index];
-        }
-
-        internal IList<ParameterExpression> ReuseOrValidateVariables(ReadOnlyCollection<ParameterExpression> variables)
-        {
-            if (variables == null || variables == this.VariablesList)
-            {
-                return this.VariablesList;
-            }
-            Expression.ValidateVariables(variables, "variables");
-            return variables;
-        }
+        ValidateVariables(variables, "variables");
+        return variables;
     }
 }

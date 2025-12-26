@@ -2755,6 +2755,41 @@
         "Name": "DapperLibrary.Extensions.DependencyInjection\\DapperLibrary.Extensions.DependencyInjection.csproj",
         "Project": "DapperLibrary.Extensions.DependencyInjection",
         "PackageReferences": null
+      },
+      {
+        "Name": "DapperLibrary.Odbc\\DapperLibrary.Odbc.csproj",
+        "Project": "Net4x.DapperLibrary.Odbc",
+        "PackageReferences": null
+      },
+      {
+        "Name": "SerilogLibrary.Tests\\SerilogLibrary.Test.csproj",
+        "Project": "SerilogLibrary.Test",
+        "PackageReferences": null
+      },
+      {
+        "Name": "DapperLibrary.Extensions.Base\\DapperLibrary.Extensions.Base.csproj",
+        "Project": "Net4x.DapperLibrary.Extensions.Base",
+        "PackageReferences": null
+      },
+      {
+        "Name": "DapperLibrary.Archive\\DapperLibrary.Extensions.Archive.csproj",
+        "Project": "Net4x.DapperLibrary.Extensions.Archive",
+        "PackageReferences": null
+      },
+      {
+        "Name": "DapperLibrary.Pivot\\Pivot.csproj",
+        "Project": "Net4x.Pivot",
+        "PackageReferences": null
+      },
+      {
+        "Name": "DapperLibrary.Docker\\DapperLibrary.Docker.csproj",
+        "Project": "Net4x.DapperLibrary.Docker",
+        "PackageReferences": null
+      },
+      {
+        "Name": "RestClient",
+        "Project": "RestClient\\RestClient.csproj",
+        "PackageReferences": null
       }
     ]
   },
@@ -7211,6 +7246,11 @@
             "Version": "$(NuGetUtilityVersion)"
           }
         ]
+      },
+      {
+        "Name": "KaosCollections\\Collections\\Collections.csproj",
+        "Project": "Net4x.Kaos.Collections",
+        "PackageReferences": null
       }
     ]
   },
@@ -32348,6 +32388,79 @@
       {
         "Name": "Net4x.Antlr4.Runtime.Standard",
         "Project": "src\\Antlr4.csproj",
+        "PackageReferences": null
+      }
+    ]
+  },
+  {
+    "Solution": {
+      "Path": "D:\\CommonLibrary\\Net35.Threading.Tasks\\KaosCollections\\KaosCollections.sln",
+      "Version": "KaosCollectionsVersion"
+    },
+    "NuGetPackages": [
+      {
+        "Name": "RdBench01",
+        "Project": "Bench\\RdBench01\\RdBench01.csproj",
+        "PackageReferences": null
+      },
+      {
+        "Name": "RdBench02",
+        "Project": "Bench\\RdBench02\\RdBench02.csproj",
+        "PackageReferences": null
+      },
+      {
+        "Name": "RdBench03",
+        "Project": "Bench\\RdBench03\\RdBench03.csproj",
+        "PackageReferences": null
+      },
+      {
+        "Name": "RdBench04",
+        "Project": "Bench\\RdBench04\\RdBench04.csproj",
+        "PackageReferences": null
+      },
+      {
+        "Name": "RdBench05",
+        "Project": "Bench\\RdBench05\\RdBench05.csproj",
+        "PackageReferences": null
+      },
+      {
+        "Name": "RdBench06",
+        "Project": "Bench\\RdBench06\\RdBench06.csproj",
+        "PackageReferences": null
+      },
+      {
+        "Name": "RbExample02",
+        "Project": "Bench\\RbExample02\\RbExample02.csproj",
+        "PackageReferences": null
+      },
+      {
+        "Name": "RbExample03",
+        "Project": "Bench\\RbExample03\\RbExample03.csproj",
+        "PackageReferences": null
+      },
+      {
+        "Name": "RbExample05",
+        "Project": "Bench\\RbExample05\\RbExample05.csproj",
+        "PackageReferences": null
+      },
+      {
+        "Name": "RbChart01",
+        "Project": "Bench\\RbChart01\\RbChart01.csproj",
+        "PackageReferences": null
+      },
+      {
+        "Name": "RbExample01",
+        "Project": "Bench\\RbExample01\\RbExample01.csproj",
+        "PackageReferences": null
+      },
+      {
+        "Name": "RbChart02",
+        "Project": "Bench\\RbChart02\\RbChart02.csproj",
+        "PackageReferences": null
+      },
+      {
+        "Name": "Collections\\Collections.csproj",
+        "Project": "Net4x.Kaos.Collections",
         "PackageReferences": null
       }
     ]

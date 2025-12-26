@@ -1,18 +1,17 @@
 ﻿using System;
 
-namespace System.Linq.Expressions
+namespace System.Linq.Expressions;
+
+[__DynamicallyInvokable]
+public interface IArgumentProvider
 {
     [__DynamicallyInvokable]
-    public interface IArgumentProvider
+    int ArgumentCount
     {
         [__DynamicallyInvokable]
-        int ArgumentCount
-        {
-            [__DynamicallyInvokable]
-            get;
-        }
-
-        [__DynamicallyInvokable]
-        Expression GetArgument(int index);
+        get;
     }
+
+    [__DynamicallyInvokable]
+    Expression GetArgument(int index);
 }

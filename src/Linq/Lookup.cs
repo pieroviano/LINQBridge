@@ -29,163 +29,159 @@
 
 using System.Linq.Expressions;
 
-namespace System.Linq
+namespace System.Linq;
+
+#region Imports
+
+using System;
+using Collections;
+using Collections.Generic;
+using IEnumerable=Collections.IEnumerable;
+
+#endregion
+
+/// <summary>
+/// Represents a collection of keys each mapped to one or more values.
+/// </summary>
+
+public sealed class Lookup<TKey, TElement> : ILookup<TKey, TElement>
 {
-    #region Imports
+    private readonly Dictionary<Key<TKey>, IGrouping<TKey, TElement>> _map;
+    private readonly List<Key<TKey>> _orderedKeys; // remember order of insertion
 
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using IEnumerable=System.Collections.IEnumerable;
+    internal class Grouping :
+        IGrouping<TKey, TElement>,
+        IList<TElement>,
+        ICollection<TElement>,
+        IEnumerable<TElement>,
+        IEnumerable
+    {
+        internal TKey key;
+        internal int hashCode;
+        internal TElement[] elements;
+        internal int count;
+        internal Grouping? hashNext;
+        internal Grouping? next;
 
-    #endregion
+        internal void Add(TElement element)
+        {
+            if (elements.Length == count)
+                Array.Resize<TElement>(ref elements, checked(count * 2));
+            elements[count] = element;
+            ++count;
+        }
+
+        public IEnumerator<TElement> GetEnumerator()
+        {
+            for (var i = 0; i < count; ++i)
+                yield return elements[i];
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public TKey Key => key;
+
+        int ICollection<TElement>.Count => count;
+
+        bool ICollection<TElement>.IsReadOnly => true;
+
+        void ICollection<TElement>.Add(TElement item) => throw Error.NotSupported();
+
+        void ICollection<TElement>.Clear() => throw Error.NotSupported();
+
+        bool ICollection<TElement>.Contains(TElement item) => Array.IndexOf<TElement>(elements, item, 0, count) >= 0;
+
+        void ICollection<TElement>.CopyTo(TElement[] array, int arrayIndex) => Array.Copy(elements, 0, array, arrayIndex, count);
+
+        bool ICollection<TElement>.Remove(TElement item) => throw Error.NotSupported();
+
+        int IList<TElement>.IndexOf(TElement item) => Array.IndexOf<TElement>(elements, item, 0, count);
+
+        void IList<TElement>.Insert(int index, TElement item) => throw Error.NotSupported();
+
+        void IList<TElement>.RemoveAt(int index) => throw Error.NotSupported();
+
+        TElement IList<TElement>.this[int index]
+        {
+            get => index >= 0 && index < count ? elements[index] : throw Error.ArgumentOutOfRange(nameof(index));
+            set => throw Error.NotSupported();
+        }
+    }
+
+    internal Lookup(IEqualityComparer<TKey> comparer)
+    {
+        _map = new Dictionary<Key<TKey>, IGrouping<TKey, TElement>>(new KeyComparer<TKey>(comparer));
+        _orderedKeys = new List<Key<TKey>>();
+    }
+
+    internal void Add(IGrouping<TKey, TElement> item)
+    {
+        var key = new Key<TKey>(item.Key);
+        _map.Add(key, item);
+        _orderedKeys.Add(key);
+    }
+
+    internal IEnumerable<TElement> Find(TKey key)
+    {
+        IGrouping<TKey, TElement> grouping;
+        return _map.TryGetValue(new Key<TKey>(key), out grouping) ? grouping : null;
+    }
 
     /// <summary>
-    /// Represents a collection of keys each mapped to one or more values.
+    /// Gets the number of key/value collection pairs in the <see cref="Lookup{TKey,TElement}" />.
     /// </summary>
 
-    public sealed class Lookup<TKey, TElement> : System.ILookup<TKey, TElement>
+    public int Count => _map.Count;
+
+    /// <summary>
+    /// Gets the collection of values indexed by the specified key.
+    /// </summary>
+
+    public IEnumerable<TElement> this[TKey key]
     {
-        private readonly Dictionary<Key<TKey>, IGrouping<TKey, TElement>> _map;
-        private readonly List<Key<TKey>> _orderedKeys; // remember order of insertion
-
-        internal class Grouping :
-          IGrouping<TKey, TElement>,
-          IList<TElement>,
-          ICollection<TElement>,
-          IEnumerable<TElement>,
-          IEnumerable
+        get
         {
-            internal TKey key;
-            internal int hashCode;
-            internal TElement[] elements;
-            internal int count;
-            internal Lookup<TKey, TElement>.Grouping hashNext;
-            internal Lookup<TKey, TElement>.Grouping next;
-
-            internal void Add(TElement element)
-            {
-                if (this.elements.Length == this.count)
-                    Array.Resize<TElement>(ref this.elements, checked(this.count * 2));
-                this.elements[this.count] = element;
-                ++this.count;
-            }
-
-            public IEnumerator<TElement> GetEnumerator()
-            {
-                for (int i = 0; i < this.count; ++i)
-                    yield return this.elements[i];
-            }
-
-            IEnumerator IEnumerable.GetEnumerator() => (IEnumerator)this.GetEnumerator();
-
-            public TKey Key => this.key;
-
-            int ICollection<TElement>.Count => this.count;
-
-            bool ICollection<TElement>.IsReadOnly => true;
-
-            void ICollection<TElement>.Add(TElement item) => throw Error.NotSupported();
-
-            void ICollection<TElement>.Clear() => throw Error.NotSupported();
-
-            bool ICollection<TElement>.Contains(TElement item) => Array.IndexOf<TElement>(this.elements, item, 0, this.count) >= 0;
-
-            void ICollection<TElement>.CopyTo(TElement[] array, int arrayIndex) => Array.Copy((Array)this.elements, 0, (Array)array, arrayIndex, this.count);
-
-            bool ICollection<TElement>.Remove(TElement item) => throw Error.NotSupported();
-
-            int IList<TElement>.IndexOf(TElement item) => Array.IndexOf<TElement>(this.elements, item, 0, this.count);
-
-            void IList<TElement>.Insert(int index, TElement item) => throw Error.NotSupported();
-
-            void IList<TElement>.RemoveAt(int index) => throw Error.NotSupported();
-
-            TElement IList<TElement>.this[int index]
-            {
-                get => index >= 0 && index < this.count ? this.elements[index] : throw Error.ArgumentOutOfRange(nameof(index));
-                set => throw Error.NotSupported();
-            }
+            IGrouping<TKey, TElement> result;
+            return _map.TryGetValue(new Key<TKey>(key), out result) ? result : Enumerable.Empty<TElement>();
         }
+    }
 
-        internal Lookup(IEqualityComparer<TKey> comparer)
-        {
-            _map = new Dictionary<Key<TKey>, IGrouping<TKey, TElement>>(new KeyComparer<TKey>(comparer));
-            _orderedKeys = new List<Key<TKey>>();
-        }
+    /// <summary>
+    /// Determines whether a specified key is in the <see cref="Lookup{TKey,TElement}" />.
+    /// </summary>
 
-        internal void Add(IGrouping<TKey, TElement> item)
-        {
-            var key = new Key<TKey>(item.Key);
-            _map.Add(key, item);
-            _orderedKeys.Add(key);
-        }
+    public bool Contains(TKey key)
+    {
+        return _map.ContainsKey(new Key<TKey>(key));
+    }
 
-        internal IEnumerable<TElement> Find(TKey key)
-        {
-            IGrouping<TKey, TElement> grouping;
-            return _map.TryGetValue(new Key<TKey>(key), out grouping) ? grouping : null;
-        }
+    /// <summary>
+    /// Applies a transform function to each key and its associated 
+    /// values and returns the results.
+    /// </summary>
 
-        /// <summary>
-        /// Gets the number of key/value collection pairs in the <see cref="Lookup{TKey,TElement}" />.
-        /// </summary>
-
-        public int Count
-        {
-            get { return _map.Count; }
-        }
-
-        /// <summary>
-        /// Gets the collection of values indexed by the specified key.
-        /// </summary>
-
-        public IEnumerable<TElement> this[TKey key]
-        {
-            get
-            {
-                IGrouping<TKey, TElement> result;
-                return _map.TryGetValue(new Key<TKey>(key), out result) ? result : Enumerable.Empty<TElement>();
-            }
-        }
-
-        /// <summary>
-        /// Determines whether a specified key is in the <see cref="Lookup{TKey,TElement}" />.
-        /// </summary>
-
-        public bool Contains(TKey key)
-        {
-            return _map.ContainsKey(new Key<TKey>(key));
-        }
-
-        /// <summary>
-        /// Applies a transform function to each key and its associated 
-        /// values and returns the results.
-        /// </summary>
-
-        public IEnumerable<TResult> ApplyResultSelector<TResult>(
-            Func<TKey, IEnumerable<TElement>, TResult> resultSelector)
-        {
-            if (resultSelector == null) 
-                throw new ArgumentNullException("resultSelector");
+    public IEnumerable<TResult> ApplyResultSelector<TResult>(
+        Func<TKey, IEnumerable<TElement>, TResult> resultSelector)
+    {
+        if (resultSelector == null) 
+            throw new ArgumentNullException("resultSelector");
             
-            foreach (var pair in _map)
-                yield return resultSelector(pair.Key.Value, pair.Value);
-        }
+        foreach (var pair in _map)
+            yield return resultSelector(pair.Key.Value, pair.Value);
+    }
 
-        /// <summary>
-        /// Returns a generic enumerator that iterates through the <see cref="Lookup{TKey,TElement}" />.
-        /// </summary>
+    /// <summary>
+    /// Returns a generic enumerator that iterates through the <see cref="Lookup{TKey,TElement}" />.
+    /// </summary>
 
-        public IEnumerator<IGrouping<TKey, TElement>> GetEnumerator()
-        {
-            foreach (var key in _orderedKeys)
-                yield return _map[key];
-        }
+    public IEnumerator<IGrouping<TKey, TElement>> GetEnumerator()
+    {
+        foreach (var key in _orderedKeys)
+            yield return _map[key];
+    }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }

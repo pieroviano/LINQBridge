@@ -3,496 +3,453 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 
-namespace System.Runtime.CompilerServices
+namespace System.Runtime.CompilerServices;
+
+[Serializable]
+public sealed class ReadOnlyCollectionBuilder<T> : IList<T>, ICollection<T>, IEnumerable<T>, IEnumerable, IList, ICollection
 {
-    [Serializable]
-    public sealed class ReadOnlyCollectionBuilder<T> : IList<T>, ICollection<T>, IEnumerable<T>, IEnumerable, IList, ICollection
+    private const int DefaultCapacity = 4;
+
+    private T[] _items;
+
+    private int _size;
+
+    private int _version;
+
+    [NonSerialized]
+    private object _syncRoot;
+
+    private readonly static T[] _emptyArray;
+
+    public int Capacity
     {
-        private const int DefaultCapacity = 4;
-
-        private T[] _items;
-
-        private int _size;
-
-        private int _version;
-
-        [NonSerialized]
-        private object _syncRoot;
-
-        private readonly static T[] _emptyArray;
-
-        public int Capacity
+        get => _items.Length;
+        set
         {
-            get
+            ContractUtils.Requires(value >= _size, "value");
+            if (value != _items.Length)
             {
-                return (int)this._items.Length;
-            }
-            set
-            {
-                ContractUtils.Requires(value >= this._size, "value");
-                if (value != (int)this._items.Length)
+                if (value > 0)
                 {
-                    if (value > 0)
+                    var tArray = new T[value];
+                    if (_size > 0)
                     {
-                        T[] tArray = new T[value];
-                        if (this._size > 0)
-                        {
-                            Array.Copy(this._items, 0, tArray, 0, this._size);
-                        }
-                        this._items = tArray;
-                        return;
+                        Array.Copy(_items, 0, tArray, 0, _size);
                     }
-                    this._items = ReadOnlyCollectionBuilder<T>._emptyArray;
+                    _items = tArray;
+                    return;
                 }
+                _items = _emptyArray;
             }
         }
+    }
 
-        public int Count
+    public int Count => _size;
+
+    public T this[int index]
+    {
+        get
         {
-            get
+            ContractUtils.Requires(index < _size, "index");
+            return _items[index];
+        }
+        set
+        {
+            ContractUtils.Requires(index < _size, "index");
+            _items[index] = value;
+            _version++;
+        }
+    }
+
+    bool ICollection<T>.IsReadOnly => false;
+
+    bool ICollection.IsSynchronized => false;
+
+    object ICollection.SyncRoot
+    {
+        get
+        {
+            if (_syncRoot == null)
             {
-                return this._size;
+                Threading.Net20Interlocked.CompareExchange<object>(ref _syncRoot, new object(), null);
+            }
+            return _syncRoot;
+        }
+    }
+
+    bool IList.IsFixedSize => false;
+
+    bool IList.IsReadOnly => false;
+
+    object IList.this[int index]
+    {
+        get => this[index];
+        set
+        {
+            ValidateNullValue(value, "value");
+            try
+            {
+                this[index] = (T)value;
+            }
+            catch (InvalidCastException invalidCastException)
+            {
+                ThrowInvalidTypeException(value, "value");
             }
         }
+    }
 
-        public T this[int index]
+    static ReadOnlyCollectionBuilder()
+    {
+        _emptyArray = new T[0];
+    }
+
+    public ReadOnlyCollectionBuilder()
+    {
+        _items = _emptyArray;
+    }
+
+    public ReadOnlyCollectionBuilder(int capacity)
+    {
+        ContractUtils.Requires(capacity >= 0, "capacity");
+        _items = new T[capacity];
+    }
+
+    public ReadOnlyCollectionBuilder(IEnumerable<T> collection)
+    {
+        ContractUtils.Requires(collection != null, "collection");
+        var ts = collection as ICollection<T>;
+        if (ts != null)
         {
-            get
-            {
-                ContractUtils.Requires(index < this._size, "index");
-                return this._items[index];
-            }
-            set
-            {
-                ContractUtils.Requires(index < this._size, "index");
-                this._items[index] = value;
-                this._version++;
-            }
+            var count = ts.Count;
+            _items = new T[count];
+            ts.CopyTo(_items, 0);
+            _size = count;
+            return;
         }
-
-        bool System.Collections.Generic.ICollection<T>.IsReadOnly
+        _size = 0;
+        _items = new T[4];
+        foreach (var t in collection)
         {
-            get
-            {
-                return false;
-            }
+            Add(t);
         }
+    }
 
-        bool System.Collections.ICollection.IsSynchronized
+    public void Add(T item)
+    {
+        if (_size == _items.Length)
         {
-            get
-            {
-                return false;
-            }
+            EnsureCapacity(_size + 1);
         }
+        var tArray = _items;
+        var num = _size;
+        _size = num + 1;
+        tArray[num] = item;
+        _version++;
+    }
 
-        object System.Collections.ICollection.SyncRoot
+    public void Clear()
+    {
+        if (_size > 0)
         {
-            get
-            {
-                if (this._syncRoot == null)
-                {
-                    System.Threading.Net20Interlocked.CompareExchange<object>(ref this._syncRoot, new object(), null);
-                }
-                return this._syncRoot;
-            }
+            Array.Clear(_items, 0, _size);
+            _size = 0;
         }
+        _version++;
+    }
 
-        bool System.Collections.IList.IsFixedSize
+    public bool Contains(T item)
+    {
+        if (item == null)
         {
-            get
+            for (var i = 0; i < _size; i++)
             {
-                return false;
-            }
-        }
-
-        bool System.Collections.IList.IsReadOnly
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        object System.Collections.IList.this[int index]
-        {
-            get
-            {
-                return this[index];
-            }
-            set
-            {
-                ReadOnlyCollectionBuilder<T>.ValidateNullValue(value, "value");
-                try
-                {
-                    this[index] = (T)value;
-                }
-                catch (InvalidCastException invalidCastException)
-                {
-                    ReadOnlyCollectionBuilder<T>.ThrowInvalidTypeException(value, "value");
-                }
-            }
-        }
-
-        static ReadOnlyCollectionBuilder()
-        {
-            ReadOnlyCollectionBuilder<T>._emptyArray = new T[0];
-        }
-
-        public ReadOnlyCollectionBuilder()
-        {
-            this._items = ReadOnlyCollectionBuilder<T>._emptyArray;
-        }
-
-        public ReadOnlyCollectionBuilder(int capacity)
-        {
-            ContractUtils.Requires(capacity >= 0, "capacity");
-            this._items = new T[capacity];
-        }
-
-        public ReadOnlyCollectionBuilder(IEnumerable<T> collection)
-        {
-            ContractUtils.Requires(collection != null, "collection");
-            ICollection<T> ts = collection as ICollection<T>;
-            if (ts != null)
-            {
-                int count = ts.Count;
-                this._items = new T[count];
-                ts.CopyTo(this._items, 0);
-                this._size = count;
-                return;
-            }
-            this._size = 0;
-            this._items = new T[4];
-            foreach (T t in collection)
-            {
-                this.Add(t);
-            }
-        }
-
-        public void Add(T item)
-        {
-            if (this._size == (int)this._items.Length)
-            {
-                this.EnsureCapacity(this._size + 1);
-            }
-            T[] tArray = this._items;
-            int num = this._size;
-            this._size = num + 1;
-            tArray[num] = item;
-            this._version++;
-        }
-
-        public void Clear()
-        {
-            if (this._size > 0)
-            {
-                Array.Clear(this._items, 0, this._size);
-                this._size = 0;
-            }
-            this._version++;
-        }
-
-        public bool Contains(T item)
-        {
-            if (item == null)
-            {
-                for (int i = 0; i < this._size; i++)
-                {
-                    if (this._items[i] == null)
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-            EqualityComparer<T> @default = EqualityComparer<T>.Default;
-            for (int j = 0; j < this._size; j++)
-            {
-                if (@default.Equals(this._items[j], item))
+                if (_items[i] == null)
                 {
                     return true;
                 }
             }
             return false;
         }
-
-        public void CopyTo(T[] array, int arrayIndex)
+        var @default = EqualityComparer<T>.Default;
+        for (var j = 0; j < _size; j++)
         {
-            Array.Copy(this._items, 0, array, arrayIndex, this._size);
-        }
-
-        private void EnsureCapacity(int min)
-        {
-            if ((int)this._items.Length < min)
-            {
-                int length = 4;
-                if (this._items.Length != 0)
-                {
-                    length = (int)this._items.Length * 2;
-                }
-                if (length < min)
-                {
-                    length = min;
-                }
-                this.Capacity = length;
-            }
-        }
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            return new ReadOnlyCollectionBuilder<T>.Enumerator(this);
-        }
-
-        public int IndexOf(T item)
-        {
-            return Array.IndexOf<T>(this._items, item, 0, this._size);
-        }
-
-        public void Insert(int index, T item)
-        {
-            ContractUtils.Requires(index <= this._size, "index");
-            if (this._size == (int)this._items.Length)
-            {
-                this.EnsureCapacity(this._size + 1);
-            }
-            if (index < this._size)
-            {
-                Array.Copy(this._items, index, this._items, index + 1, this._size - index);
-            }
-            this._items[index] = item;
-            this._size++;
-            this._version++;
-        }
-
-        private static bool IsCompatibleObject(object value)
-        {
-            if (value is T)
+            if (@default.Equals(_items[j], item))
             {
                 return true;
             }
-            if (value != null)
+        }
+        return false;
+    }
+
+    public void CopyTo(T[] array, int arrayIndex)
+    {
+        Array.Copy(_items, 0, array, arrayIndex, _size);
+    }
+
+    private void EnsureCapacity(int min)
+    {
+        if (_items.Length < min)
+        {
+            var length = 4;
+            if (_items.Length != 0)
             {
-                return false;
+                length = _items.Length * 2;
             }
-            return default(T) == null;
+            if (length < min)
+            {
+                length = min;
+            }
+            Capacity = length;
+        }
+    }
+
+    public IEnumerator<T> GetEnumerator()
+    {
+        return new Enumerator(this);
+    }
+
+    public int IndexOf(T item)
+    {
+        return Array.IndexOf<T>(_items, item, 0, _size);
+    }
+
+    public void Insert(int index, T item)
+    {
+        ContractUtils.Requires(index <= _size, "index");
+        if (_size == _items.Length)
+        {
+            EnsureCapacity(_size + 1);
+        }
+        if (index < _size)
+        {
+            Array.Copy(_items, index, _items, index + 1, _size - index);
+        }
+        _items[index] = item;
+        _size++;
+        _version++;
+    }
+
+    private static bool IsCompatibleObject(object value)
+    {
+        if (value is T)
+        {
+            return true;
+        }
+        if (value != null)
+        {
+            return false;
+        }
+        return default(T) == null;
+    }
+
+    public bool Remove(T item)
+    {
+        var num = IndexOf(item);
+        if (num < 0)
+        {
+            return false;
+        }
+        RemoveAt(num);
+        return true;
+    }
+
+    public void RemoveAt(int index)
+    {
+        ContractUtils.Requires((index < 0 ? false : index < _size), "index");
+        _size--;
+        if (index < _size)
+        {
+            Array.Copy(_items, index + 1, _items, index, _size - index);
+        }
+        _items[_size] = default(T);
+        _version++;
+    }
+
+    public void Reverse()
+    {
+        Reverse(0, Count);
+    }
+
+    public void Reverse(int index, int count)
+    {
+        ContractUtils.Requires(index >= 0, "index");
+        ContractUtils.Requires(count >= 0, "count");
+        Array.Reverse(_items, index, count);
+        _version++;
+    }
+
+    void ICollection.CopyTo(Array array, int index)
+    {
+        ContractUtils.RequiresNotNull(array, "array");
+        ContractUtils.Requires(array.Rank == 1, "array");
+        Array.Copy(_items, 0, array, index, _size);
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    int IList.Add(object value)
+    {
+        ValidateNullValue(value, "value");
+        try
+        {
+            Add((T)value);
+        }
+        catch (InvalidCastException invalidCastException)
+        {
+            ThrowInvalidTypeException(value, "value");
+        }
+        return Count - 1;
+    }
+
+    bool IList.Contains(object value)
+    {
+        if (!IsCompatibleObject(value))
+        {
+            return false;
+        }
+        return Contains((T)value);
+    }
+
+    int IList.IndexOf(object value)
+    {
+        if (!IsCompatibleObject(value))
+        {
+            return -1;
+        }
+        return IndexOf((T)value);
+    }
+
+    void IList.Insert(int index, object value)
+    {
+        ValidateNullValue(value, "value");
+        try
+        {
+            Insert(index, (T)value);
+        }
+        catch (InvalidCastException invalidCastException)
+        {
+            ThrowInvalidTypeException(value, "value");
+        }
+    }
+
+    void IList.Remove(object value)
+    {
+        if (IsCompatibleObject(value))
+        {
+            Remove((T)value);
+        }
+    }
+
+    private static void ThrowInvalidTypeException(object value, string argument)
+    {
+        object type;
+        if (value != null)
+        {
+            type = value.GetType();
+        }
+        else
+        {
+            type = "null";
+        }
+        throw new ArgumentException(argument);
+    }
+
+    public T[] ToArray()
+    {
+        var tArray = new T[_size];
+        Array.Copy(_items, 0, tArray, 0, _size);
+        return tArray;
+    }
+
+    public ReadOnlyCollection<T> ToReadOnlyCollection()
+    {
+        T[] tArray;
+        tArray = (_size != _items.Length ? ToArray() : _items);
+        _items = _emptyArray;
+        _size = 0;
+        _version++;
+        return new TrueReadOnlyCollection<T>(tArray);
+    }
+
+    private static void ValidateNullValue(object value, string argument)
+    {
+        if (value == null)
+        {
+            if (default(T) != null)
+            {
+                throw new ArgumentException( argument);
+            }
+        }
+    }
+
+    [Serializable]
+    private class Enumerator : IEnumerator<T>, IDisposable, IEnumerator
+    {
+        private readonly ReadOnlyCollectionBuilder<T> _builder;
+
+        private readonly int _version;
+
+        private int _index;
+
+        private T _current;
+
+        public T Current => _current;
+
+        object IEnumerator.Current
+        {
+            get
+            {
+                if (_index == 0 || _index > _builder._size)
+                {
+                    throw new CompilerServicesException();
+                }
+                return _current;
+            }
         }
 
-        public bool Remove(T item)
+        internal Enumerator(ReadOnlyCollectionBuilder<T> builder)
         {
-            int num = this.IndexOf(item);
-            if (num < 0)
+            _builder = builder;
+            _version = builder._version;
+            _index = 0;
+            _current = default(T);
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+        }
+
+        public bool MoveNext()
+        {
+            if (_version != _builder._version)
             {
+                throw new ArgumentException(nameof(_version));
+            }
+            if (_index >= _builder._size)
+            {
+                _index = _builder._size + 1;
+                _current = default(T);
                 return false;
             }
-            this.RemoveAt(num);
+            var tArray = _builder._items;
+            var num = _index;
+            _index = num + 1;
+            _current = tArray[num];
             return true;
         }
 
-        public void RemoveAt(int index)
+        void IEnumerator.Reset()
         {
-            ContractUtils.Requires((index < 0 ? false : index < this._size), "index");
-            this._size--;
-            if (index < this._size)
+            if (_version != _builder._version)
             {
-                Array.Copy(this._items, index + 1, this._items, index, this._size - index);
+                throw new ArgumentException(nameof(_version));
             }
-            this._items[this._size] = default(T);
-            this._version++;
-        }
-
-        public void Reverse()
-        {
-            this.Reverse(0, this.Count);
-        }
-
-        public void Reverse(int index, int count)
-        {
-            ContractUtils.Requires(index >= 0, "index");
-            ContractUtils.Requires(count >= 0, "count");
-            Array.Reverse(this._items, index, count);
-            this._version++;
-        }
-
-        void System.Collections.ICollection.CopyTo(Array array, int index)
-        {
-            ContractUtils.RequiresNotNull(array, "array");
-            ContractUtils.Requires(array.Rank == 1, "array");
-            Array.Copy(this._items, 0, array, index, this._size);
-        }
-
-        IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
-
-        int System.Collections.IList.Add(object value)
-        {
-            ReadOnlyCollectionBuilder<T>.ValidateNullValue(value, "value");
-            try
-            {
-                this.Add((T)value);
-            }
-            catch (InvalidCastException invalidCastException)
-            {
-                ReadOnlyCollectionBuilder<T>.ThrowInvalidTypeException(value, "value");
-            }
-            return this.Count - 1;
-        }
-
-        bool System.Collections.IList.Contains(object value)
-        {
-            if (!ReadOnlyCollectionBuilder<T>.IsCompatibleObject(value))
-            {
-                return false;
-            }
-            return this.Contains((T)value);
-        }
-
-        int System.Collections.IList.IndexOf(object value)
-        {
-            if (!ReadOnlyCollectionBuilder<T>.IsCompatibleObject(value))
-            {
-                return -1;
-            }
-            return this.IndexOf((T)value);
-        }
-
-        void System.Collections.IList.Insert(int index, object value)
-        {
-            ReadOnlyCollectionBuilder<T>.ValidateNullValue(value, "value");
-            try
-            {
-                this.Insert(index, (T)value);
-            }
-            catch (InvalidCastException invalidCastException)
-            {
-                ReadOnlyCollectionBuilder<T>.ThrowInvalidTypeException(value, "value");
-            }
-        }
-
-        void System.Collections.IList.Remove(object value)
-        {
-            if (ReadOnlyCollectionBuilder<T>.IsCompatibleObject(value))
-            {
-                this.Remove((T)value);
-            }
-        }
-
-        private static void ThrowInvalidTypeException(object value, string argument)
-        {
-            object type;
-            if (value != null)
-            {
-                type = value.GetType();
-            }
-            else
-            {
-                type = "null";
-            }
-            throw new ArgumentException(argument);
-        }
-
-        public T[] ToArray()
-        {
-            T[] tArray = new T[this._size];
-            Array.Copy(this._items, 0, tArray, 0, this._size);
-            return tArray;
-        }
-
-        public ReadOnlyCollection<T> ToReadOnlyCollection()
-        {
-            T[] tArray;
-            tArray = (this._size != (int)this._items.Length ? this.ToArray() : this._items);
-            this._items = ReadOnlyCollectionBuilder<T>._emptyArray;
-            this._size = 0;
-            this._version++;
-            return new TrueReadOnlyCollection<T>(tArray);
-        }
-
-        private static void ValidateNullValue(object value, string argument)
-        {
-            if (value == null)
-            {
-                if (default(T) != null)
-                {
-                    throw new ArgumentException( argument);
-                }
-            }
-        }
-
-        [Serializable]
-        private class Enumerator : IEnumerator<T>, IDisposable, IEnumerator
-        {
-            private readonly ReadOnlyCollectionBuilder<T> _builder;
-
-            private readonly int _version;
-
-            private int _index;
-
-            private T _current;
-
-            public T Current
-            {
-                get
-                {
-                    return this._current;
-                }
-            }
-
-            object System.Collections.IEnumerator.Current
-            {
-                get
-                {
-                    if (this._index == 0 || this._index > this._builder._size)
-                    {
-                        throw new CompilerServicesException();
-                    }
-                    return this._current;
-                }
-            }
-
-            internal Enumerator(ReadOnlyCollectionBuilder<T> builder)
-            {
-                this._builder = builder;
-                this._version = builder._version;
-                this._index = 0;
-                this._current = default(T);
-            }
-
-            public void Dispose()
-            {
-                GC.SuppressFinalize(this);
-            }
-
-            public bool MoveNext()
-            {
-                if (this._version != this._builder._version)
-                {
-                    throw new ArgumentException(nameof(_version));
-                }
-                if (this._index >= this._builder._size)
-                {
-                    this._index = this._builder._size + 1;
-                    this._current = default(T);
-                    return false;
-                }
-                T[] tArray = this._builder._items;
-                int num = this._index;
-                this._index = num + 1;
-                this._current = tArray[num];
-                return true;
-            }
-
-            void System.Collections.IEnumerator.Reset()
-            {
-                if (this._version != this._builder._version)
-                {
-                    throw new ArgumentException(nameof(_version));
-                }
-                this._index = 0;
-                this._current = default(T);
-            }
+            _index = 0;
+            _current = default(T);
         }
     }
 }

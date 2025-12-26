@@ -1,45 +1,44 @@
 ﻿using System.Text;
 
-namespace System.Linq.Expressions
+namespace System.Linq.Expressions;
+
+/// <summary>Represents an expression that has a constant value.</summary>
+public sealed class ConstantExpression : Expression
 {
-    /// <summary>Represents an expression that has a constant value.</summary>
-    public sealed class ConstantExpression : Expression
+    private readonly object value;
+
+    internal ConstantExpression(object value, Type type)
+        : base(ExpressionType.Constant, type)
     {
-        private object value;
+        this.value = value;
+    }
 
-        internal ConstantExpression(object value, Type type)
-            : base(ExpressionType.Constant, type)
+    /// <summary>Gets the value of the constant expression.</summary>
+    /// <returns>An <see cref="T:System.Object" /> equal to the value of the represented expression.</returns>
+    public object Value => value;
+
+    internal override void BuildString(StringBuilder builder)
+    {
+        if (builder == null)
+            throw Error.ArgumentNull(nameof(builder));
+        if (value != null)
         {
-            this.value = value;
-        }
-
-        /// <summary>Gets the value of the constant expression.</summary>
-        /// <returns>An <see cref="T:System.Object" /> equal to the value of the represented expression.</returns>
-        public object Value => this.value;
-
-        internal override void BuildString(StringBuilder builder)
-        {
-            if (builder == null)
-                throw Error.ArgumentNull(nameof(builder));
-            if (this.value != null)
+            if (value is string)
             {
-                if (this.value is string)
-                {
-                    builder.Append("\"");
-                    builder.Append(this.value);
-                    builder.Append("\"");
-                }
-                else if (this.value.ToString() == this.value.GetType().ToString())
-                {
-                    builder.Append("value(");
-                    builder.Append(this.value);
-                    builder.Append(")");
-                }
-                else
-                    builder.Append(this.value);
+                builder.Append("\"");
+                builder.Append(value);
+                builder.Append("\"");
+            }
+            else if (value.ToString() == value.GetType().ToString())
+            {
+                builder.Append("value(");
+                builder.Append(value);
+                builder.Append(")");
             }
             else
-                builder.Append("null");
+                builder.Append(value);
         }
+        else
+            builder.Append("null");
     }
 }

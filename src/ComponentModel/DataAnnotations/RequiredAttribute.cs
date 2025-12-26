@@ -2,27 +2,26 @@
 using System.ComponentModel.DataAnnotations.Resources;
 using System.Runtime.CompilerServices;
 
-namespace System.ComponentModel.DataAnnotations
-{
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
-    public class RequiredAttribute : ValidationAttribute
-    {
-        public RequiredAttribute() : base(() => DataAnnotationsResources.RequiredAttribute_ValidationError)
-        {
-        }
+namespace System.ComponentModel.DataAnnotations;
 
-        public override bool IsValid(object value)
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
+public class RequiredAttribute : ValidationAttribute
+{
+    public RequiredAttribute() : base(() => DataAnnotationsResources.RequiredAttribute_ValidationError)
+    {
+    }
+
+    public override bool IsValid(object value)
+    {
+        if (value == null)
         {
-            if (value == null)
-            {
-                return false;
-            }
-            string str = value as string;
-            if (str == null)
-            {
-                return true;
-            }
-            return str.Trim().Length != 0;
+            return false;
         }
+        var str = value as string;
+        if (str == null)
+        {
+            return true;
+        }
+        return str.Trim().Length != 0;
     }
 }

@@ -1,41 +1,40 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace System.Runtime.CompilerServices
+namespace System.Runtime.CompilerServices;
+
+internal class ContractUtils
 {
-    internal class ContractUtils
+    public static Exception Unreachable => throw new CompilerServicesException("Unreachable");
+
+    public static void Requires(bool b, string s)
     {
-        public static Exception Unreachable => throw new CompilerServicesException("Unreachable");
-
-        public static void Requires(bool b, string s)
+        if (!b)
         {
-            if (!b)
-            {
-                throw new ArgumentException(s);
-            }
+            throw new ArgumentException(s);
         }
+    }
 
-        public static void RequiresNotEmpty<T>(ReadOnlyCollection<T> readOnly, string expressions)
+    public static void RequiresNotEmpty<T>(ReadOnlyCollection<T> readOnly, string expressions)
+    {
+        if (readOnly.Count == 0)
         {
-            if (readOnly.Count == 0)
-            {
-                throw new ArgumentException(expressions);
-            }
+            throw new ArgumentException(expressions);
         }
+    }
 
-        public static void RequiresNotNull(object array, string s)
+    public static void RequiresNotNull(object array, string s)
+    {
+        if (array is null)
         {
-            if (array is null)
-            {
-                throw new ArgumentException(s);
-            }
+            throw new ArgumentException(s);
         }
+    }
 
-        public static void RequiresNotEmpty<T>(T[] readOnly, string expressions)
+    public static void RequiresNotEmpty<T>(T[] readOnly, string expressions)
+    {
+        if (readOnly.Length == 0)
         {
-            if (readOnly.Length == 0)
-            {
-                throw new ArgumentException(expressions);
-            }
+            throw new ArgumentException(expressions);
         }
     }
 }

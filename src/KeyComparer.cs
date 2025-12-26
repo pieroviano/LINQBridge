@@ -27,30 +27,28 @@
 
 using System.Collections.Generic;
 
-namespace System
+namespace System;
+
+/// <remarks>
+/// This type is not intended to be used directly from user code.
+/// It may be removed or changed in a future version without notice.
+/// </remarks>
+public sealed class KeyComparer<T> : IEqualityComparer<Key<T>>
 {
-    /// <remarks>
-    /// This type is not intended to be used directly from user code.
-    /// It may be removed or changed in a future version without notice.
-    /// </remarks>
+    private readonly IEqualityComparer<T> _innerComparer;
 
-    public sealed class KeyComparer<T> : IEqualityComparer<Key<T>>
+    public KeyComparer(IEqualityComparer<T> innerComparer)
     {
-        private readonly IEqualityComparer<T> _innerComparer;
+        _innerComparer = innerComparer ?? EqualityComparer<T>.Default;
+    }
 
-        public KeyComparer(IEqualityComparer<T> innerComparer)
-        {
-            _innerComparer = innerComparer ?? EqualityComparer<T>.Default;
-        }
+    public bool Equals(Key<T> x, Key<T> y)
+    {
+        return _innerComparer.Equals(x.Value, y.Value);
+    }
 
-        public bool Equals(Key<T> x, Key<T> y)
-        {
-            return _innerComparer.Equals(x.Value, y.Value);
-        }
-
-        public int GetHashCode(Key<T> obj)
-        {
-            return obj.Value == null ? 0 : _innerComparer.GetHashCode(obj.Value);
-        }
+    public int GetHashCode(Key<T> obj)
+    {
+        return obj.Value == null ? 0 : _innerComparer.GetHashCode(obj.Value);
     }
 }
