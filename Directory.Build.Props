@@ -4,8 +4,8 @@
   <PropertyGroup>
     <VersionPrefix>$(Net30LinqBridgeVersion)</VersionPrefix>
     <SolutionDir Condition="'$(SolutionDir)'==''">$(MSBuildThisFileDirectory)</SolutionDir>
-    <VersionSuffix Condition="'$(Configuration)'!='Release'">1-at20250530080650</VersionSuffix>
-    <VersionSuffix Condition="'$(Configuration)'=='Release'">1</VersionSuffix>
+    <VersionSuffix Condition="'$(Configuration)'!='Release'">2-at20250530080650</VersionSuffix>
+    <VersionSuffix Condition="'$(Configuration)'=='Release'">2</VersionSuffix>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>

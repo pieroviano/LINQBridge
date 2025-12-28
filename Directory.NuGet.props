@@ -142,6 +142,7 @@
     <Net4xiTextVersion>1.1.0</Net4xiTextVersion>
     <Net4xMSHTMLVersion>1.2.0</Net4xMSHTMLVersion>
     <Net4xMsTestsVersion>1.5.0</Net4xMsTestsVersion>
+    <Net4xNetHttpClientVersion>1.0.0</Net4xNetHttpClientVersion>
     <Net4XRuntimeCachingVersion>1.3.0</Net4XRuntimeCachingVersion>
     <Net4xRuntimeCompilerServicesUnsafeVersion>1.3.0</Net4xRuntimeCompilerServicesUnsafeVersion>
     <Net4xSqlServerTypesVersion>4.0.0</Net4xSqlServerTypesVersion>
