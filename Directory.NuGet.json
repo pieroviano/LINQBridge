@@ -28289,6 +28289,11 @@
         "Name": "Net4x.SolutionUtility.NoNugetUtility",
         "Project": "Source\\SolutionUtility\\SolutionUtility.NoNugetUtility.csproj",
         "PackageReferences": null
+      },
+      {
+        "Name": "SolutionsLibrary\\Solutions.Library.csproj",
+        "Project": "Net4x.Solutions.Library",
+        "PackageReferences": null
       }
     ]
   },

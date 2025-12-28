@@ -24,8 +24,9 @@
         <LangVersion>latest</LangVersion>
         <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
         <IncludeSymbols>true</IncludeSymbols>
-        <NoWarn>CS3001</NoWarn>
+        <NoWarn>CS3001;CS8618;CS0649;CS8603;CS8625;CS8600;CS8604;CS8602;CS8601;CS0168;CS8620;CS0219;CS0162;CS8619</NoWarn>
         <Nullable>enable</Nullable>
+        <DefaultItemExcludes Condition="'$(TargetFramework)'!='net20' and '$(TargetFramework)'!='net30'">$(DefaultItemExcludes);**\*.cs</DefaultItemExcludes>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DebugType>full</DebugType>
@@ -43,11 +44,6 @@
             <AutoGen>True</AutoGen>
             <DependentUpon>DataAnnotationsResources.resx</DependentUpon>
         </Compile>
-        <Compile Update="ComponentModel\DataAnnotations\Resources\Resource1.Designer.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>Resource1.resx</DependentUpon>
-        </Compile>
         <Compile Update="Linq\Enumerable.g.cs">
             <AutoGen>True</AutoGen>
             <DesignTime>True</DesignTime>
@@ -58,7 +54,7 @@
         <None Include="LinqBridge.snk" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Net35.Actions" Version="$(Net35ActionsVersion).$(VersionBuildSuffix)" />
+        <PackageReference Include="Net35.Actions" Version="$(Net35ActionsVersion).$(VersionBuildSuffix)" Condition="'$(TargetFramework)'=='net20' or '$(TargetFramework)'=='net30'" />
         <PackageReference Include="Net4x.NuGetUtility" PrivateAssets="All" Version="$(NuGetUtilityVersion)" />
     </ItemGroup>
     <ItemGroup>
