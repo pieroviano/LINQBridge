@@ -127,6 +127,7 @@
     <Net4xAsyncBridgeVersion>1.5.0</Net4xAsyncBridgeVersion>
     <Net4xBaseTypesVersion>1.3.1</Net4xBaseTypesVersion>
     <Net4xBuffersVersion>1.2.0</Net4xBuffersVersion>
+    <Net4xCollectionsImmutableVersion>1.0.0</Net4xCollectionsImmutableVersion>
     <Net4xConfigurationVersion>1.1.0</Net4xConfigurationVersion>
     <Net4xDataDataSetExtensionsVersion>4.8.0</Net4xDataDataSetExtensionsVersion>
     <Net4xDrawingVersion>4.8.9037</Net4xDrawingVersion>
@@ -146,6 +147,7 @@
     <Net4XRuntimeCachingVersion>1.3.0</Net4XRuntimeCachingVersion>
     <Net4xRuntimeCompilerServicesUnsafeVersion>1.3.0</Net4xRuntimeCompilerServicesUnsafeVersion>
     <Net4xSqlServerTypesVersion>4.0.0</Net4xSqlServerTypesVersion>
+    <Net4xTextJsonVersion>1.0.0</Net4xTextJsonVersion>
     <Net4xValueTupleVersion>1.4.0</Net4xValueTupleVersion>
     <Net4xWebVersion>4.8.9037</Net4xWebVersion>
     <Net4xWrapperGeneratorVersion>1.2.0</Net4xWrapperGeneratorVersion>

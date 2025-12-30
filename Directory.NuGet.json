@@ -7251,6 +7251,11 @@
         "Name": "KaosCollections\\Collections\\Collections.csproj",
         "Project": "Net4x.Kaos.Collections",
         "PackageReferences": null
+      },
+      {
+        "Name": "Net35.Collections",
+        "Project": "Net35.Collections\\Net35.Collections.csproj",
+        "PackageReferences": null
       }
     ]
   },
@@ -7425,6 +7430,16 @@
             "Version": "$(NuGetUtilityVersion)"
           }
         ]
+      },
+      {
+        "Name": "Net4x.BaseExtensions\\Net4x.BaseExtensions.csproj",
+        "Project": "Net4x.BaseExtensions",
+        "PackageReferences": null
+      },
+      {
+        "Name": "src\\Net4x.BaseExtensions\\Net4x.BaseExtensions.csproj",
+        "Project": "Net4x.BaseExtensions",
+        "PackageReferences": null
       }
     ]
   },
@@ -32466,6 +32481,42 @@
       {
         "Name": "Collections\\Collections.csproj",
         "Project": "Net4x.Kaos.Collections",
+        "PackageReferences": null
+      }
+    ]
+  },
+  {
+    "Solution": {
+      "Path": "D:\\CommonLibrary\\Net4x.Text.Json\\Net4x.Text.Json.sln",
+      "Version": "Net4xTextJsonVersion"
+    },
+    "NuGetPackages": [
+      {
+        "Name": "System.Text.Json",
+        "Project": "Net4x.Text.Json\\Net4x.Text.Json.csproj",
+        "PackageReferences": null
+      },
+      {
+        "Name": "Net4x.Text.Json\\Net4x.Text.Json.csproj",
+        "Project": "Net4x.Text.Json",
+        "PackageReferences": null
+      }
+    ]
+  },
+  {
+    "Solution": {
+      "Path": "D:\\CommonLibrary\\Net4x.Collections.Immutable\\Net4x.Collections.Immutable.sln",
+      "Version": "Net4xCollectionsImmutableVersion"
+    },
+    "NuGetPackages": [
+      {
+        "Name": "Net4x.Collections.Immutable",
+        "Project": "Net4x.Collections.Immutable\\Net4x.Collections.Immutable.csproj",
+        "PackageReferences": null
+      },
+      {
+        "Name": "Net4x.Collections.Immutable\\Net4x.Collections.Immutable.csproj",
+        "Project": "Net4x.Net4x.Collections.Immutable",
         "PackageReferences": null
       }
     ]
