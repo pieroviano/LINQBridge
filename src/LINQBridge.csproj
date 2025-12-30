@@ -79,7 +79,8 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
     <ItemGroup>
-        <Content Include="README.md" Link="README.md" Pack="true" PackagePath="\README.md" />
+        <Content Include="..\LICENSE.txt" Link="LICENSE" Pack="true" PackagePath="\" />
+        <Content Include="..\README.md" Link="README.md" Pack="true" PackagePath="\README.md" />
     </ItemGroup>
     <Import Condition="Exists('$(UserProfile)\.nuget\packages\net4x.nugetutility\$(NuGetUtilityVersion)\build\NuGet.Utility.targets')" Project="$(UserProfile)\.nuget\packages\net4x.nugetutility\$(NuGetUtilityVersion)\build\NuGet.Utility.targets" />
 </Project>
