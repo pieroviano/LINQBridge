@@ -5,12 +5,12 @@
     </PropertyGroup>
     <Import Condition="Exists('$(UserProfile)\.nuget\packages\net4x.nugetutility\$(NuGetUtilityVersion)\build\NuGet.Utility.props')" Project="$(UserProfile)\.nuget\packages\net4x.nugetutility\$(NuGetUtilityVersion)\build\NuGet.Utility.props" />
     <PropertyGroup>
+        <TargetFrameworks>net20;net30;net35;net40;net45;netstandard2.0</TargetFrameworks>
+        <DefaultItemExcludes Condition="'$(TargetFramework)'!='net20' and '$(TargetFramework)'!='net30'">$(DefaultItemExcludes);**\*.cs</DefaultItemExcludes>
         <PackageOutputPath>$(SolutionDir)Packages\</PackageOutputPath>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <DefaultItemExcludes Condition="'$(TargetFramework)'=='net35' or '$(TargetFramework)'=='net40' or '$(TargetFramework)'=='net45' or '$(TargetFramework)'=='netstandard2.0'">$(DefaultItemExcludes);**\*.cs</DefaultItemExcludes>
         <RootNamespace>System</RootNamespace>
         <AssemblyName>Net30.LinqBridge</AssemblyName>
-        <TargetFrameworks>net20;net30;net35;net40;net45;netstandard2.0</TargetFrameworks>
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>LinqBridge.snk</AssemblyOriginatorKeyFile>
         <AssemblyTitle>LINQBridge</AssemblyTitle>
@@ -26,7 +26,6 @@
         <IncludeSymbols>true</IncludeSymbols>
         <NoWarn>CS3001;CS8618;CS0649;CS8603;CS8625;CS8600;CS8604;CS8602;CS8601;CS0168;CS8620;CS0219;CS0162;CS8619</NoWarn>
         <Nullable>enable</Nullable>
-        <DefaultItemExcludes Condition="'$(TargetFramework)'!='net20' and '$(TargetFramework)'!='net30'">$(DefaultItemExcludes);**\*.cs</DefaultItemExcludes>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DebugType>full</DebugType>
@@ -80,7 +79,7 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
     <ItemGroup>
-        <None Include="README.md" Link="README.md" Pack="true" PackagePath="\README.md" />
+        <Content Include="README.md" Link="README.md" Pack="true" PackagePath="\README.md" />
     </ItemGroup>
     <Import Condition="Exists('$(UserProfile)\.nuget\packages\net4x.nugetutility\$(NuGetUtilityVersion)\build\NuGet.Utility.targets')" Project="$(UserProfile)\.nuget\packages\net4x.nugetutility\$(NuGetUtilityVersion)\build\NuGet.Utility.targets" />
 </Project>
