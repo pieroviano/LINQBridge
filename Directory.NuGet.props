@@ -5,7 +5,7 @@
     <NuGetPackageRoot Condition="'$(NuGetPackageRoot)'=='' and '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' != 'true'">~/.nuget/packages/</NuGetPackageRoot>
     <VersionBuildSuffix Condition="'$(Configuration)'!='Release'">*</VersionBuildSuffix>
     <VersionBuildSuffix Condition="'$(Configuration)'=='Release'">*</VersionBuildSuffix>
-    <NuGetUtilityVersion Condition="'$(NuGetUtilityVersion)' == ''">1.0.6</NuGetUtilityVersion>
+    <NuGetUtilityVersion Condition="'$(NuGetUtilityVersion)' == ''">2.1.0</NuGetUtilityVersion>
     <DirectoryNuGet>true</DirectoryNuGet>
     <AggiuntaSTAVersion>1.0.0</AggiuntaSTAVersion>
     <Antlr4Version>4.13.1</Antlr4Version>
@@ -25,7 +25,7 @@
     <BuildAllPackagesVersion>2.1.0</BuildAllPackagesVersion>
     <BusNetSharedBaseVersion>1.0.0</BusNetSharedBaseVersion>
     <BusNetVersion>1.0.0</BusNetVersion>
-    <CefSharpLibraryVersion>2.4.2</CefSharpLibraryVersion>
+    <CefSharpLibraryVersion>2.4.3</CefSharpLibraryVersion>
     <CertificateLibraryVersion>1.0.0</CertificateLibraryVersion>
     <ChromeLibraryVersion>1.0.0</ChromeLibraryVersion>
     <CodeDomExtVersion>2.2.0</CodeDomExtVersion>
@@ -105,6 +105,7 @@
     <MdiInActiveXVersion>2.5.0</MdiInActiveXVersion>
     <MergeTablesVersion>1.3.0</MergeTablesVersion>
     <MetroFrameworkVersion>1.4.0</MetroFrameworkVersion>
+    <MicrosoftBclAsyncInterfacesVersion>6.0.0</MicrosoftBclAsyncInterfacesVersion>
     <MicrosoftDataSqlClientVersion>5.2.2</MicrosoftDataSqlClientVersion>
     <MicrosoftExtensionsLogging10Version>10.0.0</MicrosoftExtensionsLogging10Version>
     <MicrosoftExtensionsLogging461Version>2.2.0</MicrosoftExtensionsLogging461Version>
@@ -124,9 +125,11 @@
     <Net35ThreadingTasksVersion>4.2.0</Net35ThreadingTasksVersion>
     <Net35ThredingTasksVersion>1.4.0</Net35ThredingTasksVersion>
     <Net35TypeInfoVersion>1.5.0</Net35TypeInfoVersion>
+    <Net4xAsyncBridgeExtensionsVersion>1.0.0</Net4xAsyncBridgeExtensionsVersion>
     <Net4xAsyncBridgeVersion>1.5.0</Net4xAsyncBridgeVersion>
     <Net4xBaseTypesVersion>1.3.1</Net4xBaseTypesVersion>
     <Net4xBuffersVersion>1.2.0</Net4xBuffersVersion>
+    <Net4xCefSharpLibraryWorking>2.4.1</Net4xCefSharpLibraryWorking>
     <Net4xCollectionsImmutableVersion>1.0.0</Net4xCollectionsImmutableVersion>
     <Net4xConfigurationVersion>1.1.0</Net4xConfigurationVersion>
     <Net4xDataDataSetExtensionsVersion>4.8.0</Net4xDataDataSetExtensionsVersion>
@@ -144,6 +147,7 @@
     <Net4xMSHTMLVersion>1.2.0</Net4xMSHTMLVersion>
     <Net4xMsTestsVersion>1.5.0</Net4xMsTestsVersion>
     <Net4xNetHttpClientVersion>1.0.0</Net4xNetHttpClientVersion>
+    <Net4xNetHttpVersion>1.0.0</Net4xNetHttpVersion>
     <Net4XRuntimeCachingVersion>1.3.0</Net4XRuntimeCachingVersion>
     <Net4xRuntimeCompilerServicesUnsafeVersion>1.3.0</Net4xRuntimeCompilerServicesUnsafeVersion>
     <Net4xSqlServerTypesVersion>4.0.0</Net4xSqlServerTypesVersion>
@@ -152,6 +156,8 @@
     <Net4xWebVersion>4.8.9037</Net4xWebVersion>
     <Net4xWrapperGeneratorVersion>1.2.0</Net4xWrapperGeneratorVersion>
     <Net4xWshRuntimeVersion>1.0.0</Net4xWshRuntimeVersion>
+    <Net4xXmlLinqVersion>1.0.0</Net4xXmlLinqVersion>
+    <Net4xXUnit2Version>1.0.0</Net4xXUnit2Version>
     <NetClientProgramVersion>1.0.0</NetClientProgramVersion>
     <NewtonsoftJsonVersion>13.0.4</NewtonsoftJsonVersion>
     <NotepadSharpVersion>1.5.0</NotepadSharpVersion>
@@ -160,7 +166,7 @@
     <NugetOptimizerVersion>1.0.0</NugetOptimizerVersion>
     <NuGetUploaderVersion>1.0.0</NuGetUploaderVersion>
     <NuGetUtilityPocVersion>2.0.12</NuGetUtilityPocVersion>
-    <NuGetUtilityVersion>1.0.6</NuGetUtilityVersion>
+    <NuGetUtilityVersion>1.0.7</NuGetUtilityVersion>
     <NumberConverterLibVersion>1.2.0</NumberConverterLibVersion>
     <NUnitToXunitConverterVersion>1.0.0</NUnitToXunitConverterVersion>
     <ObfuscarVersion>2.2.37</ObfuscarVersion>
@@ -228,6 +234,7 @@
     <SystemDrawingCommonVersion>7.0.0</SystemDrawingCommonVersion>
     <SystemIdentityModelTokensJwtVersion>8.2.1</SystemIdentityModelTokensJwtVersion>
     <SystemMemoryVersion>4.5.5</SystemMemoryVersion>
+    <SystemRuntimeCompilerServicesUnsafeVersion>4.5.3</SystemRuntimeCompilerServicesUnsafeVersion>
     <SystemRuntimeInteropServicesRuntimeInformationVersion>4.3.0</SystemRuntimeInteropServicesRuntimeInformationVersion>
     <SystemSecurityPermissions9Version>9.0.0</SystemSecurityPermissions9Version>
     <SystemSecurityPermissionsVersion>7.0.0</SystemSecurityPermissionsVersion>
@@ -269,6 +276,7 @@
     <WrapperGeneratorVersion>1.2.0</WrapperGeneratorVersion>
     <Xsd2DbLibraryVersion>1.1.0</Xsd2DbLibraryVersion>
     <Xsd2DbVersion>1.4.0</Xsd2DbVersion>
+    <xunitassertVersion>1.0.0</xunitassertVersion>
     <XunitRunnerVisualStudioVersion>2.8.2</XunitRunnerVisualStudioVersion>
     <XunitVersion>2.9.2</XunitVersion>
     <ZipCodeApiVersion>1.0.0</ZipCodeApiVersion>
