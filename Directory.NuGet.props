@@ -123,6 +123,9 @@
     <MSBuildCommunityTasksVersion>1.6.0</MSBuildCommunityTasksVersion>
     <MsOrNUnitToXunitConverterVersion>1.0.0</MsOrNUnitToXunitConverterVersion>
     <MsTestsToNunitVersion>1.0.0</MsTestsToNunitVersion>
+    <Net20ActionsVersion>1.4.0</Net20ActionsVersion>
+    <Net20LinqBridgeVersion>1.6.0</Net20LinqBridgeVersion>
+    <Net20TypeInfoVersion>1.5.0</Net20TypeInfoVersion>
     <Net30LinqBridgeVersion>1.6.0</Net30LinqBridgeVersion>
     <Net35ActionsVersion>1.4.0</Net35ActionsVersion>
     <Net35BuffersVersion>1.0.0</Net35BuffersVersion>

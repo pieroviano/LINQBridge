@@ -1,4 +1,5 @@
 #region License, Terms and Author(s)
+
 //
 // LINQBridge
 // Copyright (c) 2007 Atif Aziz, Joseph Albahari. All rights reserved.
@@ -23,19 +24,16 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 #endregion
+
+using System;
+using System.Collections.Generic;
+using NUnit.Framework;
+using NUnit.Framework.Constraints;
 
 namespace LinqBridge.Tests
 {
-    #region Imports
-
-    using System;
-    using System.Collections.Generic;
-    using NUnit.Framework;
-    using NUnit.Framework.Constraints;
-
-    #endregion
-
     internal static class Tester
     {
         public static void AssertEquals<T>(this IEnumerable<T> actuals, params T[] expectations)
@@ -43,7 +41,8 @@ namespace LinqBridge.Tests
             actuals.AssertThat(a => Is.EqualTo(a), expectations);
         }
 
-        public static void AssertThat<T>(this IEnumerable<T> actuals, Func<T, Constraint> constrainer, params T[] expectations)
+        public static void AssertThat<T>(this IEnumerable<T> actuals, Func<T, Constraint> constrainer,
+            params T[] expectations)
         {
             using (var e = actuals.GetEnumerator())
             {

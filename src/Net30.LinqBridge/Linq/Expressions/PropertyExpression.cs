@@ -1,0 +1,22 @@
+#nullable disable
+using System.Reflection;
+
+namespace System.Linq.Expressions;
+
+internal class PropertyExpression : MemberExpression
+{
+    private readonly PropertyInfo _property;
+
+    public PropertyExpression(Expression expression, PropertyInfo member)
+        : base(expression)
+    {
+        _property = member;
+    }
+
+    public sealed override Type Type => _property.PropertyType;
+
+    internal override MemberInfo GetMember()
+    {
+        return _property;
+    }
+}

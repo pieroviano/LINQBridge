@@ -4,15 +4,20 @@
 		<AssemblyName>Linq.Tests</AssemblyName>
 		<NoWarn>1685</NoWarn>
 		<DebugType>full</DebugType>
-		<TargetFramework>net35</TargetFramework>
+		<TargetFramework>net30</TargetFramework>
 		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
 	</PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="Net4x.BaseTypes" Version="1.3.1.*" Aliases="bt" />
+		<PackageReference Include="Net20.Runtime" Version="$(Net20TypeInfoVersion).$(VersionBuildSuffix)" />
 		<PackageReference Include="NUnit" Version="2.6.4" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="..\LINQBridge.Tests\EnumerableFixture.cs" Link="EnumerableFixture.cs" />
 		<Compile Include="..\LINQBridge.Tests\Reader.cs" Link="Reader.cs" />
 		<Compile Include="..\LINQBridge.Tests\Tester.cs" Link="Tester.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\..\src\Net30.LinqBridge\Net20.LinqBridge.csproj" />
 	</ItemGroup>
 </Project>

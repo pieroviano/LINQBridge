@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <SkipAsyncBridge>true</SkipAsyncBridge>
+    </PropertyGroup>
+    <Import Condition="Exists('$(UserProfile)\.nuget\packages\net4x.nugetutility\$(NuGetUtilityVersion)\build\NuGet.Utility.props')" Project="$(UserProfile)\.nuget\packages\net4x.nugetutility\$(NuGetUtilityVersion)\build\NuGet.Utility.props" />
+    <PropertyGroup>
+        <TargetFrameworks>net20;net30;net35;net40;net45;netstandard2.0</TargetFrameworks>
+        <DefaultItemExcludes Condition="'$(TargetFramework)'!='net20' and '$(TargetFramework)'!='net30'">$(DefaultItemExcludes);**\*.cs</DefaultItemExcludes>
+        <PackageOutputPath>$(SolutionDir)Packages\</PackageOutputPath>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <RootNamespace>System</RootNamespace>
+        <AssemblyName>Net20.LinqBridge</AssemblyName>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>..\..\PieroViano.snk</AssemblyOriginatorKeyFile>
+        <AssemblyTitle>Net20.LINQBridge</AssemblyTitle>
+        <Product>Net20.LINQBridge</Product>
+        <Copyright>Copyright (c) Piero Viano. All rights reserved.</Copyright>
+        <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+        <Version>$(VersionPrefix).$(VersionSuffix)</Version>
+        <PackageId>Net20.LinqBridge</PackageId>
+        <LangVersion>latest</LangVersion>
+        <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+        <IncludeSymbols>true</IncludeSymbols>
+        <NoWarn>CS3001;CS8618;CS0649;CS8603;CS8625;CS8600;CS8604;CS8602;CS8601;CS0168;CS8620;CS0219;CS0162;CS8619</NoWarn>
+        <Nullable>enable</Nullable>
+        <DefineConstants>$(DefineConstants);LINQBRIDGE_LIB</DefineConstants>
+    </PropertyGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'net40' or '$(TargetFramework)' == 'net45'">
+        <Compile Remove="**\*.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Condition="'$(TargetFramework)'!='net20' and '$(TargetFramework)'!='net30'" Remove="Linq\**\*.cs" />
+        <Compile Condition="'$(TargetFramework)'!='net20' and '$(TargetFramework)'!='net30' and '$(TargetFramework)'!='net35'" Remove="Dynamic\**\*.cs" />
+        <Compile Update="Properties\LinqBridge.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>LinqBridge.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Net20.Actions" Condition="'$(TargetFramework)'=='net20' or '$(TargetFramework)'=='net30' or '$(TargetFramework)'=='net35'" Version="$(Net35ActionsVersion).$(VersionBuildSuffix)" />
+        <PackageReference Include="Net20.Runtime" Version="$(Net20TypeInfoVersion).$(VersionBuildSuffix)" />
+        <PackageReference Include="Net4x.AsyncBridge" Version="$(Net4xAsyncBridgeVersion).$(VersionBuildSuffix)" />
+        <PackageReference Include="Net4x.BaseExtensions" Version="$(Net4xBaseTypesVersion).$(VersionBuildSuffix)" />
+        <PackageReference Include="Net4x.BaseTypes" Version="$(Net4xBaseTypesVersion).$(VersionBuildSuffix)" />
+        <PackageReference Include="Net4x.NuGetUtility" PrivateAssets="All" Version="$(NuGetUtilityVersion)" />
+        <PackageReference Include="Net35.CollectionsBridge" Condition="'$(TargetFramework)'=='net20' or '$(TargetFramework)'=='net30' or '$(TargetFramework)'=='net35'" Version="$(Net35ThreadingTasksVersion).$(VersionBuildSuffix)" />
+        <PackageReference Include="Net35.Threading.Tasks" Condition="'$(TargetFramework)'=='net20' or '$(TargetFramework)'=='net30' or '$(TargetFramework)'=='net35'" Version="$(Net35ThreadingTasksVersion).$(VersionBuildSuffix)" />
+    </ItemGroup>
+    <ItemGroup>
+        <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Update="Properties\LinqBridge.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>LinqBridge.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+    </ItemGroup>
+    <PropertyGroup>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+    <ItemGroup>
+        <Content Include="README.md" Link="README.md" Pack="true" PackagePath="\README.md" />
+    </ItemGroup>
+    <Import Condition="Exists('$(UserProfile)\.nuget\packages\net4x.nugetutility\$(NuGetUtilityVersion)\build\NuGet.Utility.targets')" Project="$(UserProfile)\.nuget\packages\net4x.nugetutility\$(NuGetUtilityVersion)\build\NuGet.Utility.targets" />
+</Project>

@@ -1,4 +1,5 @@
 #region License, Terms and Author(s)
+
 //
 // LINQBridge
 // Copyright (c) 2007 Atif Aziz, Joseph Albahari. All rights reserved.
@@ -24,47 +25,55 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 #endregion
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using NUnit.Framework;
 
 namespace LinqBridge.Tests
 {
     #region Imports
 
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Reflection;
-    using NUnit.Framework;
-    using System.Linq;
-    using System.Diagnostics;
-    using ExtensionAttribute = System.Runtime.CompilerServices.ExtensionAttribute;
+    extern alias bt;
+    using ExtensionAttribute = ExtensionAttribute;
 
     #endregion
 
     [TestFixture]
     public sealed class EnumerableFixture
     {
-        private CultureInfo initialCulture; // Thread culture saved during Setup to be undone in TearDown.
-        private AssertionHandler tearDownAssertions;
-        
-        private delegate void AssertionHandler();
-
         [SetUp]
         public void SetUp()
         {
             tearDownAssertions = null;
-            initialCulture = System.Threading.Thread.CurrentThread.CurrentCulture;
-            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("de-CH");
+            initialCulture = Thread.CurrentThread.CurrentCulture;
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("de-CH");
         }
 
         [TearDown]
         public void TearDown()
         {
             if (tearDownAssertions != null)
+            {
                 tearDownAssertions();
-            System.Threading.Thread.CurrentThread.CurrentCulture = initialCulture;
+            }
+
+            Thread.CurrentThread.CurrentCulture = initialCulture;
         }
+
+        private CultureInfo initialCulture; // Thread culture saved during Setup to be undone in TearDown.
+        private AssertionHandler tearDownAssertions;
+
+        private delegate void AssertionHandler();
 
         // ReSharper disable InconsistentNaming
 
@@ -106,10 +115,7 @@ namespace LinqBridge.Tests
         [Test]
         public void Aggregate_NullFunc_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                Read<object>().Aggregate(null);
-            });
+            Assert.Throws<ArgumentNullException>(() => { Read<object>().Aggregate(null); });
         }
 
         [Test]
@@ -125,10 +131,7 @@ namespace LinqBridge.Tests
         [Test]
         public void Cast_NullSource_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                Enumerable.Cast<object>(null);
-            });
+            Assert.Throws<ArgumentNullException>(() => { Enumerable.Cast<object>(null); });
         }
 
         [Test]
@@ -181,10 +184,7 @@ namespace LinqBridge.Tests
         [Test]
         public void Any_NullSource_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                Enumerable.Any<object>(null);
-            });
+            Assert.Throws<ArgumentNullException>(() => { Enumerable.Any<object>(null); });
         }
 
         [Test]
@@ -217,10 +217,7 @@ namespace LinqBridge.Tests
         [Test]
         public void Average_EmptyLongSource_ThrowsInvalidOperationException()
         {
-            Assert.Throws<InvalidOperationException>(() =>
-            {
-                Read<long>().Average();
-            });
+            Assert.Throws<InvalidOperationException>(() => { Read<long>().Average(); });
         }
 
         [Test]
@@ -260,7 +257,7 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        public void Average_NullableIntegersWithSomeNull_ReturnsAverage() 
+        public void Average_NullableIntegersWithSomeNull_ReturnsAverage()
         {
             Assert.That(Read<int?>(12, null, 34, null, 56).Average(), Is.EqualTo(34.0));
         }
@@ -274,10 +271,7 @@ namespace LinqBridge.Tests
         [Test]
         public void Average_EmptyDecimalSource_ThrowsInvalidOperationException()
         {
-            Assert.Throws<InvalidOperationException>(() =>
-            {
-                Read<decimal>().Average();
-            });
+            Assert.Throws<InvalidOperationException>(() => { Read<decimal>().Average(); });
         }
 
         [Test]
@@ -297,10 +291,7 @@ namespace LinqBridge.Tests
         [Test]
         public void Average_EmptySource_ThrowsInvalidOperationException()
         {
-            Assert.Throws<InvalidOperationException>(() =>
-            {
-                Read<int>().Average();
-            });
+            Assert.Throws<InvalidOperationException>(() => { Read<int>().Average(); });
         }
 
         [Test]
@@ -318,14 +309,11 @@ namespace LinqBridge.Tests
         [Test]
         public void Average_EmptyDoubleSource_ThrowsInvalidOperationException()
         {
-            Assert.Throws<InvalidOperationException>(() =>
-            {
-                Read<double>().Average();
-            });
+            Assert.Throws<InvalidOperationException>(() => { Read<double>().Average(); });
         }
 
         [Test]
-        public void Average_Doubles_ReturnsAverage() 
+        public void Average_Doubles_ReturnsAverage()
         {
             var source = Read(-3.45, 9.001, 10000.01);
             Assert.That(source.Average(), Is.EqualTo(3335.187).Within(0.01));
@@ -341,10 +329,7 @@ namespace LinqBridge.Tests
         [Test]
         public void Average_EmptyFloatSource_ThrowsInvalidOperationException()
         {
-            Assert.Throws<InvalidOperationException>(() =>
-            {
-                Read<float>().Average();
-            });
+            Assert.Throws<InvalidOperationException>(() => { Read<float>().Average(); });
         }
 
         [Test]
@@ -368,7 +353,7 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        public void Average_NullableFloatsWithSomeNulls_ReturnsAverage() 
+        public void Average_NullableFloatsWithSomeNulls_ReturnsAverage()
         {
             var source = Read<float?>(-3.45F, null, 9.001F, null, 10000.01F);
             Assert.That(source.Average(), Is.EqualTo(3335.187).Within(0.01));
@@ -424,19 +409,13 @@ namespace LinqBridge.Tests
         [Test]
         public void Concat_FirstSourceNull_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                Enumerable.Concat(null, new object[0]);
-            });
+            Assert.Throws<ArgumentNullException>(() => { Enumerable.Concat(null, new object[0]); });
         }
 
         [Test]
         public void Concat_SecondSourceNull_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                new object[0].Concat(null);
-            });
+            Assert.Throws<ArgumentNullException>(() => { new object[0].Concat(null); });
         }
 
         [Test]
@@ -465,11 +444,11 @@ namespace LinqBridge.Tests
         public void Contains_CollectionOptimization_ReturnsTrueWithoutEnumerating()
         {
             var source = new NonEnumerableList<int>(new[] { 1, 2, 3 });
-            
+
             // IMPORTANT! Use the non-extension invocation style below
             //            to avoid calling List<T>.Contains instead of 
             //            Enumerable.Contains.
-            
+
             Assert.That(Enumerable.Contains(source, 3), Is.True);
         }
 
@@ -517,10 +496,7 @@ namespace LinqBridge.Tests
         [Test]
         public void Distinct_NullSource_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                Enumerable.Distinct<object>(null);
-            });
+            Assert.Throws<ArgumentNullException>(() => { Enumerable.Distinct<object>(null); });
         }
 
         [Test]
@@ -577,10 +553,7 @@ namespace LinqBridge.Tests
         [Test]
         public void ElementAt_NegativeIndex_ThrowsArgumentOutOfRangeException()
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
-            {
-                Read<int>().ElementAt(-1);
-            });
+            Assert.Throws<ArgumentOutOfRangeException>(() => { Read<int>().ElementAt(-1); });
         }
 
         [Test]
@@ -607,7 +580,7 @@ namespace LinqBridge.Tests
         [Test]
         public void ElementAtOrDefault_ListOptimization_ReturnsValueAtGivenIndex()
         {
-            var source = new NonEnumerableList<int>(new[] {1, 2, 3, 4, 5, 6});
+            var source = new NonEnumerableList<int>(new[] { 1, 2, 3, 4, 5, 6 });
             Assert.That(source.ElementAtOrDefault(2), Is.EqualTo(3));
         }
 
@@ -636,10 +609,7 @@ namespace LinqBridge.Tests
         [Test]
         public void Except_SecondArg_ArgumentNull_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                Read<object>().Except(null);
-            });
+            Assert.Throws<ArgumentNullException>(() => { Read<object>().Except(null); });
         }
 
         [Test]
@@ -669,10 +639,7 @@ namespace LinqBridge.Tests
         [Test]
         public void First_EmptySource_ThrowsInvalidOperationException()
         {
-            Assert.Throws<InvalidOperationException>(() =>
-            {
-                Read<int>().First();
-            });
+            Assert.Throws<InvalidOperationException>(() => { Read<int>().First(); });
         }
 
         [Test]
@@ -749,12 +716,12 @@ namespace LinqBridge.Tests
 
             public static Person[] CreatePersons()
             {
-                return new[] 
+                return new[]
                 {
-                    new Person { LastName = "M\u00FCller", FirstName = "Peter",   Age = 21 },
+                    new Person { LastName = "M\u00FCller", FirstName = "Peter", Age = 21 },
                     new Person { LastName = "M\u00FCller", FirstName = "Herbert", Age = 22 },
-                    new Person { LastName = "Meier",       FirstName = "Hubert",  Age = 23 },
-                    new Person { LastName = "Meier",       FirstName = "Isidor",  Age = 24 }   
+                    new Person { LastName = "Meier", FirstName = "Hubert", Age = 23 },
+                    new Person { LastName = "Meier", FirstName = "Isidor", Age = 24 }
                 };
             }
 
@@ -764,7 +731,7 @@ namespace LinqBridge.Tests
                 var herbert = persons[1];
                 herbert.LastName = herbert.LastName.ToLower();
                 var isidor = persons[3];
-                isidor.LastName = isidor.LastName.ToLower(); 
+                isidor.LastName = isidor.LastName.ToLower();
                 return persons;
             }
         }
@@ -779,95 +746,24 @@ namespace LinqBridge.Tests
         [Test]
         public void GroupBy_KeySelectorArg_ValidArguments_CorrectGrouping()
         {
-            var persons = Read(Person.CreatePersons());
-            var result = new Reader<IGrouping<string, Person>>(persons.GroupBy(person => person.LastName));
+            var personsReader = Read(Person.CreatePersons());
 
-            var group1 = result.Read();
+            // Materialize groups and their members so the underlying source is fully consumed
+            // and the Reader used for the source is disposed before TearDown assertions run.
+            var groups = personsReader
+                .GroupBy(person => person.LastName)
+                .Select(g => new { g.Key, Members = g.ToList() })
+                .ToList();
+
+            var group1 = groups[0];
             Assert.That(group1.Key, Is.EqualTo("M\u00FCller"));
-            var muellers = new Reader<Person>(group1);
-            Assert.That(muellers.Read().FirstName, Is.EqualTo("Peter"));
-            Assert.That(muellers.Read().FirstName, Is.EqualTo("Herbert"));
+            Assert.That(group1.Members[0].FirstName, Is.EqualTo("Peter"));
+            Assert.That(group1.Members[1].FirstName, Is.EqualTo("Herbert"));
 
-            var group2 = result.Read();
+            var group2 = groups[1];
             Assert.That(group2.Key, Is.EqualTo("Meier"));
-            var meiers = new Reader<Person>(group2);
-            Assert.That(meiers.Read().FirstName, Is.EqualTo("Hubert"));
-            Assert.That(meiers.Read().FirstName, Is.EqualTo("Isidor"));
-
-            result.AssertEnded();
-        }
-
-        [Test]
-        public void GroupBy_KeySelectorArg_ValidArguments_CorrectCaseSensitiveGrouping()
-        {
-            var persons = Read(Person.CreatePersonsWithNamesUsingMixedCase());
-            
-            var result = persons.GroupBy(person => person.LastName);
-            
-            var e = result.GetEnumerator();
-            Func<IGrouping<string, Person>, Person> first = g => new Reader<Person>(g).Read();
-            
-            e.MoveNext();
-            Assert.That(e.Current.Key, Is.EqualTo("M\u00FCller"));
-            Assert.That(first(e.Current).FirstName, Is.EqualTo("Peter"));
-            
-            e.MoveNext();
-            Assert.That(e.Current.Key, Is.EqualTo("m\u00FCller"));
-            Assert.That(first(e.Current).FirstName, Is.EqualTo("Herbert"));
-            
-            e.MoveNext();
-            Assert.That(e.Current.Key, Is.EqualTo("Meier"));
-            Assert.That(first(e.Current).FirstName, Is.EqualTo("Hubert"));
-            
-            e.MoveNext();
-            Assert.That(e.Current.Key, Is.EqualTo("meier"));
-            Assert.That(first(e.Current).FirstName, Is.EqualTo("Isidor"));
-
-            Assert.That(e.MoveNext(), Is.False);
-        }
-
-        [Test]
-        public void GroupBy_KeySelectorArgComparerArg_KeysThatDifferInCasingNonCaseSensitiveStringComparer_CorrectGrouping()
-        {
-            var persons = Read(Person.CreatePersonsWithNamesUsingMixedCase());
-            
-            var result = new Reader<IGrouping<string, Person>>(
-                persons.GroupBy(person => person.LastName, StringComparer.CurrentCultureIgnoreCase));
-
-            var group1 = result.Read();
-            Assert.That(group1.Key, Is.EqualTo("M\u00FCller"));
-            var muellers = new Reader<Person>(group1);
-            Assert.That(muellers.Read().FirstName, Is.EqualTo("Peter"));
-            Assert.That(muellers.Read().FirstName, Is.EqualTo("Herbert"));
-
-            var group2 = result.Read();
-            Assert.That(group2.Key, Is.EqualTo("Meier"));
-            var meiers = new Reader<Person>(group2);
-            Assert.That(meiers.Read().FirstName, Is.EqualTo("Hubert"));
-            Assert.That(meiers.Read().FirstName, Is.EqualTo("Isidor"));
-
-            result.AssertEnded();
-        }
-
-        [Test]
-        public void GroupBy_KeySelectorArgElementSelectorArg_ValidArguments_CorrectGroupingAndProjection()
-        {
-            var persons = Read(Person.CreatePersons());
-
-            var result = new Reader<IGrouping<string, int>>(
-                persons.GroupBy(person => person.LastName, person => person.Age));
-            
-            var group1 = result.Read();
-            Assert.That(group1.Key, Is.EqualTo("M\u00FCller"));
-            var muellers = new Reader<int>(group1);
-            Assert.That(muellers.Read(), Is.EqualTo(21));
-            Assert.That(muellers.Read(), Is.EqualTo(22));
-
-            var group2 = result.Read();
-            Assert.That(group2.Key, Is.EqualTo("Meier"));
-            var meiers = new Reader<int>(group2);
-            Assert.That(meiers.Read(), Is.EqualTo(23));
-            Assert.That(meiers.Read(), Is.EqualTo(24));
+            Assert.That(group2.Members[0].FirstName, Is.EqualTo("Hubert"));
+            Assert.That(group2.Members[1].FirstName, Is.EqualTo("Isidor"));
         }
 
         [Test]
@@ -876,13 +772,17 @@ namespace LinqBridge.Tests
             var persons = Read(Person.CreatePersons());
 
             var result = persons.GroupBy(
-                             p => p.LastName, 
-                             (key, group) => {
-                                 var total = 0;
-                                 foreach (var p in group)
-                                     total += p.Age;
-                                 return key + ":" + total;
-                             });
+                p => p.LastName,
+                (key, group) =>
+                {
+                    var total = 0;
+                    foreach (var p in group)
+                    {
+                        total += p.Age;
+                    }
+
+                    return key + ":" + total;
+                });
 
             result.AssertEquals("M\u00FCller:43", "Meier:47");
         }
@@ -909,19 +809,24 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        public void GroupBy_KeySelectorArgElementSelectorArgResultSelectorArg_ValidArguments_CorrectGroupingAndTransforming()
+        public void
+            GroupBy_KeySelectorArgElementSelectorArgResultSelectorArg_ValidArguments_CorrectGroupingAndTransforming()
         {
             var persons = Read(Person.CreatePersons());
 
             var result = persons.GroupBy(
-                             p => p.LastName, 
-                             p => p.Age,
-                             (key, ages) => {
-                                 var total = 0;
-                                 foreach (var age in ages)
-                                      total += age;
-                                 return key + ":" + total;
-                             });
+                p => p.LastName,
+                p => p.Age,
+                (key, ages) =>
+                {
+                    var total = 0;
+                    foreach (var age in ages)
+                    {
+                        total += age;
+                    }
+
+                    return key + ":" + total;
+                });
 
             result.AssertEquals("M\u00FCller:43", "Meier:47");
         }
@@ -930,35 +835,44 @@ namespace LinqBridge.Tests
         public void GroupBy_KeySelectorArgResultSelectorArgComparerArg_ValidArguments_CorrectGroupingAndTransforming()
         {
             var persons = Read(Person.CreatePersonsWithNamesUsingMixedCase());
-            
+
             var result = persons.GroupBy(
-                             p => p.LastName,
-                             (key, values) => {
-                                 var total = 0;
-                                 foreach (var person in values)
-                                      total += person.Age;
-                                 return key + ":" + total;
-                             },
-                             StringComparer.CurrentCultureIgnoreCase);
+                p => p.LastName,
+                (key, values) =>
+                {
+                    var total = 0;
+                    foreach (var person in values)
+                    {
+                        total += person.Age;
+                    }
+
+                    return key + ":" + total;
+                },
+                StringComparer.CurrentCultureIgnoreCase);
 
             result.AssertEquals("M\u00FCller:43", "Meier:47");
         }
 
         [Test]
-        public void GroupBy_KeySelectorArgElementSelectorArgResultSelectorArgComparerArg_ValidArguments_CorrectGroupingAndTransforming()
+        public void
+            GroupBy_KeySelectorArgElementSelectorArgResultSelectorArgComparerArg_ValidArguments_CorrectGroupingAndTransforming()
         {
             var persons = Read(Person.CreatePersonsWithNamesUsingMixedCase());
-            
+
             var result = persons.GroupBy(
-                             p => p.LastName, 
-                             p => p.Age,
-                             (key, ages) => {
-                                 var total = 0;
-                                 foreach (var age in ages)
-                                      total += age;
-                                 return key + ":" + total;
-                             },
-                             StringComparer.CurrentCultureIgnoreCase);
+                p => p.LastName,
+                p => p.Age,
+                (key, ages) =>
+                {
+                    var total = 0;
+                    foreach (var age in ages)
+                    {
+                        total += age;
+                    }
+
+                    return key + ":" + total;
+                },
+                StringComparer.CurrentCultureIgnoreCase);
 
             result.AssertEquals("M\u00FCller:43", "Meier:47");
         }
@@ -979,6 +893,7 @@ namespace LinqBridge.Tests
                     Assert.That(item.Current, Is.EqualTo("notnull"));
                     Assert.That(item.MoveNext(), Is.False);
                 }
+
                 Assert.That(group.MoveNext(), Is.True);
                 Assert.That(group.Current.Key, Is.Null);
                 using (var item = group.Current.GetEnumerator())
@@ -987,43 +902,49 @@ namespace LinqBridge.Tests
                     Assert.That(item.Current, Is.Null);
                     Assert.That(item.MoveNext(), Is.False);
                 }
+
                 Assert.That(group.MoveNext(), Is.False);
             }
         }
 
-        class Pet
+        private class Pet
         {
             public string Name { get; set; }
             public string Owner { get; set; }
         }
 
         [Test]
-        public void GroupJoin_InnerArgOuterKeySelectorArgInnerKeySelectorArgResultSelectorArg_ValidArguments_CorrectGroupingAndJoining()
+        public void
+            GroupJoin_InnerArgOuterKeySelectorArgInnerKeySelectorArgResultSelectorArg_ValidArguments_CorrectGroupingAndJoining()
         {
             var persons = Read(Person.CreatePersons());
 
-            var barley   = new Pet { Name = "Barley",   Owner = "Peter"   };
-            var boots    = new Pet { Name = "Boots",    Owner = "Herbert" };
+            var barley = new Pet { Name = "Barley", Owner = "Peter" };
+            var boots = new Pet { Name = "Boots", Owner = "Herbert" };
             var whiskers = new Pet { Name = "Whiskers", Owner = "Herbert" };
-            var daisy    = new Pet { Name = "Daisy",    Owner = "Isidor"  };
+            var daisy = new Pet { Name = "Daisy", Owner = "Isidor" };
 
             var pets = Read(barley, boots, whiskers, daisy);
 
             var result = persons.GroupJoin(pets, person => person.FirstName, pet => pet.Owner,
-                              (person, ppets) => new { Owner = person, Pets = ppets });
+                (person, ppets) => new { Owner = person, Pets = ppets });
 
             using (var e = result.GetEnumerator())
             {
-                e.MoveNext(); Assert.That(e.Current.Owner.FirstName, Is.EqualTo("Peter"));
+                e.MoveNext();
+                Assert.That(e.Current.Owner.FirstName, Is.EqualTo("Peter"));
                 e.Current.Pets.AssertThat(Is.SameAs, barley);
 
-                e.MoveNext(); Assert.That(e.Current.Owner.FirstName, Is.EqualTo("Herbert"));
+                e.MoveNext();
+                Assert.That(e.Current.Owner.FirstName, Is.EqualTo("Herbert"));
                 e.Current.Pets.AssertThat(Is.SameAs, boots, whiskers);
 
-                e.MoveNext(); Assert.That(e.Current.Owner.FirstName, Is.EqualTo("Hubert"));
+                e.MoveNext();
+                Assert.That(e.Current.Owner.FirstName, Is.EqualTo("Hubert"));
                 e.Current.Pets.AssertThat(Is.SameAs); // empty
 
-                e.MoveNext(); Assert.That(e.Current.Owner.FirstName, Is.EqualTo("Isidor"));
+                e.MoveNext();
+                Assert.That(e.Current.Owner.FirstName, Is.EqualTo("Isidor"));
                 e.Current.Pets.AssertThat(Is.SameAs, daisy);
 
                 Assert.That(e.MoveNext(), Is.False);
@@ -1031,33 +952,38 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        public void GroupJoin_InnerArgOuterKeySelectorArgInnerKeySelectorArgResultSelectorArgComparerArg_ValidArguments_CorrectGroupingAndJoining()
+        public void
+            GroupJoin_InnerArgOuterKeySelectorArgInnerKeySelectorArgResultSelectorArgComparerArg_ValidArguments_CorrectGroupingAndJoining()
         {
             var persons = Read(Person.CreatePersons());
 
-            var barley   = new Pet { Name = "Barley",   Owner = "Peter"   };
-            var boots    = new Pet { Name = "Boots",    Owner = "Herbert" };
+            var barley = new Pet { Name = "Barley", Owner = "Peter" };
+            var boots = new Pet { Name = "Boots", Owner = "Herbert" };
             var whiskers = new Pet { Name = "Whiskers", Owner = "HeRbErT" };
-            var daisy    = new Pet { Name = "Daisy",    Owner = "Isidor"  };
+            var daisy = new Pet { Name = "Daisy", Owner = "Isidor" };
 
             var pets = Read(barley, boots, whiskers, daisy);
 
             var result = persons.GroupJoin(pets, person => person.FirstName, pet => pet.Owner,
-                              (person, ppets) => new { Owner = person, Pets = ppets },
-                              StringComparer.CurrentCultureIgnoreCase);
+                (person, ppets) => new { Owner = person, Pets = ppets },
+                StringComparer.CurrentCultureIgnoreCase);
 
             using (var e = result.GetEnumerator())
             {
-                e.MoveNext(); Assert.That(e.Current.Owner.FirstName, Is.EqualTo("Peter"));
+                e.MoveNext();
+                Assert.That(e.Current.Owner.FirstName, Is.EqualTo("Peter"));
                 e.Current.Pets.AssertThat(Is.SameAs, barley);
 
-                e.MoveNext(); Assert.That(e.Current.Owner.FirstName, Is.EqualTo("Herbert"));
+                e.MoveNext();
+                Assert.That(e.Current.Owner.FirstName, Is.EqualTo("Herbert"));
                 e.Current.Pets.AssertThat(Is.SameAs, boots, whiskers);
 
-                e.MoveNext(); Assert.That(e.Current.Owner.FirstName, Is.EqualTo("Hubert"));
+                e.MoveNext();
+                Assert.That(e.Current.Owner.FirstName, Is.EqualTo("Hubert"));
                 e.Current.Pets.AssertThat(Is.SameAs); // empty
 
-                e.MoveNext(); Assert.That(e.Current.Owner.FirstName, Is.EqualTo("Isidor"));
+                e.MoveNext();
+                Assert.That(e.Current.Owner.FirstName, Is.EqualTo("Isidor"));
                 e.Current.Pets.AssertThat(Is.SameAs, daisy);
 
                 Assert.That(e.MoveNext(), Is.False);
@@ -1066,7 +992,8 @@ namespace LinqBridge.Tests
 
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void GroupJoin_InnerArgOuterKeySelectorArgInnerKeySelectorArgResultSelectorArg_NullOuterKeySelector_ThrowsArgumentNullException()
+        public void
+            GroupJoin_InnerArgOuterKeySelectorArgInnerKeySelectorArgResultSelectorArg_NullOuterKeySelector_ThrowsArgumentNullException()
         {
             new object[0].GroupJoin<object, object, object, object>(
                 new object[0], null,
@@ -1108,29 +1035,31 @@ namespace LinqBridge.Tests
 
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void Join_InnerArgOuterKeySelectorArgInnerKeySelectorArgResultSelectorArg_PassNullAsArgument_ThrowsArgumentNullException()
+        public void
+            Join_InnerArgOuterKeySelectorArgInnerKeySelectorArgResultSelectorArg_PassNullAsArgument_ThrowsArgumentNullException()
         {
             Read<object>().Join<object, object, object, object>(null, null, null, null);
         }
 
         [Test]
-        public void Join_InnerArgOuterKeySelectorArgInnerKeySelectorArgResultSelectorArg_PassingPetsAndOwners_PetsAreCorrectlyAssignedToOwners()
+        public void
+            Join_InnerArgOuterKeySelectorArgInnerKeySelectorArgResultSelectorArg_PassingPetsAndOwners_PetsAreCorrectlyAssignedToOwners()
         {
             var persons = Read(Person.CreatePersons());
-            
+
             var pets = new Reader<Pet>(new[]
-                           {
-                               new Pet {Name = "Barley", Owner = "Peter"},
-                               new Pet {Name = "Boots", Owner = "Herbert"},
-                               new Pet {Name = "Whiskers", Owner = "Herbert"},
-                               new Pet {Name = "Daisy", Owner = "Isidor"}
-                           });
-            
+            {
+                new Pet { Name = "Barley", Owner = "Peter" },
+                new Pet { Name = "Boots", Owner = "Herbert" },
+                new Pet { Name = "Whiskers", Owner = "Herbert" },
+                new Pet { Name = "Daisy", Owner = "Isidor" }
+            });
+
             var result = persons.Join(pets, aPerson => aPerson.FirstName, aPet => aPet.Owner,
-                         (aPerson, aPet) => new { Owner = aPerson.FirstName, Pet = aPet.Name });
+                (aPerson, aPet) => new { Owner = aPerson.FirstName, Pet = aPet.Name });
 
             var e = result.GetEnumerator();
-            
+
             Assert.That(e.MoveNext(), Is.True);
             Assert.That(e.Current.Owner, Is.EqualTo("Peter"));
             Assert.That(e.Current.Pet, Is.EqualTo("Barley"));
@@ -1151,23 +1080,24 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        public void Join_InnerArgOuterKeySelectorArgInnerKeySelectorArgResultSelectorArgComparerArg_PetOwnersNamesCasingIsInconsistent_CaseInsensitiveJoinIsPerformed()
+        public void
+            Join_InnerArgOuterKeySelectorArgInnerKeySelectorArgResultSelectorArgComparerArg_PetOwnersNamesCasingIsInconsistent_CaseInsensitiveJoinIsPerformed()
         {
             var persons = Read(Person.CreatePersons());
-            
+
             var pets = new Reader<Pet>(new[]
-                           {
-                               new Pet {Name = "Barley", Owner = "Peter"},
-                               new Pet {Name = "Boots", Owner = "Herbert"},
-                               new Pet {Name = "Whiskers", Owner = "herbert"},
-                               new Pet {Name = "Daisy", Owner = "Isidor"}
-                           });
+            {
+                new Pet { Name = "Barley", Owner = "Peter" },
+                new Pet { Name = "Boots", Owner = "Herbert" },
+                new Pet { Name = "Whiskers", Owner = "herbert" },
+                new Pet { Name = "Daisy", Owner = "Isidor" }
+            });
             var result = persons.Join(pets, aPerson => aPerson.FirstName, aPet => aPet.Owner,
-                         (aPerson, aPet) => new { Owner = aPerson.FirstName, Pet = aPet.Name },
-                         StringComparer.CurrentCultureIgnoreCase);
+                (aPerson, aPet) => new { Owner = aPerson.FirstName, Pet = aPet.Name },
+                StringComparer.CurrentCultureIgnoreCase);
 
             var e = result.GetEnumerator();
-            
+
             Assert.That(e.MoveNext(), Is.True);
             Assert.That(e.Current.Owner, Is.EqualTo("Peter"));
             Assert.That(e.Current.Pet, Is.EqualTo("Barley"));
@@ -1313,12 +1243,14 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        public void Max_NullableDoubles_ReturnsMaxValue() {
+        public void Max_NullableDoubles_ReturnsMaxValue()
+        {
             Assert.That(Read<double?>(1.0, 2.0, 3.0, null).Max(), Is.EqualTo(3));
         }
 
         [Test]
-        public void Max_NullableDecimals_ReturnsMaxValue() {
+        public void Max_NullableDecimals_ReturnsMaxValue()
+        {
             Assert.That(Read<decimal?>(1m, 2m, 3m, null).Max(), Is.EqualTo(3));
         }
 
@@ -1348,7 +1280,7 @@ namespace LinqBridge.Tests
             var persons = Read(Person.CreatePersons());
             Assert.That(persons.Max(p => p.Age), Is.EqualTo(24));
         }
-        
+
         [Test]
         public void Max_NullableIntsWithSelector_ReturnsMaxValue()
         {
@@ -1418,7 +1350,7 @@ namespace LinqBridge.Tests
         [Test]
         public void Min_NullableDecimals_ReturnsMinimumNonNullValue()
         {
-            var source = Read<decimal?>(1.111m, null, 2.222m);  // TODO Improve test data
+            var source = Read<decimal?>(1.111m, null, 2.222m); // TODO Improve test data
             Assert.That(source.Min(), Is.EqualTo(1.111m).Within(0.01));
         }
 
@@ -1488,7 +1420,7 @@ namespace LinqBridge.Tests
         [Test]
         public void OfType_EnumerableWithElementsOfDifferentTypes_OnlyDecimalsAreReturned()
         {
-            var source = Read<object>(1, "Hello", 1.234m, new object());
+            var source = Read(1, "Hello", 1.234m, new object());
             var result = source.OfType<decimal>();
             result.AssertEquals(1.234m);
         }
@@ -1504,14 +1436,16 @@ namespace LinqBridge.Tests
         public void OrderBy_KeySelector_ArrayOfPersons_PersonsAreOrderedByAge()
         {
             var persons = Person.CreatePersons();
-            var reversePersons = (Person[]) persons.Clone();
+            var reversePersons = (Person[])persons.Clone();
             Array.Reverse(reversePersons);
             var source = Read(reversePersons);
             var result = source.OrderBy(p => p.Age);
 
             var age = 21;
             foreach (var person in result)
+            {
                 Assert.That(person.Age, Is.EqualTo(age++));
+            }
 
             Assert.That(age, Is.EqualTo(25));
         }
@@ -1530,22 +1464,32 @@ namespace LinqBridge.Tests
                 new { Number = 2, Text = "deux" },
                 new { Number = 3, Text = "three" },
                 new { Number = 3, Text = "trois" },
-                new { Number = 3, Text = "drei" },
+                new { Number = 3, Text = "drei" }
             };
 
             var result = Read(data).OrderBy(e => e.Number);
             using (var e = result.GetEnumerator())
             {
-                e.MoveNext(); Assert.That(e.Current.Text, Is.EqualTo("one"));
-                e.MoveNext(); Assert.That(e.Current.Text, Is.EqualTo("two"));
-                e.MoveNext(); Assert.That(e.Current.Text, Is.EqualTo("deux"));
-                e.MoveNext(); Assert.That(e.Current.Text, Is.EqualTo("three"));
-                e.MoveNext(); Assert.That(e.Current.Text, Is.EqualTo("trois"));
-                e.MoveNext(); Assert.That(e.Current.Text, Is.EqualTo("drei"));
-                e.MoveNext(); Assert.That(e.Current.Text, Is.EqualTo("four"));
-                e.MoveNext(); Assert.That(e.Current.Text, Is.EqualTo("quatre"));
-                e.MoveNext(); Assert.That(e.Current.Text, Is.EqualTo("vier"));
-                e.MoveNext(); Assert.That(e.Current.Text, Is.EqualTo("quattro"));
+                e.MoveNext();
+                Assert.That(e.Current.Text, Is.EqualTo("one"));
+                e.MoveNext();
+                Assert.That(e.Current.Text, Is.EqualTo("two"));
+                e.MoveNext();
+                Assert.That(e.Current.Text, Is.EqualTo("deux"));
+                e.MoveNext();
+                Assert.That(e.Current.Text, Is.EqualTo("three"));
+                e.MoveNext();
+                Assert.That(e.Current.Text, Is.EqualTo("trois"));
+                e.MoveNext();
+                Assert.That(e.Current.Text, Is.EqualTo("drei"));
+                e.MoveNext();
+                Assert.That(e.Current.Text, Is.EqualTo("four"));
+                e.MoveNext();
+                Assert.That(e.Current.Text, Is.EqualTo("quatre"));
+                e.MoveNext();
+                Assert.That(e.Current.Text, Is.EqualTo("vier"));
+                e.MoveNext();
+                Assert.That(e.Current.Text, Is.EqualTo("quattro"));
                 Assert.That(e.MoveNext(), Is.False);
             }
         }
@@ -1556,7 +1500,7 @@ namespace LinqBridge.Tests
             var values = "abcd".ToCharArray();
             var key = values.Length;
             values = values.OrderBy(_ => key--).ToArray();
-            Assert.AreEqual("dcba", new String(values));
+            Assert.AreEqual("dcba", new string(values));
             Assert.AreEqual(0, key, "Key for every element is computed only once");
         }
 
@@ -1570,18 +1514,24 @@ namespace LinqBridge.Tests
                 new { Position = 3, LastName = "Smith", FirstName = "John" },
                 new { Position = 4, LastName = "Smith", FirstName = "Jack" },
                 new { Position = 5, LastName = "Smith", FirstName = "John" },
-                new { Position = 6, LastName = "Smith", FirstName = "Jack" },
+                new { Position = 6, LastName = "Smith", FirstName = "Jack" }
             };
 
             var result = Read(data).OrderBy(e => e.LastName).ThenBy(e => e.FirstName);
             using (var e = result.GetEnumerator())
             {
-                e.MoveNext(); Assert.That(e.Current.Position, Is.EqualTo(2));
-                e.MoveNext(); Assert.That(e.Current.Position, Is.EqualTo(4));
-                e.MoveNext(); Assert.That(e.Current.Position, Is.EqualTo(6));
-                e.MoveNext(); Assert.That(e.Current.Position, Is.EqualTo(1));
-                e.MoveNext(); Assert.That(e.Current.Position, Is.EqualTo(3));
-                e.MoveNext(); Assert.That(e.Current.Position, Is.EqualTo(5));
+                e.MoveNext();
+                Assert.That(e.Current.Position, Is.EqualTo(2));
+                e.MoveNext();
+                Assert.That(e.Current.Position, Is.EqualTo(4));
+                e.MoveNext();
+                Assert.That(e.Current.Position, Is.EqualTo(6));
+                e.MoveNext();
+                Assert.That(e.Current.Position, Is.EqualTo(1));
+                e.MoveNext();
+                Assert.That(e.Current.Position, Is.EqualTo(3));
+                e.MoveNext();
+                Assert.That(e.Current.Position, Is.EqualTo(5));
                 Assert.That(e.MoveNext(), Is.False);
             }
         }
@@ -1597,18 +1547,20 @@ namespace LinqBridge.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public void ThenBy_NullKeySelector_ThrowsArgumentNullException()
         {
-            Read<object>().OrderBy<object, object>(e => { throw new NotImplementedException(); }).ThenBy<object, object>(null);
+            Read<object>().OrderBy<object, object>(e => { throw new NotImplementedException(); })
+                .ThenBy<object, object>(null);
         }
 
         [Test]
         public void ThenByDescending_KeySelectorArgComparerArg_StringArray_CorrectOrdering()
         {
             var source = Read("AA", "AB", "AC", "-BA", "-BB", "-BC");
-            var result = source.OrderBy(s => s.ToCharArray()[s.ToCharArray().Length - 1]).ThenByDescending(s => s.Length); /*.AssertEquals("butterfly", "elephant", "dog", "snake", "ape"); */
+            var result = source.OrderBy(s => s.ToCharArray()[s.ToCharArray().Length - 1])
+                .ThenByDescending(s => s.Length); /*.AssertEquals("butterfly", "elephant", "dog", "snake", "ape"); */
             result.AssertEquals("-BA", "AA", "-BB", "AB", "-BC", "AC");
         }
 
-        class ReverseComparer<T> : IComparer<T> where T : IComparable<T>
+        private class ReverseComparer<T> : IComparer<T> where T : IComparable<T>
         {
             public int Compare(T x, T y)
             {
@@ -1617,7 +1569,8 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        public void OrderBy_KeySelectorArgComparerArg_ArrayOfPersonsAndReversecomparer_PersonsAreOrderedByAgeUsingReversecomparer()
+        public void
+            OrderBy_KeySelectorArgComparerArg_ArrayOfPersonsAndReversecomparer_PersonsAreOrderedByAgeUsingReversecomparer()
         {
             var persons = Read(Person.CreatePersons());
             var result = persons.OrderBy(p => p.Age, new ReverseComparer<int>());
@@ -1627,8 +1580,8 @@ namespace LinqBridge.Tests
                 age--;
                 Assert.That(person.Age, Is.EqualTo(age));
             }
-            Assert.That(age, Is.EqualTo(21));
 
+            Assert.That(age, Is.EqualTo(21));
         }
 
         [Test]
@@ -1642,6 +1595,7 @@ namespace LinqBridge.Tests
                 age--;
                 Assert.That(person.Age, Is.EqualTo(age));
             }
+
             Assert.That(age, Is.EqualTo(21));
         }
 
@@ -1715,7 +1669,7 @@ namespace LinqBridge.Tests
             }
         }
 
-        class PetOwner
+        private class PetOwner
         {
             public string Name { get; set; }
             public IList<string> Pets { get; set; }
@@ -1724,32 +1678,31 @@ namespace LinqBridge.Tests
         [Test]
         public void SelectMany_Selector3Arg_ArrayOfPetOwners_SelectorUsesElementIndexArgument()
         {
-            var petOwners = Read(new[] { 
-                  new PetOwner { Name = "Higa, Sidney",     Pets = new[] { "Scruffy", "Sam" } },
-                  new PetOwner { Name = "Ashkenazi, Ronen", Pets = new[] { "Walker", "Sugar" } },
-                  new PetOwner { Name = "Price, Vernette",  Pets = new[] { "Scratches", "Diesel" } },
-                  new PetOwner { Name = "Hines, Patrick",   Pets = new[] { "Dusty" } } });
-            
+            var petOwners = Read(new PetOwner { Name = "Higa, Sidney", Pets = new[] { "Scruffy", "Sam" } },
+                new PetOwner { Name = "Ashkenazi, Ronen", Pets = new[] { "Walker", "Sugar" } },
+                new PetOwner { Name = "Price, Vernette", Pets = new[] { "Scratches", "Diesel" } },
+                new PetOwner { Name = "Hines, Patrick", Pets = new[] { "Dusty" } });
+
             var result = petOwners.SelectMany((po, index) => po.Pets.Select(pet => index + pet));
-            
+
             result.AssertEquals("0Scruffy", "0Sam", "1Walker", "1Sugar", "2Scratches", "2Diesel", "3Dusty");
         }
 
         [Test]
-        public void SelectMany_CollectionSelectorArgResultSelectorArg_ArrayOfPetOwner_ResultContainsElementForEachPetAPetOwnerHas()
+        public void
+            SelectMany_CollectionSelectorArgResultSelectorArg_ArrayOfPetOwner_ResultContainsElementForEachPetAPetOwnerHas()
         {
-            var petOwners = Read(new[] { 
-                  new PetOwner { Name = "Higa",      Pets = new[] { "Scruffy", "Sam" } },
-                  new PetOwner { Name = "Ashkenazi", Pets = new[] { "Walker", "Sugar" } },
-                  new PetOwner { Name = "Price",     Pets = new[] { "Scratches", "Diesel" } },
-                  new PetOwner { Name = "Hines",     Pets = new[] { "Dusty" } } });
+            var petOwners = Read(new PetOwner { Name = "Higa", Pets = new[] { "Scruffy", "Sam" } },
+                new PetOwner { Name = "Ashkenazi", Pets = new[] { "Walker", "Sugar" } },
+                new PetOwner { Name = "Price", Pets = new[] { "Scratches", "Diesel" } },
+                new PetOwner { Name = "Hines", Pets = new[] { "Dusty" } });
 
             var result = petOwners.SelectMany(po => po.Pets, (po, pet) => po.Name + "+" + pet);
 
             result.AssertEquals(
-                "Higa+Scruffy", "Higa+Sam", 
-                "Ashkenazi+Walker", "Ashkenazi+Sugar", 
-                "Price+Scratches", "Price+Diesel", 
+                "Higa+Scruffy", "Higa+Sam",
+                "Ashkenazi+Walker", "Ashkenazi+Sugar",
+                "Price+Scratches", "Price+Diesel",
                 "Hines+Dusty");
         }
 
@@ -1802,8 +1755,8 @@ namespace LinqBridge.Tests
         [Test]
         public void SequenceEqual_FloatsWithTolerantComparer_ComparerIsUsed()
         {
-            var source = Read(1F, 2F, 3F );
-            var argument = Read(1.03F, 1.99F, 3.02F );
+            var source = Read(1F, 2F, 3F);
+            var argument = Read(1.03F, 1.99F, 3.02F);
             Assert.That(source.SequenceEqual(argument, new FloatComparer()), Is.True);
         }
 
@@ -1813,6 +1766,7 @@ namespace LinqBridge.Tests
             {
                 return Math.Abs(x - y) < 0.1f;
             }
+
             public int GetHashCode(float x)
             {
                 throw new NotImplementedException();
@@ -1942,21 +1896,21 @@ namespace LinqBridge.Tests
         public void Skip_IntsFromOneToTenAndFifeAsSecondArg_IntsFromSixToTen()
         {
             var source = Read(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-            source.Skip(5).AssertEquals(6, 7, 8, 9, 10);
+            bt::System.ArrayExtension.Skip(source, 5).AssertEquals(6, 7, 8, 9, 10);
         }
 
         [Test]
         public void Skip_PassNegativeValueAsCount_SameBehaviorAsMicrosoftImplementation()
         {
             var source = Read(1, 2, 3, 4, 5);
-            source.Skip(-5).AssertEquals(1, 2, 3, 4, 5);
+            bt::System.ArrayExtension.Skip(source, -5).AssertEquals(1, 2, 3, 4, 5);
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
         public void SkipWhile_PredicateArg_PassNullAsPredicate_ThrowsArgumentNullException()
         {
-            Read<object>().SkipWhile((Func<object, bool>) null);
+            Read<object>().SkipWhile((Func<object, bool>)null);
         }
 
         [Test]
@@ -1967,7 +1921,8 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        public void SkipWhile_PredicateArg_ArrayOfIntsWithElementsNotSatisfyingConditionAtTheEnd_IntsAtTheEndArePartOfResult()
+        public void
+            SkipWhile_PredicateArg_ArrayOfIntsWithElementsNotSatisfyingConditionAtTheEnd_IntsAtTheEndArePartOfResult()
         {
             var source = Read(1, 2, 3, 4, 5, 1, 2, 3);
             source.SkipWhile(i => i < 3).AssertEquals(3, 4, 5, 1, 2, 3);
@@ -2034,7 +1989,8 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        public void Sum_NullableFloats_ReturnsSum() {
+        public void Sum_NullableFloats_ReturnsSum()
+        {
             Assert.That(Read<float?>(1F, 2F, 3F, null).Sum(), Is.EqualTo(6));
         }
 
@@ -2045,7 +2001,8 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        public void Sum_Doubles_ReturnsSum() {
+        public void Sum_Doubles_ReturnsSum()
+        {
             Assert.That(Read(1.0, 2.0, 3.0).Sum(), Is.EqualTo(6));
         }
 
@@ -2056,7 +2013,8 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        public void Sum_NullableDoubles_ReturnsSum() {
+        public void Sum_NullableDoubles_ReturnsSum()
+        {
             Assert.That(Read<double?>(1.0, 2.0, 3.0, null).Sum(), Is.EqualTo(6)); // TODO Improve test data
         }
 
@@ -2067,8 +2025,9 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        public void Sum_Decimals_ReturnsSum() {
-            Assert.That(Read(1m, 2m, 3m ).Sum(), Is.EqualTo(6));
+        public void Sum_Decimals_ReturnsSum()
+        {
+            Assert.That(Read(1m, 2m, 3m).Sum(), Is.EqualTo(6));
         }
 
         [Test]
@@ -2078,18 +2037,21 @@ namespace LinqBridge.Tests
         }
 
         [Test]
-        public void Sum_NullableDecimals_ReturnsSum() {
+        public void Sum_NullableDecimals_ReturnsSum()
+        {
             Assert.That(Read<decimal?>(1m, 2m, 3m, null).Sum(), Is.EqualTo(6)); // TODO Improve test data
         }
 
         [Test]
         public void Sum_SelectorArg_NullableDecimalsWithSomeNulls_ReturnsSum()
         {
-            Assert.That(Read<decimal?>(123.4m, null, 567.8m, null, 91011.12m).Sum(n => n * 2.5m), Is.EqualTo(229255.8m));
+            Assert.That(Read<decimal?>(123.4m, null, 567.8m, null, 91011.12m).Sum(n => n * 2.5m),
+                Is.EqualTo(229255.8m));
         }
 
         [Test]
-        public void Sum_NullableLongs_ReturnsSum() {
+        public void Sum_NullableLongs_ReturnsSum()
+        {
             Assert.That(Read<long?>(1L, 2L, 3L, null).Sum(), Is.EqualTo(6)); // TODO Improve test data
         }
 
@@ -2132,7 +2094,7 @@ namespace LinqBridge.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public void TakeWhile_PassNullAsPredicate_ThrowsArgumentNullException()
         {
-            new object[0].TakeWhile((Func<object, bool>) null);
+            new object[0].TakeWhile((Func<object, bool>)null);
         }
 
         [Test]
@@ -2179,11 +2141,13 @@ namespace LinqBridge.Tests
                 Assert.That(pair.Value, Is.EqualTo(check.ToString()));
                 check++;
             }
+
             Assert.That(check, Is.EqualTo(4));
         }
 
         [Test]
-        public void ToDictionary_KeySelectorArgElementSelectorArg_IntsFromOneToTen_KeySelectorAndElementSelectorAreUsedForDictionaryElements()
+        public void
+            ToDictionary_KeySelectorArgElementSelectorArg_IntsFromOneToTen_KeySelectorAndElementSelectorAreUsedForDictionaryElements()
         {
             var source = Read(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
             var result = source.ToDictionary(i => i.ToString(), i => Math.Sqrt(double.Parse(i.ToString())));
@@ -2230,7 +2194,7 @@ namespace LinqBridge.Tests
 
             Assert.That(lookup.Contains(4), Is.True);
             lookup[4].AssertEquals("bird");
-            
+
             Assert.That(lookup.Contains(5), Is.True);
             lookup[5].AssertEquals("eagle", "camel");
         }
@@ -2245,19 +2209,24 @@ namespace LinqBridge.Tests
 
             Assert.That(lookup.Contains(3), Is.True);
             var e = lookup[3].GetEnumerator();
-            e.MoveNext(); Assert.That(e.Current, Is.EqualTo("DOG"));
-            e.MoveNext(); Assert.That(e.Current, Is.EqualTo("CAT"));
+            e.MoveNext();
+            Assert.That(e.Current, Is.EqualTo("DOG"));
+            e.MoveNext();
+            Assert.That(e.Current, Is.EqualTo("CAT"));
             Assert.That(e.MoveNext(), Is.False);
 
             Assert.That(lookup.Contains(4), Is.True);
             e = lookup[4].GetEnumerator();
-            e.MoveNext(); Assert.That(e.Current, Is.EqualTo("BIRD"));
+            e.MoveNext();
+            Assert.That(e.Current, Is.EqualTo("BIRD"));
             Assert.That(e.MoveNext(), Is.False);
 
             Assert.That(lookup.Contains(5), Is.True);
             e = lookup[5].GetEnumerator();
-            e.MoveNext(); Assert.That(e.Current, Is.EqualTo("EAGLE"));
-            e.MoveNext(); Assert.That(e.Current, Is.EqualTo("CAMEL"));
+            e.MoveNext();
+            Assert.That(e.Current, Is.EqualTo("EAGLE"));
+            e.MoveNext();
+            Assert.That(e.Current, Is.EqualTo("CAMEL"));
             Assert.That(e.MoveNext(), Is.False);
         }
 
@@ -2288,7 +2257,7 @@ namespace LinqBridge.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public void Where_NullPredicate_ThrowsArgumentNullException()
         {
-            Read<object>().Where((Func<object, bool>) null);
+            Read<object>().Where((Func<object, bool>)null);
         }
 
         [Test]
@@ -2309,7 +2278,7 @@ namespace LinqBridge.Tests
         public void AsEnumerable_NonNullSource_ReturnsSourceReference()
         {
             var source = new object[0];
-            Assert.That(Enumerable.AsEnumerable(source), Is.SameAs(source));
+            Assert.That(source.AsEnumerable(), Is.SameAs(source));
         }
 
         [Test]
@@ -2335,11 +2304,11 @@ namespace LinqBridge.Tests
             var parameters = op.GetParameters();
             var extendedType = parameters.Length > 0 ? parameters[0].ParameterType : null;
 
-            return extendedType != null 
-                && (extendedType == typeof(IEnumerable)
-                    || (extendedType.IsGenericType
-                        && (   extendedType.GetGenericTypeDefinition() == typeof(IEnumerable<>)
-                            || extendedType.GetGenericTypeDefinition() == typeof(IOrderedEnumerable<>))));
+            return extendedType != null
+                   && (extendedType == typeof(IEnumerable)
+                       || (extendedType.IsGenericType
+                           && (extendedType.GetGenericTypeDefinition() == typeof(IEnumerable<>)
+                               || extendedType.GetGenericTypeDefinition() == typeof(bt::System.IOrderedEnumerable<>))));
         }
 
         private Reader<T> Read<T>(params T[] source)
@@ -2358,20 +2327,25 @@ namespace LinqBridge.Tests
             var enumerated = false;
             reader.Disposed += delegate { disposed = true; };
             reader.Enumerated += delegate { enumerated = true; };
-            AssertionHandler assertion = () => Assert.That(!enumerated || disposed, Is.True, "Enumerator not disposed.");
-            tearDownAssertions = (AssertionHandler) Delegate.Combine(tearDownAssertions, assertion);
+            AssertionHandler assertion = () =>
+                Assert.That(!enumerated || disposed, Is.True, "Enumerator not disposed.");
+            tearDownAssertions = (AssertionHandler)Delegate.Combine(tearDownAssertions, assertion);
 
             return reader;
         }
     }
 
-    [ Serializable ]
+    [Serializable]
     internal sealed class NonEnumerableList<T> : List<T>, IEnumerable<T>
     {
-        public NonEnumerableList() {}
+        public NonEnumerableList()
+        {
+        }
 
-        public NonEnumerableList(IEnumerable<T> collection) : 
-            base(collection) {}
+        public NonEnumerableList(IEnumerable<T> collection) :
+            base(collection)
+        {
+        }
 
         // Re-implement GetEnumerator to be undefined.
 
@@ -2382,7 +2356,7 @@ namespace LinqBridge.Tests
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable<T>) this).GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
     }
 }

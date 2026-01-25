@@ -1,0 +1,26 @@
+﻿using System.Runtime.ConstrainedExecution;
+using System.Runtime.InteropServices;
+using System.Security;
+
+namespace System.Threading;
+
+public static class Net20Interlocked
+{
+    private static readonly object lockObj = new();
+
+    [ComVisible(false)]
+    [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
+    [SecuritySafeCritical]
+    public static T CompareExchange<T>(ref T location1, T value, T comparand)
+    {
+        lock (lockObj)
+        {
+            if (location1 != null && location1.Equals(comparand))
+            {
+                location1 = value;
+            }
+
+            return value;
+        }
+    }
+}

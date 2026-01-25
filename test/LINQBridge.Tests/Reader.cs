@@ -1,4 +1,5 @@
 #region License, Terms and Author(s)
+
 //
 // LINQBridge
 // Copyright (c) 2007 Atif Aziz, Joseph Albahari. All rights reserved.
@@ -24,28 +25,23 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 #endregion
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using NUnit.Framework;
+using NUnit.Framework.Constraints;
 
 namespace LinqBridge.Tests
 {
-    #region Imports
-
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using NUnit.Framework;
-    using NUnit.Framework.Constraints;
-
-    #endregion
-
     internal sealed class Reader<T> : IEnumerable<T>, IEnumerator<T>
     {
-        public event EventHandler Disposed;
-        public event EventHandler Enumerated;
+        private IEnumerator<T> cursor;
 
         private IEnumerable<T> source;
-        private IEnumerator<T> cursor;
 
         public Reader(IEnumerable<T> values)
         {
@@ -58,7 +54,10 @@ namespace LinqBridge.Tests
             get
             {
                 if (cursor == null)
+                {
                     GetEnumerator();
+                }
+
                 return this;
             }
         }
@@ -67,13 +66,19 @@ namespace LinqBridge.Tests
 
         public IEnumerator<T> GetEnumerator()
         {
-            if (source == null) throw new Exception("A LINQ Operator called GetEnumerator() twice.");
+            if (source == null)
+            {
+                throw new Exception("A LINQ Operator called GetEnumerator() twice.");
+            }
+
             cursor = source.GetEnumerator();
             source = null;
 
             var handler = Enumerated;
             if (handler != null)
+            {
                 handler(this, EventArgs.Empty);
+            }
 
             return this;
         }
@@ -81,13 +86,6 @@ namespace LinqBridge.Tests
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
-        }
-
-        public T Read()
-        {
-            if (!Enumerator.MoveNext())
-                throw new InvalidOperationException("No more elements in the source sequence.");
-            return Enumerator.Current;
         }
 
         void IDisposable.Dispose()
@@ -102,18 +100,10 @@ namespace LinqBridge.Tests
 
                 var handler = Disposed;
                 if (handler != null)
+                {
                     handler(this, EventArgs.Empty);
+                }
             }
-        }
-
-        private IEnumerator<T> GetSourceEnumerator()
-        {
-            if (source != null && cursor == null)
-                throw new InvalidOperationException(/* GetEnumerator not called yet */);
-            if (source == null && cursor == null) 
-                throw new ObjectDisposedException(GetType().FullName);
-
-            return cursor;
         }
 
         bool IEnumerator.MoveNext()
@@ -128,7 +118,34 @@ namespace LinqBridge.Tests
 
         T IEnumerator<T>.Current => GetSourceEnumerator().Current;
 
-        object IEnumerator.Current => ((IEnumerator<T>) this).Current;
+        object IEnumerator.Current => ((IEnumerator<T>)this).Current;
+        public event EventHandler Disposed;
+        public event EventHandler Enumerated;
+
+        public T Read()
+        {
+            if (!Enumerator.MoveNext())
+            {
+                throw new InvalidOperationException("No more elements in the source sequence.");
+            }
+
+            return Enumerator.Current;
+        }
+
+        private IEnumerator<T> GetSourceEnumerator()
+        {
+            if (source != null && cursor == null)
+            {
+                throw new InvalidOperationException( /* GetEnumerator not called yet */);
+            }
+
+            if (source == null && cursor == null)
+            {
+                throw new ObjectDisposedException(GetType().FullName);
+            }
+
+            return cursor;
+        }
     }
 
     internal static class ReaderTestExtensions

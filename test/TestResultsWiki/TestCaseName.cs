@@ -1,4 +1,5 @@
 #region License, Terms and Author(s)
+
 //
 // LINQBridge
 // Copyright (c) 2007 Atif Aziz, Joseph Albahari. All rights reserved.
@@ -23,51 +24,53 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 #endregion
+
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace TestResultsWiki
 {
     #region Imports
 
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Linq;
-
     #endregion
 
     /// <summary>
-    /// Helps to extract method name, parameters, test condition and expectation.
+    ///     Helps to extract method name, parameters, test condition and expectation.
     /// </summary>
-
-    [ Serializable ]
+    [Serializable]
     internal sealed class TestCaseName
     {
         private static readonly IList<string> zeroArguments = new string[0];
 
         /// <param name="name">
-        /// String like <c>"Distinct_ComparerArg_NonDistinctValues_ReturnsOnlyDistinctValues"</c>.</param>
-
+        ///     String like <c>"Distinct_ComparerArg_NonDistinctValues_ReturnsOnlyDistinctValues"</c>.
+        /// </param>
         public TestCaseName(string name)
         {
-            var parts = new Queue<string>(name.Split(new[] {'_'}, 4, StringSplitOptions.RemoveEmptyEntries));
+            var parts = new Queue<string>(name.Split(new[] { '_' }, 4, StringSplitOptions.RemoveEmptyEntries));
 
             if (parts.Count < 2)
+            {
                 throw new ArgumentException(null, "name");
+            }
 
             MethodName = parts.Dequeue();
 
-            Arguments = parts.Count < 3 
-                      ? zeroArguments 
-                      : new ReadOnlyCollection<string>(
-                            parts.Dequeue()
-                                 .Split(new[] {"Arg"}, StringSplitOptions.RemoveEmptyEntries)
-                                 .TakeWhile(s => s.Length > 0)
-                                 .ToArray());
+            Arguments = parts.Count < 3
+                ? zeroArguments
+                : new ReadOnlyCollection<string>(
+                    parts.Dequeue()
+                        .Split(new[] { "Arg" }, StringSplitOptions.RemoveEmptyEntries)
+                        .TakeWhile(s => s.Length > 0)
+                        .ToArray());
 
-            StateUnderTest = parts.Count > 1 
-                           ? CamelCase.FormatSentence(parts.Dequeue()) 
-                           : string.Empty;
+            StateUnderTest = parts.Count > 1
+                ? CamelCase.FormatSentence(parts.Dequeue())
+                : string.Empty;
 
             ExpectedBehavior = parts.Dequeue();
 
@@ -75,8 +78,8 @@ namespace TestResultsWiki
             if (ExpectedBehavior.StartsWith(throwsWord, StringComparison.InvariantCultureIgnoreCase)
                 && ExpectedBehavior.EndsWith("Exception", StringComparison.InvariantCultureIgnoreCase))
             {
-                ExpectedBehavior = ExpectedBehavior.Substring(0, throwsWord.Length) 
-                                 + " " + ExpectedBehavior.Substring(throwsWord.Length);
+                ExpectedBehavior = ExpectedBehavior.Substring(0, throwsWord.Length)
+                                   + " " + ExpectedBehavior.Substring(throwsWord.Length);
             }
             else
             {

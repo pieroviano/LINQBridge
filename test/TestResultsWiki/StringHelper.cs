@@ -1,4 +1,5 @@
 #region License, Terms and Author(s)
+
 //
 // LINQBridge
 // Copyright (c) 2007 Atif Aziz, Joseph Albahari. All rights reserved.
@@ -23,26 +24,24 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 #endregion
 
 namespace TestResultsWiki
 {
-    using System;
-
     internal static class StringHelper
     {
         /// <summary>
-        /// De-capitalizes by changing the first letter of the given word to 
-        /// lower case.
+        ///     De-capitalizes by changing the first letter of the given word to
+        ///     lower case.
         /// </summary>
-        
         public static string DecapWord(this string word)
         {
             return string.IsNullOrEmpty(word)
-                 ? string.Empty
-                 : char.IsUpper(word, 0)
-                   ? Char.ToLower(word[0]) + word.Substring(1)
-                   : word;
+                ? string.Empty
+                : char.IsUpper(word, 0)
+                    ? char.ToLower(word[0]) + word.Substring(1)
+                    : word;
         }
     }
 }

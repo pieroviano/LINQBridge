@@ -1,4 +1,5 @@
 #region License, Terms and Author(s)
+
 //
 // LINQBridge
 // Copyright (c) 2007 Atif Aziz, Joseph Albahari. All rights reserved.
@@ -23,33 +24,53 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 #endregion
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace TestResultsWiki
 {
     #region Imports
-
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
 
     #endregion
 
     internal static class CamelCase
     {
         /// <summary>
-        /// Parses and yields words from a string of camel-cased words.
-        /// For example, <c>"HelloWorld"</c> is parse 
-        /// into the sequence { <c>"Hello"</c>, <c>"World"</c> }.
+        ///     Creates a sentence out of a camel-cased string of words.
+        ///     For example, <c>"TheQuickBrownFox"</c> is converted to
+        ///     <c>"The quick brown fox"</c>.
         /// </summary>
-        
+        public static string FormatSentence(string camelCase)
+        {
+            if (string.IsNullOrEmpty(camelCase))
+            {
+                return string.Empty;
+            }
+
+            var words = GetWords(camelCase)
+                .Select((word, i) => i > 0 ? word.DecapWord() : word);
+
+            return string.Join(" ", words.ToArray());
+        }
+
+        /// <summary>
+        ///     Parses and yields words from a string of camel-cased words.
+        ///     For example, <c>"HelloWorld"</c> is parse
+        ///     into the sequence { <c>"Hello"</c>, <c>"World"</c> }.
+        /// </summary>
         public static IEnumerable<string> GetWords(string camelCase)
         {
             if (string.IsNullOrEmpty(camelCase))
+            {
                 yield break;
+            }
 
             var sb = new StringBuilder();
-            
+
             for (var i = 0; i < camelCase.Length; i++)
             {
                 var ch = camelCase[i];
@@ -58,28 +79,14 @@ namespace TestResultsWiki
                     yield return sb.ToString();
                     sb.Length = 0;
                 }
+
                 sb.Append(ch);
             }
 
             if (sb.Length > 0)
+            {
                 yield return sb.ToString();
-        }
-
-        /// <summary>
-        /// Creates a sentence out of a camel-cased string of words. 
-        /// For example, <c>"TheQuickBrownFox"</c> is converted to 
-        /// <c>"The quick brown fox"</c>.
-        /// </summary>
-        
-        public static string FormatSentence(string camelCase)
-        {
-            if (string.IsNullOrEmpty(camelCase))
-                return string.Empty;
-
-            var words = GetWords(camelCase)
-                        .Select((word, i) => i > 0 ? word.DecapWord() : word);
-
-            return string.Join(" ", words.ToArray());
+            }
         }
     }
 }
