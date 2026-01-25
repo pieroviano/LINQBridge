@@ -48,9 +48,25 @@
             <DesignTime>True</DesignTime>
             <DependentUpon>Enumerable.g.tt</DependentUpon>
         </Compile>
+        <Compile Update="Properties\Core.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Core.resx</DependentUpon>
+        </Compile>
+        <Compile Update="Properties\Dynamic.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Dynamic.resx</DependentUpon>
+        </Compile>
+        <Compile Update="Properties\Expressions.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Expressions.resx</DependentUpon>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
         <None Include="LinqBridge.snk" />
+        <None Include="Linq\Expressions\Net4x.Dynamic.csproj" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Net35.Actions" Version="$(Net35ActionsVersion).$(VersionBuildSuffix)" Condition="'$(TargetFramework)'=='net20' or '$(TargetFramework)'=='net30'" />
@@ -73,6 +89,18 @@
         <EmbeddedResource Update="ComponentModel\DataAnnotations\Resources\Resource1.resx">
             <Generator>ResXFileCodeGenerator</Generator>
             <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Properties\Core.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Core.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Properties\Dynamic.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Dynamic.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Properties\Expressions.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Expressions.Designer.cs</LastGenOutput>
         </EmbeddedResource>
     </ItemGroup>
     <PropertyGroup>
