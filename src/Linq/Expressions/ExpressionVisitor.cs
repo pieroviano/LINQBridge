@@ -10,6 +10,15 @@ public abstract class ExpressionVisitor
     {
     }
 
+    /// <summary>Visits the children of the extension expression.</summary>
+    /// <returns>The modified expression, if it or any subexpression was modified; otherwise, returns the original expression.</returns>
+    /// <param name="node">The expression to visit.</param>
+    [__DynamicallyInvokable]
+    protected internal virtual Expression VisitExtension(Expression node)
+    {
+        return node.VisitChildren(this);
+    }
+
     internal virtual Expression Visit(Expression exp)
     {
         if (exp == null)

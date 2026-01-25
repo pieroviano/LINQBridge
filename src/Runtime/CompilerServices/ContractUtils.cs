@@ -6,6 +6,13 @@ internal class ContractUtils
 {
     public static Exception Unreachable => throw new CompilerServicesException("Unreachable");
 
+    internal static void Requires(bool condition, string paramName, string message)
+    {
+        if (!condition)
+        {
+            throw new ArgumentException(message, paramName);
+        }
+    }
     public static void Requires(bool b, string s)
     {
         if (!b)

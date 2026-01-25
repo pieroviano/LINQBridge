@@ -1,7 +1,100 @@
-﻿namespace System.Linq.Expressions;
+﻿using System.Reflection;
+
+namespace System.Linq.Expressions;
 
 internal static class Error
 {
+    internal static Exception COMObjectDoesNotSupportEvents()
+    {
+        return (Exception)new ArgumentException(Strings.COMObjectDoesNotSupportEvents);
+    }
+
+    internal static Exception COMObjectDoesNotSupportSourceInterface()
+    {
+        return (Exception)new ArgumentException(Strings.COMObjectDoesNotSupportSourceInterface);
+    }
+
+    internal static Exception SetComObjectDataFailed()
+    {
+        return (Exception)new InvalidOperationException(Strings.SetComObjectDataFailed);
+    }
+
+    internal static Exception MethodShouldNotBeCalled()
+    {
+        return (Exception)new InvalidOperationException(Strings.MethodShouldNotBeCalled);
+    }
+
+    internal static Exception UnexpectedVarEnum(object p0)
+    {
+        return (Exception)new InvalidOperationException(Strings.UnexpectedVarEnum(p0));
+    }
+
+    internal static Exception DispBadParamCount(object p0)
+    {
+        return (Exception)new TargetParameterCountException(Strings.DispBadParamCount(p0));
+    }
+
+    internal static Exception DispMemberNotFound(object p0)
+    {
+        return (Exception)new MissingMemberException(Strings.DispMemberNotFound(p0));
+    }
+
+    internal static Exception DispNoNamedArgs(object p0)
+    {
+        return (Exception)new ArgumentException(Strings.DispNoNamedArgs(p0));
+    }
+
+    internal static Exception DispOverflow(object p0)
+    {
+        return (Exception)new OverflowException(Strings.DispOverflow(p0));
+    }
+
+    internal static Exception DispTypeMismatch(object p0, object p1)
+    {
+        return (Exception)new ArgumentException(Strings.DispTypeMismatch(p0, p1));
+    }
+
+    internal static Exception DispParamNotOptional(object p0)
+    {
+        return (Exception)new ArgumentException(Strings.DispParamNotOptional(p0));
+    }
+
+    internal static Exception CannotRetrieveTypeInformation()
+    {
+        return (Exception)new InvalidOperationException(Strings.CannotRetrieveTypeInformation);
+    }
+
+    internal static Exception GetIDsOfNamesInvalid(object p0)
+    {
+        return (Exception)new ArgumentException(Strings.GetIDsOfNamesInvalid(p0));
+    }
+
+    internal static Exception UnsupportedEnumType()
+    {
+        return (Exception)new InvalidOperationException(Strings.UnsupportedEnumType);
+    }
+
+    internal static Exception UnsupportedHandlerType()
+    {
+        return (Exception)new InvalidOperationException(Strings.UnsupportedHandlerType);
+    }
+
+    internal static Exception CouldNotGetDispId(object p0, object p1)
+    {
+        return (Exception)new MissingMemberException(Strings.CouldNotGetDispId(p0, p1));
+    }
+
+    internal static Exception AmbiguousConversion(object p0, object p1)
+    {
+        return (Exception)new AmbiguousMatchException(Strings.AmbiguousConversion(p0, p1));
+    }
+
+    internal static Exception VariantGetAccessorNYI(object p0)
+    {
+        return (Exception)new NotImplementedException(Strings.VariantGetAccessorNYI(p0));
+    }
+
+
     internal static Exception UserDefinedOperatorMustBeStatic(object p0) => new ArgumentException(Strings.UserDefinedOperatorMustBeStatic(p0));
 
     internal static Exception UserDefinedOperatorMustNotBeVoid(object p0) => new ArgumentException(Strings.UserDefinedOperatorMustNotBeVoid(p0));
@@ -205,4 +298,54 @@ internal static class Error
     internal static Exception NotImplemented() => new NotImplementedException();
 
     internal static Exception NotSupported() => new NotSupportedException();
+
+    public static Exception BinderNotCompatibleWithCallSite(Type type, DynamicMetaObjectBinder dynamicMetaObjectBinder, Type returnLabelType)
+    {
+        throw new InvalidOperationException("Binder not compatible with call site");
+    }
+
+    public static Exception InvalidMetaObjectCreated(Type getType)
+    {
+        throw new InvalidOperationException(getType.FullName);
+    }
+
+    public static Exception BindingCannotBeNull()
+    {
+        throw new InvalidOperationException("Binding cannot be null");
+    }
+
+    public static Exception DynamicBinderResultNotAssignable(Type expressionType, DynamicMetaObjectBinder dynamicMetaObjectBinder, Type type)
+    {
+        throw new InvalidOperationException("Dynamic binder result not assignable");
+    }
+
+    public static Exception DynamicObjectResultNotAssignable(Type expressionType, Type getType, DynamicMetaObjectBinder dynamicMetaObjectBinder, Type type)
+    {
+        throw new InvalidOperationException("Dynamic object result not assignable");
+    }
+
+    public static Exception DynamicBindingNeedsRestrictions(Type getType, DynamicMetaObjectBinder dynamicMetaObjectBinder)
+    {
+        throw new InvalidOperationException("Dynamic binding needs restrictions");
+    }
+
+    internal static Exception MustBeReducible()
+    {
+        throw new InvalidOperationException("Must be reducible");
+    }
+
+    internal static Exception ReducibleMustOverrideReduce()
+    {
+        throw new InvalidOperationException("Reducible must override reduce");
+    }
+
+    internal static Exception ReducedNotCompatible()
+    {
+        throw new InvalidOperationException("Reduced not compatible");
+    }
+
+    internal static Exception MustReduceToDifferent()
+    {
+        throw new InvalidOperationException("Must reduce to different");
+    }
 }

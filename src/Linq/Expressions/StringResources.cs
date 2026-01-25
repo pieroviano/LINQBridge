@@ -100,7 +100,7 @@ internal sealed class StringResources
     private static StringResources loader;
     private readonly ResourceManager resources;
 
-    internal StringResources() => resources = new ResourceManager("System.Linq.Expressions", GetType().Assembly);
+    internal StringResources() => resources = Properties.Expressions.ResourceManager;
 
     private static StringResources GetLoader()
     {
@@ -113,8 +113,6 @@ internal sealed class StringResources
     }
 
     private static CultureInfo Culture => null;
-
-    public static ResourceManager Resources => GetLoader().resources;
 
     public static string GetString(string name, params object[] args)
     {
@@ -133,6 +131,4 @@ internal sealed class StringResources
     }
 
     public static string GetString(string name) => GetLoader()?.resources.GetString(name, Culture);
-
-    public static object GetObject(string name) => GetLoader()?.resources.GetObject(name, Culture);
 }

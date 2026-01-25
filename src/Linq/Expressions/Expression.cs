@@ -1,40 +1,26 @@
-﻿using System.Collections.ObjectModel;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace System.Linq.Expressions;
 
-/// <summary>Represents a strongly typed lambda expression as a data structure in the form of an expression tree. This class cannot be inherited.</summary>
-/// <typeparam name="TDelegate">The type of the delegate that the <see cref="T:System.Linq.Expressions.Expression`1" /> represents.</typeparam>
-public sealed class Expression<TDelegate> : LambdaExpression
-{
-    internal Expression(Expression body, ReadOnlyCollection<ParameterExpression> parameters)
-        : base(body, typeof(TDelegate), parameters)
-    {
-    }
-
-    /// <summary>Compiles the lambda expression described by the expression tree into executable code.</summary>
-    /// <returns>A delegate of type <paramref name="TDelegate" /> that represents the lambda expression described by the <see cref="T:System.Linq.Expressions.Expression`1" />.</returns>
-    public new TDelegate Compile()
-    {
-        return (TDelegate)((object)base.Compile());
-    }
-}
-
 /// <summary>Provides the base class from which the classes that represent expression tree nodes are derived. It also contains static (Shared in Visual Basic) factory methods to create the various node types. This is an abstract class.</summary>
-public abstract class Expression
+public abstract partial class Expression
 {
     private readonly ExpressionType nodeType;
     private readonly Type type;
+
     private static readonly Type[] lambdaTypes = new Type[2]
     {
         typeof (Expression),
         typeof (IEnumerable<ParameterExpression>)
     };
+
     private static readonly Type[] funcTypes = new Type[5]
     {
         typeof (Func<>),
@@ -43,6 +29,7 @@ public abstract class Expression
         typeof (Func<,,,>),
         typeof (Func<,,,,>)
     };
+
     private static readonly Type[] actionTypes = new Type[5]
     {
         typeof (Action),
@@ -87,87 +74,42 @@ public abstract class Expression
         return new AssignBinaryExpression(left, right);
     }
 
-    private static void RequiresCanRead(Expression expression, string paramName)
+    /// <summary>Returns an expression that represents an empty statement (a Default expression of type void).</summary>
+    public static Expression Empty()
     {
-        if (expression == null)
-        {
-            throw new ArgumentNullException(paramName);
-        }
-        var nodeType = expression.NodeType;
-        if (nodeType == ExpressionType.MemberAccess)
-        {
-            var member = ((MemberExpression)expression).Member;
-            if (member.MemberType == MemberTypes.Property && !((PropertyInfo)member).CanRead)
-            {
-                throw new ArgumentException(paramName);
-            }
-        }
-        else if (nodeType == ExpressionType.Index)
-        {
-            var indexExpression = (IndexExpression)expression;
-            if (indexExpression.Indexer != null && !indexExpression.Indexer.CanRead)
-            {
-                throw new ArgumentException(paramName);
-            }
-        }
+        return Default(typeof(void));
     }
 
-    private static void RequiresCanRead(IEnumerable<Expression> items, string paramName)
+    /// <summary>Creates a DefaultExpression that represents the default value of the specified type.</summary>
+    public static DefaultExpression Default(Type type)
     {
-        if (items != null)
-        {
-            var expressions = items as IList<Expression>;
-            if (expressions != null)
-            {
-                for (var i = 0; i < expressions.Count; i++)
-                {
-                    RequiresCanRead(expressions[i], paramName);
-                }
-                return;
-            }
-            foreach (var item in items)
-            {
-                RequiresCanRead(item, paramName);
-            }
-        }
+        if (type == null)
+            throw Error.ArgumentNull(nameof(type));
+        ValidateType(type);
+        return new DefaultExpression(type);
     }
 
-    private static void RequiresCanWrite(Expression expression, string paramName)
+    /// <summary>Dispatches to the specific visit method for this node type. For example, <see cref="T:System.Linq.Expressions.MethodCallExpression" /> calls the <see cref="M:System.Linq.Expressions.ExpressionVisitor.VisitMethodCall(System.Linq.Expressions.MethodCallExpression)" />.</summary>
+    /// <returns>The result of visiting this node.</returns>
+    /// <param name="visitor">The visitor to visit this node with.</param>
+    protected internal virtual Expression Accept(ExpressionVisitor visitor)
     {
-        if (expression == null)
-        {
-            throw new ArgumentNullException(paramName);
-        }
-        var canWrite = false;
-        var nodeType = expression.NodeType;
-        if (nodeType == ExpressionType.MemberAccess)
-        {
-            var memberExpression = (MemberExpression)expression;
-            var memberType = memberExpression.Member.MemberType;
-            if (memberType == MemberTypes.Field)
-            {
-                var member = (FieldInfo)memberExpression.Member;
-                canWrite = (member.IsInitOnly ? false : !member.IsLiteral);
-            }
-            else if (memberType == MemberTypes.Property)
-            {
-                canWrite = ((PropertyInfo)memberExpression.Member).CanWrite;
-            }
-        }
-        else if (nodeType == ExpressionType.Parameter)
-        {
-            canWrite = true;
-        }
-        else if (nodeType == ExpressionType.Index)
-        {
-            var indexExpression = (IndexExpression)expression;
-            canWrite = (indexExpression.Indexer == null ? true : indexExpression.Indexer.CanWrite);
-        }
-        if (!canWrite)
-        {
-            throw new ArgumentException(paramName);
-        }
+        return visitor.VisitExtension(this);
     }
+
+    /// <summary>Reduces the node and then calls the visitor delegate on the reduced expression. The method throws an exception if the node is not reducible.</summary>
+    /// <returns>The expression being visited, or an expression which should replace it in the tree.</returns>
+    /// <param name="visitor">An instance of <see cref="T:System.Func`2" />.</param>
+    [__DynamicallyInvokable]
+    protected internal virtual Expression VisitChildren(ExpressionVisitor visitor)
+    {
+        if (!this.CanReduce)
+        {
+            throw Error.MustBeReducible();
+        }
+        return visitor.Visit(this.ReduceAndCheck());
+    }
+
     /// <summary>Returns a textual representation of the <see cref="T:System.Linq.Expressions.Expression" />.</summary>
     /// <returns>A textual representation of the <see cref="T:System.Linq.Expressions.Expression" />.</returns>
     public override string ToString()
@@ -563,21 +505,21 @@ public abstract class Expression
         switch (expressions.Length)
         {
             case 2:
-            {
-                return Block(expressions[0], expressions[1]);
-            }
+                {
+                    return Block(expressions[0], expressions[1]);
+                }
             case 3:
-            {
-                return Block(expressions[0], expressions[1], expressions[2]);
-            }
+                {
+                    return Block(expressions[0], expressions[1], expressions[2]);
+                }
             case 4:
-            {
-                return Block(expressions[0], expressions[1], expressions[2], expressions[3]);
-            }
+                {
+                    return Block(expressions[0], expressions[1], expressions[2], expressions[3]);
+                }
             case 5:
-            {
-                return Block(expressions[0], expressions[1], expressions[2], expressions[3], expressions[4]);
-            }
+                {
+                    return Block(expressions[0], expressions[1], expressions[2], expressions[3], expressions[4]);
+                }
         }
         ContractUtils.RequiresNotEmpty<Expression>(expressions, "expressions");
         RequiresCanRead(expressions, "expressions");
@@ -649,6 +591,19 @@ public abstract class Expression
             return new ScopeN(parameterExpressions, readOnly);
         }
         return new Scope1(parameterExpressions, readOnly[0]);
+    }
+
+    /// <summary>Creates a <see cref="T:System.Linq.Expressions.ParameterExpression" /> to be used as a local variable in block expressions.</summary>
+    /// <param name="type">The <see cref="T:System.Type" /> of the variable.</param>
+    /// <param name="name">The name of the variable.</param>
+    /// <exception cref="T:System.ArgumentNullException"><paramref name="type" /> is null.</exception>
+    public static ParameterExpression Variable(Type type, string name)
+    {
+        if (type == null)
+            throw Error.ArgumentNull(nameof(type));
+        if (type == typeof(void))
+            throw Error.ArgumentCannotBeOfTypeVoid();
+        return new ParameterExpression(type, name);
     }
 
     internal static void ValidateVariables(ReadOnlyCollection<ParameterExpression> varList, string collectionName)
@@ -945,6 +900,152 @@ public abstract class Expression
                 return false;
         }
         return true;
+    }
+
+    /// <summary>Creates a GotoExpression that represents a return to a label target (no value).</summary>
+    public static GotoExpression Return(LabelTarget target)
+    {
+        if (target == null)
+            throw Error.ArgumentNull(nameof(target));
+        // For a void target, value must be null and expression type is void
+        if (target.Type == typeof(void))
+        {
+            return new GotoExpression(target, null, typeof(void));
+        }
+        // For non-void target there must be a value; caller should call the overload with value
+        throw Error.ArgumentNull(nameof(target));
+    }
+
+    /// <summary>Creates a UnaryExpression that represents throwing an exception (void result).</summary>
+    public static UnaryExpression Throw(Expression expression)
+    {
+        return Throw(expression, typeof(void));
+    }
+
+    /// <summary>Creates a UnaryExpression that represents throwing an exception and specifies the expression Type.</summary>
+    public static UnaryExpression Throw(Expression expression, Type type)
+    {
+        if (expression == null)
+            throw Error.ArgumentNull(nameof(expression));
+        if (type == null)
+            throw Error.ArgumentNull(nameof(type));
+
+        ValidateType(type);
+
+        // The operand of a Throw must be an Exception (or subtype)
+        if (!typeof(Exception).IsAssignableFrom(expression.Type))
+            throw Error.ExpressionTypeDoesNotMatchParameter(expression.Type, typeof(Exception));
+
+        return new UnaryExpression(ExpressionType.Throw, expression, type);
+    }
+
+    /// <summary>Creates a GotoExpression that represents a return to a label target with a value.</summary>
+    public static GotoExpression Return(LabelTarget target, Expression value)
+    {
+        if (target == null)
+            throw Error.ArgumentNull(nameof(target));
+
+        // If the label target is void, value must be null
+        if (target.Type == typeof(void))
+        {
+            if (value != null)
+                throw Error.ArgumentTypesMustMatch();
+            return new GotoExpression(target, null, typeof(void));
+        }
+
+        if (value == null)
+            throw Error.ArgumentNull(nameof(value));
+
+        // Validate types: value.Type must be assignable to target.Type
+        TypeUtils.ValidateType(value.Type);
+        if (!TypeUtils.AreReferenceAssignable(target.Type, value.Type))
+            throw Error.ArgumentTypesMustMatch();
+
+        return new GotoExpression(target, value, target.Type);
+    }
+
+    public static IndexExpression ArrayAccess(Expression array, Expression index)
+    {
+        if (array == null)
+            throw Error.ArgumentNull(nameof(array));
+        if (index == null)
+            throw Error.ArgumentNull(nameof(index));
+
+        RequiresCanRead(array, nameof(array));
+        RequiresCanRead(index, nameof(index));
+
+        var arrayType = array.Type;
+        if (arrayType == null || !arrayType.IsArray)
+            throw Error.ArgumentMustBeArray();
+
+        // only support single-dimension array access here (single index)
+        if (arrayType.GetArrayRank() != 1)
+            throw new ArgumentException("Only single-dimension arrays are supported.", nameof(array));
+
+        // index must be an integer type
+        ValidateIntegerArg(index.Type);
+
+        // element type
+        var elemType = arrayType.GetElementType();
+        ValidateType(elemType);
+
+        // Create basic IndexExpression (constructor with nodeType & type exists) then
+        // populate its private fields via reflection so we don't rely on a specific
+        // internal constructor signature.
+        var ix = new IndexExpression(ExpressionType.Index, elemType);
+
+        var ixType = typeof(IndexExpression);
+        var fiInstance = ixType.GetField("_instance", BindingFlags.Instance | BindingFlags.NonPublic);
+        var fiIndexer = ixType.GetField("_indexer", BindingFlags.Instance | BindingFlags.NonPublic);
+        var fiArgs = ixType.GetField("_arguments", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        if (fiInstance == null || fiArgs == null)
+            throw new InvalidOperationException("IndexExpression implementation not compatible.");
+
+        fiInstance.SetValue(ix, array);
+        if (fiIndexer != null)
+            fiIndexer.SetValue(ix, null);
+        fiArgs.SetValue(ix, new List<Expression> { index });
+
+        return ix;
+    }
+
+    /// <summary>Creates an if-then statement expression. The returned expression has type <see cref="T:System.Void" />.</summary>
+    /// <param name="test">The test expression (must be of type <see cref="T:System.Boolean" />).</param>
+    /// <param name="ifTrue">The expression to execute when <paramref name="test" /> is true.</param>
+    /// <returns>An expression that represents an if-then statement.</returns>
+    public static Expression IfThen(Expression test, Expression ifTrue)
+    {
+        if (test == null)
+            throw Error.ArgumentNull(nameof(test));
+        if (ifTrue == null)
+            throw Error.ArgumentNull(nameof(ifTrue));
+        if (test.Type != typeof(bool))
+            throw Error.ArgumentMustBeBoolean();
+
+        // Build a matching "else" branch with the same type as ifTrue so we can use Condition(...)
+        Expression ifFalse;
+        var trueType = ifTrue.Type;
+
+        if (trueType == typeof(void))
+        {
+            // both branches already void
+            ifFalse = ifTrue;
+        }
+        else if (!trueType.IsValueType || IsNullableType(trueType))
+        {
+            // reference or nullable: default is null
+            ifFalse = Constant(null, trueType);
+        }
+        else
+        {
+            // non-nullable value type: use default constructor (new T()) as the default value
+            ifFalse = New(trueType);
+        }
+
+        // Create conditional expression and force its containing block to return void
+        var conditional = Condition(test, ifTrue, ifFalse);
+        return Block(typeof(void), conditional);
     }
 
     /// <summary>Creates a <see cref="T:System.Linq.Expressions.BinaryExpression" /> that represents a coalescing operation, given a conversion function.</summary>
@@ -2665,11 +2766,11 @@ public abstract class Expression
         {
             case MemberTypes.Field:
                 var fieldInfo = member as FieldInfo;
-                memberType = !fieldInfo?.IsStatic??true ? fieldInfo!.FieldType : throw Error.ArgumentMustBeInstanceMember();
+                memberType = !fieldInfo?.IsStatic ?? true ? fieldInfo!.FieldType : throw Error.ArgumentMustBeInstanceMember();
                 break;
             case MemberTypes.Method:
                 var methodInfo = member as MethodInfo;
-                memberType = !methodInfo?.IsStatic??true ? methodInfo!.ReturnType : throw Error.ArgumentMustBeInstanceMember();
+                memberType = !methodInfo?.IsStatic ?? true ? methodInfo!.ReturnType : throw Error.ArgumentMustBeInstanceMember();
                 break;
             case MemberTypes.Property:
                 var p0 = member as PropertyInfo;
@@ -3481,17 +3582,6 @@ public abstract class Expression
         return method;
     }
 
-    private static bool IsLiftingConditionalLogicalOperator(
-        Type left,
-        Type right,
-        MethodInfo method,
-        ExpressionType binaryType)
-    {
-        if (!IsNullableType(right) || !IsNullableType(left) || method != null)
-            return false;
-        return binaryType == ExpressionType.AndAlso || binaryType == ExpressionType.OrElse;
-    }
-
     private static BinaryExpression GetUserDefinedBinaryOperator(
         ExpressionType binaryType,
         string name,
@@ -3695,22 +3785,6 @@ public abstract class Expression
             if (parameter.ParameterType.IsByRef)
                 throw Error.ElementInitializerMethodNoRefOutParam(parameter.Name, addMethod.Name);
         }
-    }
-
-    private static void ValidateMethodInfo(MethodInfo method)
-    {
-        if (method.IsGenericMethodDefinition)
-            throw Error.MethodIsGeneric(method);
-        if (method.ContainsGenericParameters)
-            throw Error.MethodContainsGenericParameters(method);
-    }
-
-    private static void ValidateType(Type type)
-    {
-        if (type.IsGenericTypeDefinition)
-            throw Error.TypeIsGeneric(type);
-        if (type.ContainsGenericParameters)
-            throw Error.TypeContainsGenericParameters(type);
     }
 
     internal static Type GetNullableType(Type type)

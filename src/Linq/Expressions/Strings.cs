@@ -1,8 +1,33 @@
-﻿namespace System.Linq.Expressions;
+﻿using System.Properties;
+
+namespace System.Linq.Expressions;
 
 internal static class Strings
 {
     internal static string OwningTeam => StringResources.GetString(nameof(OwningTeam));
+
+    internal static string ComObjectExpected => Dynamic.ComObjectExpected;
+
+    internal static string InternalCompilerError => Dynamic.InternalCompilerError;
+    internal static string BindRequireArguments => Dynamic.BindRequireArguments;
+    internal static string BindCallFailedOverloadResolution => Dynamic.BindCallFailedOverloadResolution;
+    internal static string BindBinaryOperatorRequireTwoArguments => Dynamic.BindBinaryOperatorRequireTwoArguments;
+    internal static string BindUnaryOperatorRequireOneArgument => Dynamic.BindUnaryOperatorRequireOneArgument;
+    internal static string BindInvokeFailedNonDelegate => Dynamic.BindInvokeFailedNonDelegate;
+    internal static string BindImplicitConversionRequireOneArgument => Dynamic.BindImplicitConversionRequireOneArgument;
+    internal static string BindExplicitConversionRequireOneArgument => Dynamic.BindExplicitConversionRequireOneArgument;
+    internal static string BindBinaryAssignmentRequireTwoArguments => Dynamic.BindBinaryAssignmentRequireTwoArguments;
+    internal static string BindBinaryAssignmentFailedNullReference => Dynamic.BindBinaryAssignmentFailedNullReference;
+    internal static string NullReferenceOnMemberException => Dynamic.NullReferenceOnMemberException;
+    internal static string BindToVoidMethodButExpectResult => Dynamic.BindToVoidMethodButExpectResult;
+
+    internal static string BindPropertyFailedMethodGroup(object p0) => string.Format(Dynamic.BindPropertyFailedMethodGroup, p0);
+    internal static string BindPropertyFailedEvent(object p0) => string.Format(Dynamic.BindPropertyFailedEvent, p0);
+    internal static string BindCallToConditionalMethod(object p0) => string.Format(Dynamic.BindCallToConditionalMethod, p0);
+
+    // Generic helpers for messages not explicitly enumerated above.
+    internal static string ArgumentNull(string paramName) => string.Format(Dynamic.ArgumentNull, paramName);
+    internal static string ArgumentOutOfRange(string paramName) => string.Format(Dynamic.ArgumentOutOfRange, paramName);
 
     internal static string UserDefinedOperatorMustBeStatic(object p0) => StringResources.GetString(nameof(UserDefinedOperatorMustBeStatic), p0);
 
@@ -189,4 +214,90 @@ internal static class Strings
     internal static string ExpressionMayNotContainByrefParameters => StringResources.GetString(nameof(ExpressionMayNotContainByrefParameters));
 
     internal static string ArgumentCannotBeOfTypeVoid => StringResources.GetString(nameof(ArgumentCannotBeOfTypeVoid));
+
+    internal static string InvalidArgumentValue => Dynamic.InvalidArgumentValue;
+
+    internal static string CannotCall => Dynamic.CannotCall;
+
+    internal static string BinderNotCompatibleWithCallSite => Dynamic.BinderNotCompatibleWithCallSite;
+    internal static string BindingCannotBeNull => Dynamic.BindingCannotBeNull;
+    internal static string DynamicBinderResultNotAssignable => Dynamic.DynamicBinderResultNotAssignable;
+    internal static string DynamicObjectResultNotAssignable => Dynamic.DynamicObjectResultNotAssignable;
+    internal static string DynamicBindingNeedsRestrictions => Dynamic.DynamicBindingNeedsRestrictions;
+    internal static string MustBeReducible => Dynamic.MustBeReducible;
+    internal static string ReducibleMustOverrideReduce => Dynamic.ReducibleMustOverrideReduce;
+    internal static string ReducedNotCompatible => Dynamic.ReducedNotCompatible;
+    internal static string MustReduceToDifferent => Dynamic.MustReduceToDifferent;
+
+    internal static string COMObjectDoesNotSupportEvents
+    {
+        get => Dynamic.COMObjectDoesNotSupportEvents;
+    }
+
+    internal static string COMObjectDoesNotSupportSourceInterface
+    {
+        get => Dynamic.COMObjectDoesNotSupportSourceInterface;
+    }
+
+    internal static string SetComObjectDataFailed => Dynamic.SetComObjectDataFailed;
+
+    internal static string MethodShouldNotBeCalled => Dynamic.MethodShouldNotBeCalled;
+
+    internal static string UnexpectedVarEnum(object p0)
+    {
+        return string.Format(Dynamic.UnexpectedVarEnum, p0);
+    }
+
+    internal static string DispBadParamCount(object p0)
+    {
+        return string.Format(Dynamic.DispBadParamCount, p0);
+    }
+
+    internal static string DispMemberNotFound(object p0)
+    {
+        return string.Format(Dynamic.DispMemberNotFound, p0);
+    }
+
+    internal static string DispNoNamedArgs(object p0) => string.Format(Dynamic.DispNoNamedArgs, p0);
+
+    internal static string DispOverflow(object p0) => string.Format(Dynamic.DispOverflow, p0);
+
+    internal static string DispTypeMismatch(object p0, object p1)
+    {
+        return string.Format(Dynamic.DispTypeMismatch, p0, p1);
+    }
+
+    internal static string DispParamNotOptional(object p0)
+    {
+        return string.Format(Dynamic.DispParamNotOptional, p0);
+    }
+
+    internal static string CannotRetrieveTypeInformation
+    {
+        get => Dynamic.CannotRetrieveTypeInformation;
+    }
+
+    internal static string GetIDsOfNamesInvalid(object p0)
+    {
+        return string.Format(Dynamic.GetIDsOfNamesInvalid, p0);
+    }
+
+    internal static string UnsupportedEnumType => Dynamic.UnsupportedEnumType;
+
+    internal static string UnsupportedHandlerType => Dynamic.UnsupportedHandlerType;
+
+    internal static string CouldNotGetDispId(object p0, object p1)
+    {
+        return string.Format(Dynamic.CouldNotGetDispId, p0, p1);
+    }
+
+    internal static string AmbiguousConversion(object p0, object p1)
+    {
+        return string.Format(Dynamic.AmbiguousConversion, p0, p1);
+    }
+
+    internal static string VariantGetAccessorNYI(object p0)
+    {
+        return string.Format(Dynamic.VariantGetAccessorNYI, p0);
+    }
 }
