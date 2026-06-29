@@ -11,6 +11,6 @@
     <PackageReference Include="NUnit" Version="2.6.4" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\LinqBridge.csproj" />
+    <ProjectReference Include="..\..\src\Net20.LINQBridge.csproj" />
   </ItemGroup>
 </Project>
