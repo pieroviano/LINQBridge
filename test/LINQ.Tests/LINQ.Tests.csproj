@@ -10,7 +10,14 @@
     <PackageReference Include="NUnit" Version="2.6.4" />
   </ItemGroup>
   <ItemGroup>
+    <!-- These fixtures are compiled against Framework 3.5's System.Core so that
+         the same assertions that check LINQBridge also check the implementation
+         it stands in for. Only fixtures confined to the 3.5 API belong here;
+         BridgeTypesFixture deliberately stays out. -->
     <Compile Include="..\LINQBridge.Tests\EnumerableFixture.cs" Link="EnumerableFixture.cs" />
+    <Compile Include="..\LINQBridge.Tests\ExpressionFixture.cs" Link="ExpressionFixture.cs" />
+    <Compile Include="..\LINQBridge.Tests\HashSetFixture.cs" Link="HashSetFixture.cs" />
+    <Compile Include="..\LINQBridge.Tests\QueryableFixture.cs" Link="QueryableFixture.cs" />
     <Compile Include="..\LINQBridge.Tests\Reader.cs" Link="Reader.cs" />
     <Compile Include="..\LINQBridge.Tests\Tester.cs" Link="Tester.cs" />
   </ItemGroup>

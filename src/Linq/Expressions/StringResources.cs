@@ -100,7 +100,9 @@ namespace System.Linq.Expressions
         private static StringResources loader;
         private ResourceManager resources;
 
-        internal StringResources() => this.resources = new ResourceManager("System.Linq.Expressions", this.GetType().Assembly);
+        // The base name must match the manifest name MSBuild gives Linq\Expressions\Expressions.resx,
+        // which is <RootNamespace>.<folder path>.<file name> == System.Linq.Expressions.Expressions.
+        internal StringResources() => this.resources = new ResourceManager("System.Linq.Expressions.Expressions", this.GetType().Assembly);
 
         private static StringResources GetLoader()
         {

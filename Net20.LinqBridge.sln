@@ -20,7 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{65136D8F-1857-43DE-BC62-3799B5930A95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net20.LINQBridge", "src\Net20.LINQBridge.csproj", "{1714EF86-7F5C-8A5A-80E6-FCB109AE3E25}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net20.LinqBridge", "src\Net20.LinqBridge.csproj", "{1714EF86-7F5C-8A5A-80E6-FCB109AE3E25}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
