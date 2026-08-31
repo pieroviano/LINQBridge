@@ -16,6 +16,12 @@ and queryable providers work on net20/net30 as well. Everything lives in the **r
 `System.Runtime.CompilerServices`, `System.ComponentModel.DataAnnotations`) with `<RootNamespace>System</RootNamespace>`,
 so consumers switch to `System.Core` later with no code edits.
 
+The solution now ships a **second** package from the same repo, `Net20.DynamicBridge`
+(`src/DynamicBridge/`), which does for the C# `dynamic` keyword what LinqBridge does for LINQ: it
+supplies `System.Runtime.CompilerServices.CallSite`, `System.Dynamic.*` and
+`Microsoft.CSharp.RuntimeBinder.*` so `dynamic` compiles and binds on net20/net30/net35. It has its
+own README (`src/DynamicBridge/README.md`) and design note (`doc/Net20.DynamicBridge-Implementation-Plan.md`).
+
 ## Build and test
 
 `dotnet build` **does not work** for this repo — net20/net30/net35 need `ResGen.exe` and the v2.0/v3.0
@@ -26,7 +32,8 @@ reference assemblies, which .NET Core MSBuild has not. Always use full MSBuild:
 MSBUILD="/c/Program Files/Microsoft Visual Studio/18/Enterprise/MSBuild/Current/Bin/MSBuild.exe"
 
 "$MSBUILD" Net20.LinqBridge.sln -t:restore,build -v:m          # whole solution
-"$MSBUILD" src/Net20.LinqBridge.csproj -t:build -v:m           # library only
+"$MSBUILD" src/Net20.LinqBridge/Net20.LinqBridge.csproj -t:build -v:m           # library only
+"$MSBUILD" src/DynamicBridge/Net20.DynamicBridge.csproj -t:build -v:m   # dynamic library only
 "$MSBUILD" Net20.LinqBridge.sln -t:clean
 ```
 
@@ -44,7 +51,16 @@ NUNIT="$HOME/.nuget/packages/nunit.runners/2.7.0/tools/nunit-console.exe"
 "$NUNIT" test/LINQBridge.Tests/bin/Debug/net30/LinqBridge.Tests.dll -nologo        # all (~250 tests)
 "$NUNIT" test/LINQBridge.Tests/bin/Debug/net30/LinqBridge.Tests.dll \
          -run:LinqBridge.Tests.EnumerableFixture.Where_ValidArguments -nologo      # single test
+
+# DynamicBridge: three runs, because the bridge is built twice and compared against the real thing
+"$NUNIT" test/DynamicBridge.Tests/bin/Debug/net30/DynamicBridge.Tests.dll -nologo  # bridge on LinqBridge
+"$NUNIT" test/DynamicBridge.Tests/bin/Debug/net35/DynamicBridge.Tests.dll -nologo  # bridge on System.Core
+"$NUNIT" test/Dynamic.Tests/bin/Debug/net40/Dynamic.Tests.dll -framework:net-4.0 -nologo  # real Microsoft.CSharp
 ```
+
+`samples/DynamicSample` is a net20 console app that exercises `dynamic` end to end; run its exe and
+it prints a pass/fail line per feature and returns a non-zero exit code on any failure. Its
+`App.config` lists `v4.0` first so it also runs on a machine without .NET 2.0/3.5 installed.
 
 The runner drops `TestResult.xml` in the working directory (git-ignored).
 
@@ -64,18 +80,35 @@ projects consume it — never use a LINQBridge-only or Framework 4.0 API in one.
 | `HashSetFixture` | `HashSet<T>` | yes |
 | `BridgeTypesFixture` | bridge-only types (see below) | **no** |
 
+The same trick is used a second time for `dynamic`: `test/DynamicBridge.Tests` (net30 **and** net35,
+against `Net20.DynamicBridge`) and `test/Dynamic.Tests` (net40, the same fixtures linked, against the
+real `Microsoft.CSharp`). net40 rather than net35 this time, because 4.0 is the first Framework with
+`dynamic` at all.
+
+| Fixture | Covers | Linked into Dynamic.Tests? |
+| --- | --- | --- |
+| `DynamicFixture` | members, invocation, indexers, operators, conversions | yes |
+| `DynamicObjectFixture` | `DynamicObject` and its `Try*` overrides | yes |
+| `ExpandoObjectFixture` | `ExpandoObject` | yes |
+| `DynamicSubjects` | the subject types the three fixtures share | yes |
+| `BridgeDynamicFixture` | `CallSite`, binder factories, `ExpressionType` ordinals | **no** |
+
+`DynamicBridge.Tests` is built for net30 *and* net35 because those are materially different builds of
+the bridge: on net30 its expression trees come from LinqBridge, on net35 from the real `System.Core`.
+
 `BridgeTypesFixture` is deliberately excluded because its subjects have no 3.5 counterpart to compare against:
 `OrderedEnumerable`, `Key`/`KeyComparer`, `DelegatingComparer`, `Net20Interlocked`, the resource loaders,
 `ReadOnlyCollectionBuilder` (a 4.0 type), and the DataAnnotations subset (a separate assembly in 3.5).
 
-Current totals: 568 tests in LINQBridge.Tests, 516 in LINQ.Tests, all passing.
+Current totals: 568 tests in LINQBridge.Tests, 516 in LINQ.Tests, 115 in DynamicBridge.Tests
+(run twice, net30 and net35) and 96 in Dynamic.Tests, all passing.
 
 `test/TestResultsWiki` is a small console tool that reads NUnit XML output files and emits a wiki table
 comparing runs (`TestResultsWiki.exe Bridge=a.xml Framework=b.xml`).
 
 ## Multi-targeting: source is compiled only for net20/net30
 
-`src/Net20.LinqBridge.csproj` targets `net20;net30;net35;net40;net45;netstandard2.0`, but:
+`src/Net20.LinqBridge/Net20.LinqBridge.csproj` targets `net20;net30;net35;net40;net45;netstandard2.0`, but:
 
 ```xml
 <DefaultItemExcludes Condition="'$(TargetFramework)'=='net35' or ... 'net45' or 'netstandard2.0'">
@@ -92,28 +125,43 @@ resources/metadata vs ~330 KB for net20/net30) so a consumer multi-targeting the
 
 ## Code organisation
 
-- `src/Linq/Enumerable.cs` — hand-written LINQ to Objects operators. `Enumerable.g.cs` is **generated** from
+- `src/Net20.LinqBridge/Linq/Enumerable.cs` — hand-written LINQ to Objects operators. `Enumerable.g.cs` is **generated** from
   `Enumerable.g.tt` (T4, run by Visual Studio's `TextTemplatingFileGenerator`) and holds the numeric overload
   explosion for `Sum`/`Min`/`Max`/`Average` over `int/long/float/double/decimal` and their nullable forms.
   Edit the `.tt`, not the `.g.cs`.
-- `src/Linq/Queryable.cs`, `EnumerableQuery.cs`, `EnumerableRewriter.cs`, `EnumerableExecutor.cs` — the
+- `src/Net20.LinqBridge/Linq/Queryable.cs`, `EnumerableQuery.cs`, `EnumerableRewriter.cs`, `EnumerableExecutor.cs` — the
   `IQueryable` side: `EnumerableRewriter` rewrites a `Queryable` expression tree into `Enumerable` calls so
   `AsQueryable()` executes in memory.
-- `src/Linq/Expressions/` (~10.8k lines, the bulk of the repo) — expression tree node types mirroring the BCL
+- `src/Net20.LinqBridge/Linq/Expressions/` (~10.8k lines, the bulk of the repo) — expression tree node types mirroring the BCL
   layout (`Block2`…`BlockN`, `Scope1`…`ScopeN`, `TrueReadOnlyCollection`, `TypeUtils`), plus
   `ExpressionCompiler.cs` which emits IL through `DynamicMethod` + `ExecutionScope`.
-- `src/Runtime/CompilerServices/` — `ExtensionAttribute` (what makes extension methods compile on 2.0),
+- `src/Net20.LinqBridge/Runtime/CompilerServices/` — `ExtensionAttribute` (what makes extension methods compile on 2.0),
   `ExecutionScope`, `StrongBox`, `ReadOnlyCollectionBuilder`.
-- `src/Collections/Generic/HashSet.cs`, `src/ComponentModel/DataAnnotations/`, `src/Threading/Net20Interlocked.cs` —
+- `src/Net20.LinqBridge/Collections/Generic/HashSet.cs`, `src/Net20.LinqBridge/ComponentModel/DataAnnotations/`, `src/Net20.LinqBridge/Threading/Net20Interlocked.cs` —
   further 3.5-era BCL pieces backported for the same reason.
 - String resources: `Core.resx` → `CoreStringResources.cs`, `Linq/Expressions/Expressions.resx` →
   `StringResources.cs`/`Strings.cs`. These `.resx` files are why full MSBuild is required.
+- `src/DynamicBridge/` — the `Net20.DynamicBridge` package, a separate assembly:
+  `Runtime/CompilerServices/` holds `CallSite`, `CallSiteBinder` and the `SiteDelegateFactory` that
+  emits each call site's dispatch stub; `Dynamic/` holds the meta-object protocol (`DynamicMetaObject`,
+  the twelve binder base classes, `DynamicObject`, `ExpandoObject`); `CSharp/RuntimeBinder/` holds the
+  C# binder itself — the public `Binder` factories plus `Conversions`, `Operators`, `MemberBinding`
+  and `Inference`, which between them implement C# conversion, operator and overload-resolution rules
+  against runtime types. It compiles for net20/net30/net35 only, on the same `DefaultItemExcludes`
+  principle as LinqBridge.
 
 Much of `Expressions/`, `Queryable.cs` and `EnumerableRewriter.cs` reads like decompiled BCL code
 (`(Expression)Expression.Call(...)` casts, `_underscore` fields, XML docs copied from MSDN). That is deliberate —
 it mirrors reference-source behaviour. Match the surrounding style rather than "cleaning it up", and keep public
 signatures byte-identical to the Framework 3.5 originals; a divergence breaks the drop-in-replacement contract
 that `test/LINQ.Tests` exists to police.
+
+One divergence in particular is not cosmetic: **`ExpressionType`'s numeric values are a contract.**
+The C# compiler passes node kinds to `Microsoft.CSharp.RuntimeBinder.Binder` as numeric constants
+taken from its own table, never by looking the member up on the referenced enum, so a member inserted
+mid-enum turns `a * b` on a dynamic value into some unrelated operation at run time. Every member of
+`src/Net20.LinqBridge/Linq/Expressions/ExpressionType.cs` therefore carries an explicit value;
+append, never insert. `BridgeDynamicFixture.ExpressionTypeOrdinalsMatchTheFramework` guards it.
 
 ## Build infrastructure
 

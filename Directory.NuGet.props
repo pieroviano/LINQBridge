@@ -7,9 +7,7 @@
         <DirectoryNuGet>true</DirectoryNuGet>
         <VersionBuildSuffix Condition="'$(VersionBuildSuffix)'==''">*</VersionBuildSuffix>
         <NuGetUtilityVersion Condition="'$(NuGetUtilityVersion)'==''">1.0.13</NuGetUtilityVersion>
-        <NuGetPackageRoot Condition="'$(NuGetPackageRoot)'=='' and '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">$(USERPROFILE)\.nuget\packages\</NuGetPackageRoot>
-        <NuGetPackageRoot Condition="'$(NuGetPackageRoot)'=='' and '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' != 'true'">~/.nuget/packages/</NuGetPackageRoot>
-        <NuGetUtilityVersion Condition="'$(NuGetUtilityVersion)' == ''">1.0.0</NuGetUtilityVersion>
+        <Net20DynamicBridgeVersion>1.0.0</Net20DynamicBridgeVersion>
         <Net20LinqBridgeVersion>1.6.0</Net20LinqBridgeVersion>
         <Net30LinqBridgeVersion>1.6.0</Net30LinqBridgeVersion>
         <Net35ActionsVersion>1.4.0</Net35ActionsVersion>
