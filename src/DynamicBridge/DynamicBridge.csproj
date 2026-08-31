@@ -7,11 +7,11 @@
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <!-- CallSite, System.Dynamic and Microsoft.CSharp.RuntimeBinder ship in the box from 4.0
              onwards, so those TFMs compile no C# at all and the package is an empty facade.
-             Same trick as Net20.LinqBridge; it is what keeps a net45 consumer free of CS0433. -->
+             Same trick as LinqBridge; it is what keeps a net45 consumer free of CS0433. -->
         <DefaultItemExcludes Condition="'$(TargetFramework)'=='net40' or '$(TargetFramework)'=='net45' or '$(TargetFramework)'=='netstandard2.0'">$(DefaultItemExcludes);**\*.cs</DefaultItemExcludes>
         <RootNamespace>System</RootNamespace>
-        <AssemblyName>Net20.DynamicBridge</AssemblyName>
-        <PackageId>Net20.DynamicBridge</PackageId>
+        <AssemblyName>DynamicBridge</AssemblyName>
+        <PackageId>DynamicBridge</PackageId>
         <TargetFrameworks>net20;net30;net35;net40;net45;netstandard2.0</TargetFrameworks>
         <VersionPrefix>$(Net20DynamicBridgeVersion)</VersionPrefix>
         <Version>$(VersionPrefix).$(VersionSuffix)</Version>
@@ -41,7 +41,7 @@
     <ItemGroup>
         <!-- A ProjectReference rather than a PackageReference: DynamicBridge needs the 4.0 members
              this repo adds to System.Linq.Expressions.ExpressionType, and the packing step turns the
-             reference into a Net20.LinqBridge package dependency anyway. -->
+             reference into a LinqBridge package dependency anyway. -->
         <ProjectReference Include="..\LinqBridge\LinqBridge.csproj" Condition="'$(TargetFramework)'=='net20' or '$(TargetFramework)'=='net30'" />
     </ItemGroup>
     <ItemGroup>
