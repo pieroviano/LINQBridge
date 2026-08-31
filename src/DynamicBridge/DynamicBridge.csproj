@@ -16,7 +16,7 @@
         <VersionPrefix>$(Net20DynamicBridgeVersion)</VersionPrefix>
         <Version>$(VersionPrefix).$(VersionSuffix)</Version>
         <SignAssembly>true</SignAssembly>
-        <AssemblyOriginatorKeyFile>..\Net20.LinqBridge\LinqBridge.snk</AssemblyOriginatorKeyFile>
+        <AssemblyOriginatorKeyFile>..\LinqBridge\LinqBridge.snk</AssemblyOriginatorKeyFile>
         <AssemblyTitle>DynamicBridge</AssemblyTitle>
         <Product>DynamicBridge</Product>
         <Description>Brings the C# 'dynamic' keyword to .NET Framework 2.0, 3.0 and 3.5 by supplying the compiler-required CallSite, System.Dynamic and Microsoft.CSharp.RuntimeBinder types.</Description>
@@ -42,7 +42,7 @@
         <!-- A ProjectReference rather than a PackageReference: DynamicBridge needs the 4.0 members
              this repo adds to System.Linq.Expressions.ExpressionType, and the packing step turns the
              reference into a Net20.LinqBridge package dependency anyway. -->
-        <ProjectReference Include="..\Net20.LinqBridge\Net20.LinqBridge.csproj" Condition="'$(TargetFramework)'=='net20' or '$(TargetFramework)'=='net30'" />
+        <ProjectReference Include="..\LinqBridge\LinqBridge.csproj" Condition="'$(TargetFramework)'=='net20' or '$(TargetFramework)'=='net30'" />
     </ItemGroup>
     <ItemGroup>
         <Reference Include="System.Core" Condition="'$(TargetFramework)'=='net35'" />
@@ -52,7 +52,7 @@
         <PackageReference Include="Net4x.NuGetUtility" Version="$(NuGetUtilityVersion)" PrivateAssets="All" />
     </ItemGroup>
     <ItemGroup>
-        <None Include="..\Net20.LinqBridge\LinqBridge.snk" Link="LinqBridge.snk" />
+        <None Include="..\LinqBridge\LinqBridge.snk" Link="LinqBridge.snk" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="README.md" Link="README.md" Pack="true" PackagePath="\README.md" />

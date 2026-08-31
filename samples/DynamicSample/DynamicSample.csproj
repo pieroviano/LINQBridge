@@ -12,7 +12,7 @@
         <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\..\src\DynamicBridge\Net20.DynamicBridge.csproj" />
+        <ProjectReference Include="..\..\src\DynamicBridge\DynamicBridge.csproj" />
     </ItemGroup>
     <ItemGroup>
         <None Update="App.config">

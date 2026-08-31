@@ -7,8 +7,8 @@
         <DirectoryNuGet>true</DirectoryNuGet>
         <VersionBuildSuffix Condition="'$(VersionBuildSuffix)'==''">*</VersionBuildSuffix>
         <NuGetUtilityVersion Condition="'$(NuGetUtilityVersion)'==''">1.0.13</NuGetUtilityVersion>
+        <LinqBridgeVersion>1.6.0</LinqBridgeVersion>
         <Net20DynamicBridgeVersion>1.0.0</Net20DynamicBridgeVersion>
-        <Net20LinqBridgeVersion>1.6.0</Net20LinqBridgeVersion>
         <Net30LinqBridgeVersion>1.6.0</Net30LinqBridgeVersion>
         <Net35ActionsVersion>1.4.0</Net35ActionsVersion>
         <NuGetUtilityVersion>1.0.13</NuGetUtilityVersion>
